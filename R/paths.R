@@ -28,6 +28,9 @@
 #'   NA_character_              # missing
 #' )
 #' (decomposed <- decompose_path(x))
+#' get_extension(x)
+#' strip_extension(x)
+#' strip_extension(x, FALSE)
 #' recompose_path(decomposed)
 #' @export
 decompose_path <- function(x = dir())
@@ -192,7 +195,7 @@ recompose_path.decomposed_path <- function(x, ...)
 #' standardize_path(c(".", "..", "~", R.home(), NA))
 #' standardize_path(c(".", "..", "~", R.home(), NA), "\\")
 #' @export
-standardize_path <- function(x, sep = c("/", "\\"))
+standardize_path <- function(x = dir(), sep = c("/", "\\"))
 {
   if(assertive::is_empty(x))
   {
@@ -217,7 +220,11 @@ strip_extension <- function(x = dir(), include_dir = TRUE)
   decomposed <- decompose_path(x)
   if(include_dir) 
   {
-    file.path(decomposed[, 1L], decomposed[, 2L])
+    ifelse(
+      is.na(x),
+      NA_character_,
+      file.path(decomposed[, 1L], decomposed[, 2L])
+    )
   } else
   {
     decomposed[, 2L]
