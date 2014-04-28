@@ -159,6 +159,10 @@ recompose_path.decomposed_path <- function(x, ...)
 #' Standardize paths
 #' 
 #' Standari[sz]e path names so that they can be more easily compared.
+#' @param x A character vector of paths.
+#' @param sep String separator betwen directory levels in the output.
+#' @return A character vector of paths, pointing to the same locations as the
+#' input, but in a standardized form.
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
 #' @examples
 #' standardize_path(c("~", R.home()))
