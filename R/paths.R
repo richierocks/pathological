@@ -156,6 +156,20 @@ recompose_path.decomposed_path <- function(x, ...)
   path
 }
 
+#' Standardize paths
+#' 
+#' Standari[sz]e path names so that they can be more easily compared.
+#' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
+#' @examples
+#' standardize_path(c("~", R.home()))
+#' standardize_path(c("~", R.home()), "\\")
+#' @export
+standardize_path <- standardise_path <- function(x, sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  normalizePath(path.expand(x), sep, FALSE)
+}
+
 #' @rdname decompose_path
 #' @export
 strip_extension <- function(x = dir())
