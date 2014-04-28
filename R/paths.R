@@ -165,8 +165,8 @@ recompose_path.decomposed_path <- function(x, ...)
 #' input, but in a standardized form.
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
 #' @examples
-#' standardize_path(c("~", R.home()))
-#' standardize_path(c("~", R.home()), "\\")
+#' standardize_path(c(".", "..", "~", R.home()))
+#' standardize_path(c(".", "..", "~", R.home()), "\\")
 #' @export
 standardize_path <- function(x, sep = c("/", "\\"))
 {
