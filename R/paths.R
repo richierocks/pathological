@@ -15,46 +15,65 @@
 #' \code{recompose_path} returns a character vector of paths.
 #' @examples
 #' x <- c(
-#'   "somedir/foo.tgz", 
-#'   "another dir\\bar.tar.gz", 
-#'   "baz", 
-#'   "quux. quuux.tbz2", 
-#'   "~/quuuux.tar.xz",
-#'   "", 
-#'   ".",
-#'   "..",
-#'   NA_character_
+#'   "somedir/foo.tgz",         # single extension
+#'   "another dir\\bar.tar.gz", # double extension
+#'   "baz",                     # no extension
+#'   "quux. quuux.tbz2",        # single ext, dots in filename
+#'   R.home(),                  # a dir
+#'   "~",                       # another dir
+#'   "~/quuuux.tar.xz",         # a file in a dir
+#'   "",                        # empty 
+#'   ".",                       # current dir
+#'   "..",                      # parent dir
+#'   NA_character_              # missing
 #' )
 #' (decomposed <- decompose_path(x))
 #' recompose_path(decomposed)
 #' @export
 decompose_path <- function(x = dir())
 {
-  x <- assertive::coerce_to(x, "character")
+  original_x <- x <- assertive::coerce_to(x, "character")
   x <- standardize_path(x)
   not_missing <- assertive::is_not_na(x)
   is_dir_x <- assertive::is_dir(x)
-  decomposed_dirs <- cbind(
-    dirname   = x[is_dir_x], 
-    filename  = NA_character_, 
-    extension = NA_character_      
-  )
-  base_x <- basename(x[!is_dir_x])
-  has_an_extension <- stringr::str_detect(base_x, stringr::fixed("."))
   
-  decomposed_files <- cbind(
-    dirname   = dirname(x[!is_dir_x]), 
-    filename  = base_x, 
-    extension = ifelse(not_missing[!is_dir_x], "", NA_character_)
+  basename_x <- ifelse(
+    not_missing,
+    ifelse(is_dir_x, "", basename(x)),
+    NA_character_
   )
-  if(length(base_x) > 0L)
-  {  
-    rownames(decomposed_x) <- x
-    decomposed_x[not_missing & has_an_extension, 2L:3L] <- stringr::str_match(
-      base_x[not_missing & has_an_extension], 
-      "([][\\-^!\"#$%&'\\(\\)+,.;=@_`{}~ [:alnum:]]+?)\\.([[:alnum:].]+)"
-    )[, 2L:3L]
-  }
+  has_extension <- stringr::str_detect(basename_x, stringr::fixed("."))
+    
+  # match one or more letters, numbers and allowed punctuation characters
+  # (the filename without extension)
+  # then a single period
+  # then match one of more letters numbers and periods
+  # (the file extension)
+  rx <- "([][\\-^!\"#$%&'\\(\\)+,.;=@_`{}~ [:alnum:]]+?)\\.([[:alnum:].]+)"
+  split_name <- stringr::str_match(
+    basename_x[not_missing & has_extension], 
+    rx
+  )
+
+  decomposed_x <- cbind(
+    dirname   = ifelse(
+      not_missing,
+      ifelse(is_dir_x, x, dirname(x)), 
+      NA_character_
+    ),
+    filename  = ifelse(
+      not_missing,
+      ifelse(has_extension, split_name[, 2L], basename_x), 
+      NA_character_
+    ), 
+    extension = ifelse(
+      not_missing,
+      ifelse(has_extension, split_name[, 3L], basename_x), 
+      NA_character_
+    )      
+  )
+  
+  rownames(decomposed_x) <- original_x
   structure(decomposed_x, class = c("decomposed_path", "matrix"))
 }
 
@@ -86,7 +105,8 @@ decompose_path <- function(x = dir())
 #' unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
 #' }
 #' @export
-dir_copy <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, recursive = TRUE)
+dir_copy <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, 
+  recursive = TRUE)
 {
   #Retrieve all file and directory names
   filenames <- dir(
@@ -177,7 +197,11 @@ recompose_path.decomposed_path <- function(x, ...)
 standardize_path <- function(x, sep = c("/", "\\"))
 {
   sep <- match.arg(sep)
-  normalizePath(path.expand(x), sep, FALSE)
+  ifelse(
+    is.na(x),
+    NA_character_,
+    normalizePath(path.expand(x), sep, FALSE)
+  )
 }
 
 #' @rdname standardize_path
