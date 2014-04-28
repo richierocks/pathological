@@ -31,15 +31,21 @@
 decompose_path <- function(x = dir())
 {
   x <- assertive::coerce_to(x, "character")
-  base_x <- basename(x)
-  not_missing <- assertive::is_not_na(base_x)
-  has_an_extension <- !(base_x %in% c(".", "..")) &
-    stringr::str_detect(base_x, stringr::fixed("."))
+  x <- standardize_path(x)
+  not_missing <- assertive::is_not_na(x)
+  is_dir_x <- assertive::is_dir(x)
+  decomposed_dirs <- cbind(
+    dirname   = x[is_dir_x], 
+    filename  = NA_character_, 
+    extension = NA_character_      
+  )
+  base_x <- basename(x[!is_dir_x])
+  has_an_extension <- stringr::str_detect(base_x, stringr::fixed("."))
   
-  decomposed_x <- cbind(
-    dirname   = dirname(x), 
+  decomposed_files <- cbind(
+    dirname   = dirname(x[!is_dir_x]), 
     filename  = base_x, 
-    extension = ifelse(not_missing, "", NA_character_)
+    extension = ifelse(not_missing[!is_dir_x], "", NA_character_)
   )
   if(length(base_x) > 0L)
   {  
