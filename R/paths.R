@@ -180,7 +180,14 @@ standardise_path <- standardize_path
 
 #' @rdname decompose_path
 #' @export
-strip_extension <- function(x = dir())
+strip_extension <- function(x = dir(), include_dir = TRUE)
 {
-  decompose_path(x)[, 2L]
+  decomposed <- decompose_path(x)
+  if(include_dir) 
+  {
+    file.path(decomposed[, 1L], decomposed[, 2L])
+  } else
+  {
+    decomposed[, 2L]
+  }
 }
