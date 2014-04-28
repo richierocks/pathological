@@ -2,7 +2,7 @@
 \name{pathological}
 \alias{pathological}
 \alias{pathological-package}
-\title{pathological: utilities for paths and files}
+\title{pathological: utilities for paths, files and directories.}
 \description{
 This package contains utilities for manipulating paths,
 files and directories.
