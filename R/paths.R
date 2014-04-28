@@ -49,11 +49,17 @@ decompose_path <- function(x = dir())
   # then a single period
   # then match one of more letters numbers and periods
   # (the file extension)
-  rx <- "([][\\-^!\"#$%&'\\(\\)+,.;=@_`{}~ [:alnum:]]+?)\\.([[:alnum:].]+)"
+  rx <- "^([][[:alnum:] `!@#$%^&()_=+{},.;'-]+?)\\.([[:alnum:].]+)$"
   split_name <- stringr::str_match(
     basename_x[not_missing & has_extension], 
     rx
   )
+
+  filename_x <- ifelse(not_missing, basename_x, NA_character_)
+  filename_x[not_missing & has_extension] <- split_name[, 2L]
+  extension_x <- ifelse(not_missing, "", NA_character_)
+  extension_x[not_missing & has_extension] <- split_name[, 3L]
+  
 
   decomposed_x <- cbind(
     dirname   = ifelse(
@@ -61,16 +67,8 @@ decompose_path <- function(x = dir())
       ifelse(is_dir_x, x, dirname(x)), 
       NA_character_
     ),
-    filename  = ifelse(
-      not_missing,
-      ifelse(has_extension, split_name[, 2L], basename_x), 
-      NA_character_
-    ), 
-    extension = ifelse(
-      not_missing,
-      ifelse(has_extension, split_name[, 3L], basename_x), 
-      NA_character_
-    )      
+    filename  = filename_x, 
+    extension = extension_x      
   )
   
   rownames(decomposed_x) <- original_x
@@ -191,11 +189,15 @@ recompose_path.decomposed_path <- function(x, ...)
 #' input, but in a standardized form.
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
 #' @examples
-#' standardize_path(c(".", "..", "~", R.home()))
-#' standardize_path(c(".", "..", "~", R.home()), "\\")
+#' standardize_path(c(".", "..", "~", R.home(), NA))
+#' standardize_path(c(".", "..", "~", R.home(), NA), "\\")
 #' @export
 standardize_path <- function(x, sep = c("/", "\\"))
 {
+  if(assertive::is_empty(x))
+  {
+    return(character())
+  }
   sep <- match.arg(sep)
   ifelse(
     is.na(x),
