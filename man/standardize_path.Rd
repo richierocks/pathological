@@ -3,9 +3,9 @@
 \alias{standardize_path}
 \title{Standardize paths}
 \usage{
-standardize_path(x, sep = c("/", "\\\\"))
+standardize_path(x = dir(), sep = c("/", "\\\\"))
 
-standardise_path(x, sep = c("/", "\\\\"))
+standardise_path(x = dir(), sep = c("/", "\\\\"))
 }
 \arguments{
   \item{x}{A character vector of paths.}
@@ -22,8 +22,8 @@ Standardi[sz]e path names so that they can be more easily
 compared.
 }
 \examples{
-standardize_path(c("~", R.home()))
-standardize_path(c("~", R.home()), "\\\\")
+standardize_path(c(".", "..", "~", R.home(), NA))
+standardize_path(c(".", "..", "~", R.home(), NA), "\\\\")
 }
 \seealso{
 \code{\link[base]{normalizePath}},
