@@ -63,19 +63,18 @@ decompose_path <- function(x = dir())
   extension_x <- ifelse(not_missing, "", NA_character_)
   extension_x[not_missing & has_extension] <- split_name[, 3L]
   
-
-  decomposed_x <- cbind(
+  decomposed_x <- data.frame(
     dirname   = ifelse(
       not_missing,
       ifelse(is_dir_x, x, dirname(x)), 
       NA_character_
     ),
     filename  = filename_x, 
-    extension = extension_x      
+    extension = extension_x,
+    row.names = original_x
   )
   
-  rownames(decomposed_x) <- original_x
-  structure(decomposed_x, class = c("decomposed_path", "matrix"))
+  structure(decomposed_x, class = c("decomposed_path", "data.frame"))
 }
 
 #' Copy the contents of a directory
