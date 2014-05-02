@@ -175,13 +175,26 @@ recompose_path.decomposed_path <- function(x, ...)
 {
   not_missing <- assertive::is_not_na(x[, "filename"])
   has_an_extension <- nzchar(x[not_missing, "extension"])
+  has_dirpath <- nzchar(x[not_missing, "dirname"])
   path <- rep.int(NA_character_, nrow(x))
   base_x <- ifelse(
     has_an_extension,
     paste(x[not_missing, "filename"], x[not_missing, "extension"], sep = "."),
     x[not_missing, "filename"]
   )
-  path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
+#  path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
+  #########
+  # Patch #
+  #########
+  path[not_missing] <- ifelse(
+        has_an_extension,
+        file.path(x[not_missing, "dirname"], base_x),
+        ifelse(
+            has_dirpath,
+            x[not_missing, "dirname"],
+            ""
+        )
+    )
   path
 }
 
