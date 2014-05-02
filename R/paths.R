@@ -37,6 +37,8 @@
 #' @export
 decompose_path <- function(x = dir())
 {
+   
+  is_empty <- assertive::is_empty(x) 
   original_x <- x <- assertive::coerce_to(x, "character")
   x <- standardize_path(x)
   not_missing <- assertive::is_not_na(x)
@@ -61,19 +63,22 @@ decompose_path <- function(x = dir())
   )
 
   filename_x <- ifelse(not_missing, basename_x, NA_character_)
-  filename_x[not_missing & has_extension] <- split_name[, 2L]
+  if (!is_empty) {
+    filename_x[not_missing & has_extension] <- split_name[, 2L]
+  }
   extension_x <- ifelse(not_missing, "", NA_character_)
-  extension_x[not_missing & has_extension] <- split_name[, 3L]
+  if (!is_empty) {
+    extension_x[not_missing & has_extension] <- split_name[, 3L]
+  }
   
-
   decomposed_x <- cbind(
     dirname   = ifelse(
       not_missing,
       ifelse(is_dir_x, x, dirname(x)), 
       NA_character_
     ),
-    filename  = filename_x, 
-    extension = extension_x      
+    filename  = as.character(filename_x), 
+    extension = as.character(extension_x)      
   )
   
   rownames(decomposed_x) <- original_x
@@ -106,11 +111,88 @@ decompose_path <- function(x = dir())
 #' #Cleanup
 #' unlink(file.path(tempdir(), "etc"), recursive = TRUE)
 #' unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
+#' 
+#' #Copy subdirs by default
+#' dir_copy_old(R.home("etc"), file.path(tempdir(), "etc"))
+#' #Just copy the top level
+#' dir_copy_old(R.home("etc"), file.path(tempdir(), "etc2"), recursive = FALSE)
+#' #Now copy deeper levels, without overwriting.
+#' dir_copy_old(R.home("etc"), file.path(tempdir(), "etc2"), overwrite = FALSE)
+#' #Cleanup
+#' unlink(file.path(tempdir(), "etc"), recursive = TRUE)
+#' unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
 #' }
 #' @export
 dir_copy <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, 
   recursive = TRUE)
 {
+    .file.copy <- function(source_dir, target_dir, overwrite, recursive) {
+        if (!file.exists(target_dir)) {
+            dir.create(target_dir, showWarnings=FALSE, recursive=TRUE)
+        }
+
+        out <- withRestarts(
+            {
+                wd_0 <- setwd(source_dir)     
+                from_this <- "."
+                if (!recursive) {
+                    from_this <- list.files(from_this)
+                }     
+                tmp <- sapply(from_this, file.copy, to=target_dir, 
+                    overwrite=overwrite, recursive=recursive)  
+                if (!recursive) {
+                    ## Directory candidates //
+                    dir_cands <- names(tmp[!tmp])
+                    if (length(dir_cands)) {
+                        dirs <- dir_cands[idx <- which(file.info(dir_cands)$isdir)]
+                        if (length(dirs)) {
+                        ## Create empty directories //
+                            lapply(file.path(target_dir, dirs), 
+                                dir.create, showWarnings=FALSE)
+                            tmp[dir_cands[idx]] <- TRUE
+                        }
+                    }
+                }
+                setwd(wd_0)
+                if (!all(tmp)) {
+                    warning(
+                        "The files ",
+                        toString(sQuote(names(tmp[!tmp]))),
+                        " were not copied successfully."
+                    )
+                }
+                out <- list(from=source_dir, to=target_dir, elements=tmp)
+            },
+            warning=function(cond) {
+                setwd(wd_0)
+                warning(cond)
+                invokeRestart("muffleWarning")
+            },
+            error=function(cond) {
+                setwd(wd_0)
+                stop(cond)
+            }
+        )
+        out 
+    }            
+    out <- mapply(
+      .file.copy,
+      source_dir=source_dir, 
+      target_dir=target_dir,
+      overwrite=overwrite, 
+      recursive=recursive,
+      SIMPLIFY=FALSE,
+      USE.NAMES=FALSE
+    )
+    invisible(out)
+}
+
+#' @rdname dir_copy
+#' @export
+dir_copy_old <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, 
+  recursive = TRUE)
+{
+
   #Retrieve all file and directory names
   filenames <- dir(
     source_dir,
@@ -145,8 +227,8 @@ dir_copy <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
   if(!all(ok))
   {
     warning(
-      "The files ", 
-      toString(sQuote(filenames[!ok])), 
+      "The files ",
+      toString(sQuote(filenames[!ok])),
       " were not copied successfully."
     )
   }
@@ -171,7 +253,7 @@ recompose_path <- function(x, ...)
 #' @rdname decompose_path
 #' @method recompose_path decomposed_path
 #' @export
-recompose_path.decomposed_path <- function(x, ...)
+recompose_path.decomposed_path <- function(x, use_shortform=FALSE, ...)
 {
   not_missing <- assertive::is_not_na(x[, "filename"])
   has_an_extension <- nzchar(x[not_missing, "extension"])
@@ -182,12 +264,14 @@ recompose_path.decomposed_path <- function(x, ...)
     paste(x[not_missing, "filename"], x[not_missing, "extension"], sep = "."),
     x[not_missing, "filename"]
   )
+  has_base <- nzchar(base_x)
 #  path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
+    
   #########
   # Patch #
   #########
   path[not_missing] <- ifelse(
-        has_an_extension,
+        has_base,
         file.path(x[not_missing, "dirname"], base_x),
         ifelse(
             has_dirpath,
@@ -195,6 +279,13 @@ recompose_path.decomposed_path <- function(x, ...)
             ""
         )
     )
+    
+    if (use_shortform) {
+        path[which(path == getwd())] <- "."
+        path[which(path == dirname(getwd()))] <- ".."
+        path <- gsub(paste0("^", getwd(), "/"), "", path)
+        path <- gsub(paste0("^", normalizePath(path.expand("~"), winslash="/"), "/"), "~/", path)
+    }
   path
 }
 

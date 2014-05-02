@@ -16,16 +16,22 @@ test_that(
       "..",
       NA_character_
     )
-    expected <- matrix(
+    expected <- structure(matrix(
       c(
-        "somedir", "another dir", ".", ".", dirname("~/ "), ".", ".", ".", NA,
-        "foo", "bar", "baz", "quux. quuux", "quuuux", "", ".", "..", NA,
+        file.path(getwd(), "somedir"), file.path(getwd(), "another dir"), 
+        getwd(), getwd(), dirname("~/ "), "", 
+        getwd(), dirname(getwd()), NA,
+        "foo", "bar", "baz", "quux. quuux", "quuuux", "", "", "", NA,
         "tgz", "tar.gz", "", "tbz2", "tar.xz", "", "", "", NA
       ),
       ncol     = 3,
       dimnames = list(x, c("dirname", "filename", "extension"))
+    ), class = c("decomposed_path", "matrix"))
+    
+    expect_equal(
+        res <- decompose_path(x), 
+        expected
     )
-    expect_equal(decompose_path(x), expected)
   }
 )
 
@@ -34,11 +40,11 @@ test_that(
   {
     x <- character()
     x2 <- NULL
-    expected <- matrix(
+    expected <- structure(matrix(
       character(),
       ncol     = 3,
       dimnames = list(x, c("dirname", "filename", "extension"))
-    )
+    ), class = c("decomposed_path", "matrix"))
     expect_equal(decompose_path(x), expected)
     expect_warning(answer <- decompose_path(x2), "Coercing .+ to class 'character'\\.")
     expect_equal(answer, expected)
@@ -59,15 +65,21 @@ test_that(
         "kitties\\hipster kitty.pdf"
       )
     )
-    expected <- matrix(
+    expected <- structure(matrix(
       c(
-        "catz", "moar cats", "catz/catz in loft", "catz/musical catz", ".", "kitties", "kitties",
+        file.path(getwd(), "catz"), 
+        file.path(getwd(), "moar cats"), 
+        file.path(getwd(), "catz/catz in loft"), 
+        file.path(getwd(), "catz/musical catz"), getwd(), 
+        file.path(getwd(), "kitties"), 
+        file.path(getwd(), "kitties"),
         "lolcat", "nyan cat", "ceiling cat", "keyboard cat", "catbread", "bonsai kitten", "hipster kitty",
         "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
       ),
       ncol     = 3,
       dimnames = list(x, c("dirname", "filename", "extension"))
-    )    
+    ), class = c("decomposed_path", "matrix"))
+    
     expect_warning(answer <- decompose_path(x), "Coercing .+ to class 'character'\\.")
     expect_equal(answer, expected)
   }
