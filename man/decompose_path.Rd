@@ -3,6 +3,7 @@
 \alias{get_extension}
 \alias{recompose_path}
 \alias{recompose_path.decomposed_path}
+\alias{replace_extension}
 \alias{strip_extension}
 \title{Split a path into its components}
 \usage{
@@ -14,11 +15,19 @@ recompose_path(x, ...)
 
 \method{recompose_path}{decomposed_path}(x, ...)
 
-strip_extension(x = dir())
+replace_extension(x = dir(), new_extension)
+
+strip_extension(x = dir(), include_dir = TRUE)
 }
 \arguments{
   \item{x}{A character vector of file paths. Defaults to
   files in the current directory.}
+
+  \item{include_dir}{Should the directory part of the path
+  be included?}
+
+  \item{new_extension}{A new extension to replace the
+  existing ones.}
 
   \item{...}{Not currently used.}
 }
@@ -41,17 +50,22 @@ shortcuts to the second and third parts of the filename.
 }
 \examples{
 x <- c(
-  "somedir/foo.tgz",
-  "another dir\\\\bar.tar.gz",
-  "baz",
-  "quux. quuux.tbz2",
-  "~/quuuux.tar.xz",
-  "",
-  ".",
-  "..",
-  NA_character_
+  "somedir/foo.tgz",         # single extension
+  "another dir\\\\bar.tar.gz", # double extension
+  "baz",                     # no extension
+  "quux. quuux.tbz2",        # single ext, dots in filename
+  R.home(),                  # a dir
+  "~",                       # another dir
+  "~/quuuux.tar.xz",         # a file in a dir
+  "",                        # empty
+  ".",                       # current dir
+  "..",                      # parent dir
+  NA_character_              # missing
 )
 (decomposed <- decompose_path(x))
+get_extension(x)
+strip_extension(x)
+strip_extension(x, FALSE)
 recompose_path(decomposed)
 }
 

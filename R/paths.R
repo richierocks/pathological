@@ -7,6 +7,8 @@
 #' \code{decompose_path} and returns complete paths.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
+#' @param include_dir Should the directory part of the path be included?
+#' @param new_extension A new extension to replace the existing ones.
 #' @param ... Not currently used.
 #' @return \code{decompose_path} returns a character matrix with three 
 #' columns named \code{"dirname"}, \code{"filename"} and \code{"extension"}.
@@ -195,6 +197,13 @@ recompose_path.decomposed_path <- function(x, ...)
   )
   path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
   path
+}
+
+#' @rdname decompose_path
+#' @export
+replace_extension <- function(x = dir(), new_extension)
+{
+  paste(strip_extension(x), new_extension, sep = ".")
 }
 
 #' Standardize paths
