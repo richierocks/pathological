@@ -186,7 +186,7 @@ recompose_path <- function(x, ...)
 recompose_path.decomposed_path <- function(x, ...)
 {
   not_missing <- assertive::is_not_na(x[, "filename"])
-  has_an_extension <- nzchar(x[not_missing, "extension"])
+  has_an_extension <- nzchar(as.character(x[not_missing, "extension"]))
   path <- rep.int(NA_character_, nrow(x))
   base_x <- ifelse(
     has_an_extension,
