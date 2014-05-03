@@ -6,7 +6,15 @@ test_that(
   "decompose_path works with a zero length input",
   {
     x <- character()
-    expected <- data.frame(dirname = x, filename = x, extension = x)
+    expected <- structure(
+      data.frame(
+        dirname = character(), 
+        filename = character(), 
+        extension = character(),
+        stringsAsFactors = FALSE
+      ),
+      class = c("decomposed_path", "data.frame")
+    )
     expect_equal(decompose_path(x), expected)
   }
 )
