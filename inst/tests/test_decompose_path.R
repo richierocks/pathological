@@ -6,6 +6,7 @@ test_that(
   "decompose_path works with a zero length input",
   {
     x <- character()
+    x2 <- NULL
     expected <- structure(
       data.frame(
         dirname = character(), 
@@ -16,6 +17,7 @@ test_that(
       class = c("decomposed_path", "data.frame")
     )
     expect_equal(decompose_path(x), expected)
+    expect_equal(decompose_path(x2), expected)
   }
 )
 
@@ -64,22 +66,6 @@ test_that(
     )
     
     expect_equal(decompose_path(x), expected)
-  }
-)
-
-test_that(
-  "decompose_path returns a zero row matrix with an empty character vector or NULL as an input.",
-  {
-    x <- character()
-    x2 <- NULL
-    expected <- matrix(
-      character(),
-      ncol     = 3,
-      dimnames = list(x, c("dirname", "filename", "extension"))
-    )
-    expect_equal(decompose_path(x), expected)
-    expect_warning(answer <- decompose_path(x2), "Coercing .+ to class 'character'\\.")
-    expect_equal(answer, expected)
   }
 )
 
