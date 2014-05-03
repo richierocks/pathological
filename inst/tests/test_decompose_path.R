@@ -3,6 +3,15 @@ library(assertive)
 library(stringr)
 
 test_that(
+  "decompose_path works with a zero length input",
+  {
+    x <- character()
+    expected <- data.frame(dirname = x, filename = x, extension = x)
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
   "decompose_path handles filenames with directories, a variety of file extensions, and dots in filenames.",
   {
     x <- c(
