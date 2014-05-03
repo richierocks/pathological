@@ -38,10 +38,14 @@ decompose_path <- function(x = dir())
   if(assertive::is_empty(x))
   {
     return(
-      data.frame(
-        dirname = character(), 
-        filename = character(), 
-        extension = character()
+      structure(
+        data.frame(
+          dirname = character(), 
+          filename = character(), 
+          extension = character(),
+          stringsAsFactors = FALSE
+        ),
+        class = c("decomposed_path", "data.frame")
       )
     )
   }
@@ -81,7 +85,8 @@ decompose_path <- function(x = dir())
     ),
     filename  = filename_x, 
     extension = extension_x,
-    row.names = original_x
+    row.names = original_x,
+    stringsAsFactors = FALSE
   )
   
   structure(decomposed_x, class = c("decomposed_path", "data.frame"))
