@@ -70,27 +70,41 @@ test_that(
 )
 
 test_that(
-  "decompose_path returns a zero row matrix with an empty character vector or NULL as an input.",
+  "decompose_path works with a factor input.",
   {
     x <- factor(
       c(
-        "catz/lolcat.gif", 
-        "moar cats/nyan cat.jpeg", 
-        "catz\\catz in loft\\ceiling cat.jpg", 
-        "catz/musical catz\\keyboard cat.bmp", 
-        "catbread.png", 
-        "kitties\\bonsai kitten.tiff", 
+        "catz/lolcat.gif",
+        "moar cats/nyan cat.jpeg",
+        "catz\\catz in loft\\ceiling cat.jpg",
+        "catz/musical catz\\keyboard cat.bmp",
+        "catbread.png",
+        "kitties\\bonsai kitten.tiff",
         "kitties\\hipster kitty.pdf"
       )
     )
-    expected <- matrix(
-      c(
-        "catz", "moar cats", "catz/catz in loft", "catz/musical catz", ".", "kitties", "kitties",
-        "lolcat", "nyan cat", "ceiling cat", "keyboard cat", "catbread", "bonsai kitten", "hipster kitty",
-        "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
-      ),
-      ncol     = 3,
-      dimnames = list(x, c("dirname", "filename", "extension"))
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname = c(
+          file.path(pwd, "catz"),
+          file.path(pwd, "moar cats"),
+          file.path(pwd, "catz/catz in loft"),
+          file.path(pwd, "catz/musical catz"), getwd(),
+          file.path(pwd, "kitties"),
+          file.path(pwd, "kitties")
+        ),
+        filename = c(
+          "lolcat", "nyan cat", "ceiling cat", "keyboard cat", 
+          "catbread", "bonsai kitten", "hipster kitty"
+        ),
+        extension = c(
+          "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
+        ),
+        row.names = x,
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "matrix")
     )    
     expect_warning(answer <- decompose_path(x), "Coercing .+ to class 'character'\\.")
     expect_equal(answer, expected)
