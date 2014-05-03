@@ -15,25 +15,46 @@ test_that(
   "decompose_path handles filenames with directories, a variety of file extensions, and dots in filenames.",
   {
     x <- c(
-      "somedir/foo.tgz", 
-      "another dir\\bar.tar.gz", 
-      "baz", 
-      "quux. quuux.tbz2", 
-      "~/quuuux.tar.xz",
-      "", 
-      ".",
-      "..",
-      NA_character_
+      "somedir/foo.tgz",         # single extension
+      "another dir\\bar.tar.gz", # double extension
+      "baz",                     # no extension
+      "quux. quuux.tbz2",        # single ext, dots in filename
+      R.home(),                  # a dir
+      "~",                       # another dir
+      "~/quuuux.tar.xz",         # a file in a dir
+      "",                        # empty 
+      ".",                       # current dir
+      "..",                      # parent dir
+      NA_character_              # missing
     )
-    expected <- matrix(
-      c(
-        "somedir", "another dir", ".", ".", dirname("~/ "), ".", ".", ".", NA,
-        "foo", "bar", "baz", "quux. quuux", "quuuux", "", ".", "..", NA,
-        "tgz", "tar.gz", "", "tbz2", "tar.xz", "", "", "", NA
-      ),
-      ncol     = 3,
-      dimnames = list(x, c("dirname", "filename", "extension"))
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname = c(
+          file.path(pwd, "somedir"), 
+          file.path(pwd, "another dir"),
+          pwd, 
+          pwd, 
+          normalizePath(R.home(), "/"),
+          path.expand("~"),
+          path.expand("~"), 
+          "",
+          pwd, 
+          dirname(pwd),
+          NA
+        ),
+        filename = c(
+          "foo", "bar", "baz", "quux. quuux", "", "", "quuuux", "", "", "", NA
+        ),
+        extension = c(
+          "tgz", "tar.gz", "", "tbz2", "", "", "tar.xz", "", "", "", NA
+        ),
+        row.names = ifelse(is.na(x), "<NA>", x), 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
     )
+    
     expect_equal(decompose_path(x), expected)
   }
 )
