@@ -85,7 +85,7 @@ decompose_path <- function(x = dir())
     ),
     filename  = filename_x, 
     extension = extension_x,
-    row.names = original_x,
+    row.names = ifelse(is.na(original_x), "<NA>", original_x),
     stringsAsFactors = FALSE
   )
   
