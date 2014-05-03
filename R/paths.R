@@ -35,6 +35,16 @@
 #' @export
 decompose_path <- function(x = dir())
 {
+  if(assertive::is_empty(x))
+  {
+    return(
+      data.frame(
+        dirname = character(), 
+        filename = character(), 
+        extension = character()
+      )
+    )
+  }
   original_x <- x <- assertive::coerce_to(x, "character")
   x <- standardize_path(x)
   not_missing <- assertive::is_not_na(x)
