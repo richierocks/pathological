@@ -5,6 +5,35 @@ library(stringr)
 test_that(
   "decompose_path works with a zero length input",
   {
+<<<<<<< HEAD
+    x <- c(
+      "somedir/foo.tgz", 
+      "another dir\\bar.tar.gz", 
+      "baz", 
+      "quux. quuux.tbz2", 
+      "~/quuuux.tar.xz",
+      "", 
+      ".",
+      "..",
+      NA_character_
+    )
+    expected <- structure(matrix(
+      c(
+        file.path(getwd(), "somedir"), file.path(getwd(), "another dir"), 
+        getwd(), getwd(), dirname("~/ "), "", 
+        getwd(), dirname(getwd()), NA,
+        "foo", "bar", "baz", "quux. quuux", "quuuux", "", "", "", NA,
+        "tgz", "tar.gz", "", "tbz2", "tar.xz", "", "", "", NA
+      ),
+      ncol     = 3,
+      dimnames = list(x, c("dirname", "filename", "extension"))
+    ), class = c("decomposed_path", "matrix"))
+    
+    expect_equal(
+        res <- decompose_path(x), 
+        expected
+    )
+=======
     x <- character()
     x2 <- NULL
     expected <- structure(
@@ -18,12 +47,22 @@ test_that(
     )
     expect_equal(decompose_path(x), expected)
     expect_equal(decompose_path(x2), expected)
+>>>>>>> master
   }
 )
 
 test_that(
   "decompose_path handles filenames with directories, a variety of file extensions, and dots in filenames.",
   {
+<<<<<<< HEAD
+    x <- character()
+    x2 <- NULL
+    expected <- structure(matrix(
+      character(),
+      ncol     = 3,
+      dimnames = list(x, c("dirname", "filename", "extension"))
+    ), class = c("decomposed_path", "matrix"))
+=======
     x <- c(
       "somedir/foo.tgz",         # single extension
       "another dir\\bar.tar.gz", # double extension
@@ -65,6 +104,7 @@ test_that(
       class = c("decomposed_path", "data.frame")
     )
     
+>>>>>>> master
     expect_equal(decompose_path(x), expected)
   }
 )
@@ -83,6 +123,23 @@ test_that(
         "kitties\\hipster kitty.pdf"
       )
     )
+<<<<<<< HEAD
+    expected <- structure(matrix(
+      c(
+        file.path(getwd(), "catz"), 
+        file.path(getwd(), "moar cats"), 
+        file.path(getwd(), "catz/catz in loft"), 
+        file.path(getwd(), "catz/musical catz"), getwd(), 
+        file.path(getwd(), "kitties"), 
+        file.path(getwd(), "kitties"),
+        "lolcat", "nyan cat", "ceiling cat", "keyboard cat", "catbread", "bonsai kitten", "hipster kitty",
+        "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
+      ),
+      ncol     = 3,
+      dimnames = list(x, c("dirname", "filename", "extension"))
+    ), class = c("decomposed_path", "matrix"))
+    
+=======
     pwd <- getwd()
     expected <- structure(
       data.frame(
@@ -106,6 +163,7 @@ test_that(
       ), 
       class = c("decomposed_path", "matrix")
     )    
+>>>>>>> master
     expect_warning(answer <- decompose_path(x), "Coercing .+ to class 'character'\\.")
     expect_equal(answer, expected)
   }
