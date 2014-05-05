@@ -20,7 +20,7 @@ carefulCleanup <- function(x, pattern=basename(tempdir())) {
 
 ## Example content //
 path 		<- file.path(tempdir(), "dir_copy")
-target_dir 	<-  file.path("from")
+target_dir 	<- file.path("from")
 from_dirs 	<- file.path(path, "from", paste0(letters, 1:(3*24)))
 to 			<- file.path(path, "to")
 
