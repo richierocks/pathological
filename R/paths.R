@@ -37,8 +37,20 @@
 #' @export
 decompose_path <- function(x = dir())
 {
-   
-  is_empty <- assertive::is_empty(x) 
+  if(assertive::is_empty(x))
+  {
+    return(
+      structure(
+        data.frame(
+          dirname = character(), 
+          filename = character(), 
+          extension = character(),
+          stringsAsFactors = FALSE
+        ),
+        class = c("decomposed_path", "data.frame")
+      )
+    )
+  }
   original_x <- x <- assertive::coerce_to(x, "character")
   x <- standardize_path(x)
   not_missing <- assertive::is_not_na(x)
@@ -71,18 +83,19 @@ decompose_path <- function(x = dir())
     extension_x[not_missing & has_extension] <- split_name[, 3L]
   }
   
-  decomposed_x <- cbind(
+  decomposed_x <- data.frame(
     dirname   = ifelse(
       not_missing,
       ifelse(is_dir_x, x, dirname(x)), 
       NA_character_
     ),
-    filename  = as.character(filename_x), 
-    extension = as.character(extension_x)      
+    filename  = filename_x, 
+    extension = extension_x,
+    row.names = ifelse(is.na(original_x), "<NA>", original_x),
+    stringsAsFactors = FALSE
   )
   
-  rownames(decomposed_x) <- original_x
-  structure(decomposed_x, class = c("decomposed_path", "matrix"))
+  structure(decomposed_x, class = c("decomposed_path", "data.frame"))
 }
 
 #' @rdname dir_copy
@@ -178,8 +191,8 @@ recompose_path_rappster <- function(x, ...)
 recompose_path_rappster.decomposed_path <- function(x, use_shortform=FALSE, ...)
 {
   not_missing <- assertive::is_not_na(x[, "filename"])
-  has_an_extension <- nzchar(x[not_missing, "extension"])
   has_dirpath <- nzchar(x[not_missing, "dirname"])
+  has_an_extension <- nzchar(as.character(x[not_missing, "extension"]))
   path <- rep.int(NA_character_, nrow(x))
   base_x <- ifelse(
     has_an_extension,
