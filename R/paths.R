@@ -263,6 +263,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
     return(character())
   }
   sep <- match.arg(sep)
+  x <- assertive::coerce_to(x, "character")
   ifelse(
     is.na(x),
     NA_character_,
