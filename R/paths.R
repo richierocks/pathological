@@ -1,3 +1,35 @@
+#' Make a path suitable for cygwin
+#' 
+#' By default, cygwin complains about standard paths.  This function converts 
+#' paths to a form that cygwin likes.
+#' @param x A character vector of file paths. Defaults to files in the 
+#' current directory.
+#' @return A character vector of the cygwinified inputs.
+#' @seealso \code{standardize_path}
+#' @examples
+#' cygwinify_path(c("~", "\\\\some/network/drive"))
+#' @export
+cygwinify_path <- function(x)
+{
+  if(!assertive::is_windows())
+  {
+    warning(
+      "This function is expecting to be run under windows, but the OS is ", 
+      .Platform$OS.type
+    )
+  }
+  cygwinified_x <- standardize_path(x)
+  colon <- stringr::fixed(":")
+  has_drive <- stringr::str_detect(cygwinified_x, colon)
+  split_path <- stringr::str_split_fixed(cygwinified_x[has_drive], colon, 2L)
+  cygwinified_x[has_drive] <- paste0(
+    "/cygdrive/",
+    split_path[, 1L],
+    split_path[, 2L]
+  )
+  cygwinified_x
+}
+
 #' Split a path into its components
 #' 
 #' \code{decompose_path} splits a path into the directory name, filename 
