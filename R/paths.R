@@ -69,15 +69,21 @@ decompose_path <- function(x = dir())
   # then match one of more letters numbers and periods
   # (the file extension)
   rx <- "^([][[:alnum:] `!@#$%^&()_=+{},.;'-]+?)\\.([[:alnum:].]+)$"
-  split_name <- stringr::str_match(
-    basename_x[not_missing & has_extension], 
-    rx
-  )
-
+  
   filename_x <- ifelse(not_missing, basename_x, NA_character_)
-  filename_x[not_missing & has_extension] <- split_name[, 2L]
   extension_x <- ifelse(not_missing, "", NA_character_)
-  extension_x[not_missing & has_extension] <- split_name[, 3L]
+  not_missing_and_has_extension <- not_missing & has_extension
+  
+  if(any(not_missing_and_has_extension))
+  {
+    split_name <- stringr::str_match(
+      basename_x[not_missing_and_has_extension], 
+      rx
+    )
+  
+    filename_x[not_missing_and_has_extension] <- split_name[, 2L]
+    extension_x[not_missing_and_has_extension] <- split_name[, 3L]
+  }
   
   decomposed_x <- data.frame(
     dirname   = ifelse(
