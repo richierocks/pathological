@@ -5,7 +5,7 @@ Version: 0.0-1
 Date: 2014-05-12
 Author: Richard Cotton
 Maintainer: Richard Cotton <richierocks@gmail.com>
-Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"), 
+Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
     email = "richierocks@gmail.com"), person("Janko", "Thyson", role = "ctb"))
 Description: Utilities for paths, files and directories.
 Depends:
@@ -18,3 +18,4 @@ Suggests:
     testthat
 License: Unlimited
 LazyLoad: yes
+Roxygen: list(wrap = FALSE)
