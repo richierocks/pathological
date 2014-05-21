@@ -235,7 +235,7 @@ os_path <- function(sep = c("/", "\\"))
 #' @param component \code{"home"} for the root of the R installation directory,
 #' or the name of a subdirectory.
 #' @param ... Further subdirectories passed to \code{file.path}.
-#' @param sep sep String separator between directory levels in the output.
+#' @param sep String separator between directory levels in the output.
 #' @return A character vector of paths inside the R installation dir.
 #' @seealso \code{\link[base]{R.home}}
 #' @examples
