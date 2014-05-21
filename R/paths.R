@@ -213,6 +213,26 @@ get_extension <- function(x = dir())
   decompose_path(x)[, 3L]
 }
 
+#' The R home directory
+#' 
+#' Return a path to a file in the R home directory.  A vectorized, standardized
+#' version of \code{R.home}.
+#' @param component \code{"home"} for the root of the R installation directory,
+#' or the name of a subdirectory.
+#' @param ... Further subdirectories passed to \code{file.path}.
+#' @param sep sep String separator between directory levels in the output.
+#' @return A character vector of paths inside the R installation dir.
+#' @seealso \code{\link[base]{R.home}}
+#' @examples
+#' r_home()
+#' r_home("etc", "Rprofile.site")
+#' r_home(c("home", "bin", "share"), c("", "i386", "zoneinfo"))
+#' @export
+r_home <- function(component = "home", ..., sep = c("/", "\\"))
+{
+  standardize_path(file.path(Vectorize(R.home)(component), ...), sep = sep)
+}
+
 #' @rdname decompose_path
 #' @export
 recompose_path <- function(x, ...)
