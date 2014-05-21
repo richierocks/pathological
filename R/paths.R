@@ -284,11 +284,23 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   }
   sep <- match.arg(sep)
   x <- assertive::coerce_to(x, "character")
-  ifelse(
+  
+  # standardize = expand and normalize
+  std_x <- ifelse(
     is.na(x),
     NA_character_,
     normalizePath(path.expand(x), sep, FALSE)
   )
+  
+  # strip trailing slashes
+  nch <- nchar(std_x)
+  has_trailing_slash <- substring(std_x, nch, nch) == sep
+  std_x[has_trailing_slash] <- substring(
+    std_x[has_trailing_slash], 
+    1L, 
+    nch[has_trailing_slash] - 1L
+  )
+  std_x
 }
 
 #' @rdname standardize_path
