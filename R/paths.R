@@ -325,6 +325,24 @@ strip_extension <- function(x = dir(), include_dir = TRUE)
   }
 }
 
+#' Find paths to executables
+#' 
+#' Wrapper to \code{Sys.which}, that returns standardized paths.
+#' @param x A character vector of executables.
+#' @param sep String separator between directory levels in the output.
+#' @return A character vector of paths to those executables, or \code{NA} if it 
+#' doesn't exist. (This behaviour for missing executables differs from 
+#' \code{Sys.which}.)
+#' @seealso \code{\link[base]{Sys.which}}
+#' @examples
+#' sys_which(c("make", "gcc")) # tools for running Rcpp
+#' @export
+sys_which <- function(x, sep = c("/", "\\"))
+{
+  std_x <- standardize_path(Sys.which(x), sep = sep)
+  ifelse(nzchar(std_x), std_x, NA_character_)
+}
+
 #' Find a file in a package
 #' 
 #' Wrapper to \code{system.file} that returns standardized paths.
@@ -367,7 +385,7 @@ system_file <- function(..., package = "base", library_location = NULL,
 
 #' Create a temp file/dir
 #' 
-#' Wrappers to \code{tempdir} and \code{tempfile} that return standardized 
+#' Wrappers to \code{tempdir} and \code{tempfile} that returns standardized 
 #' paths.
 #' @param ... Passed to \code{tempfile}
 #' @param sep String separator between directory levels in the output.
