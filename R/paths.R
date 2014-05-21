@@ -9,7 +9,7 @@
 #' @examples
 #' cygwinify_path(c("~", "\\\\some/network/drive"))
 #' @export
-cygwinify_path <- function(x)
+cygwinify_path <- function(x = dir())
 {
   if(!assertive::is_windows())
   {
