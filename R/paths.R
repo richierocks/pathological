@@ -313,6 +313,46 @@ strip_extension <- function(x = dir(), include_dir = TRUE)
   }
 }
 
+#' Find a file in a package
+#' 
+#' Wrapper to \code{system.file} that returns standardized paths.
+#' @param ... Character vectors specifying subdirectories and files within some 
+#' package. The default, none, returns the root of the package. Wildcards are 
+#' not supported.
+#' @param package A string with the name of a single package. An error occurs if 
+#' more than one package name is given.
+#' @param library_location a character vector with path names of R libraries. 
+#' See the ‘Details’ section of \code{\link[base]{system.file}} for the meaning 
+#' of the default value of NULL.
+#' @param must_work If \code{TRUE}, an error is given if there are no matching 
+#' files.
+#' @return A character vector of positive length, containing the file paths that 
+#' matched \code{...}, or the empty string, \code{""}, if none matched (unless 
+#' \code{mustWork = TRUE}).
+#' If matching the root of a package, there is no trailing separator.
+#' system.file() with no arguments gives the root of the base package.
+#' @seealso \code{\link[base]{system.file}}
+#' @examples
+#' # Examples taken from ?system.file
+#' system_file()                  # The root of the 'base' package
+#' system_file(package = "stats") # The root of package 'stats'
+#' system_file("INDEX")
+#' system_file("help", "AnIndex", package = "splines")
+#' @export
+system_file <- function(..., package = "base", library_location = NULL, 
+  must_work = FALSE, sep = c("/", "\\"))
+{
+  standardize_path(
+    system.file(
+      ..., 
+      package = package, 
+      lib.loc = library_location, 
+      mustWork = must_work
+    ), 
+    sep = sep
+  )
+}
+
 #' Create a temp file/dir
 #' 
 #' Wrappers to \code{tempdir} and \code{tempfile} that return standardized 
