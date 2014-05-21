@@ -268,7 +268,7 @@ replace_extension <- function(x = dir(), new_extension)
 #' 
 #' Standardi[sz]e path names so that they can be more easily compared.
 #' @param x A character vector of paths.
-#' @param sep String separator betwen directory levels in the output.
+#' @param sep String separator between directory levels in the output.
 #' @return A character vector of paths, pointing to the same locations as the
 #' input, but in a standardized form.
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
