@@ -213,6 +213,21 @@ get_extension <- function(x = dir())
   decompose_path(x)[, 3L]
 }
 
+#' The OS path 
+#' 
+#' The locations in the operating system \code{PATH} environment variable.
+#' @param sep String separator between directory levels in the output.
+#' @return A character vector of paths.
+#' @seealso \code{\link[base]{Sys.getenv}}
+#' @examples
+#' os_path()
+#' @export
+os_path <- function(sep = c("/", "\\"))
+{
+  path <- strsplit(Sys.getenv("PATH"), ";")[[1]]
+  standardize_path(path, sep = sep)  
+}
+
 #' The R home directory
 #' 
 #' Return a path to a file in the R home directory.  A vectorized, standardized
