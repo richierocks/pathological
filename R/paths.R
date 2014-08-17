@@ -206,6 +206,24 @@ dir_copy <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
   invisible(ok)
 }
 
+#' On Windows, return the drive of the path
+#' 
+#' On a Windows system, this returns the drive letter of the path followed by a 
+#' colon.  On other systems, it returns a single forward slash.
+#' @param x A character vector of file paths. Defaults to the current directory.
+#' @return A character vector of drive paths on Windows systems, or forward 
+#' slashes on Unix-based systems.
+get_drive <- function(x = getwd())
+{
+  if(assertive::is_windows())
+  {
+    vapply(strsplit(standardize_path(x), "/"), head, character(1), n = 1)
+  } else
+  {
+    rep.int("/", length(x))
+  }
+}
+
 #' @rdname decompose_path
 #' @export
 get_extension <- function(x = dir())
@@ -279,10 +297,39 @@ replace_extension <- function(x = dir(), new_extension)
   paste(strip_extension(x), new_extension, sep = ".")
 }
 
+#' Split a path into directory components
+#' 
+#' Splits a character vector of paths into directory components.  The opposite of 
+#' \code{\link[base]{file.path}}.
+#' @param x A character vector of file paths. Defaults to files in the 
+#' current directory.
+#' @return A named list of character vectors containing the split paths.
+#' @note Paths are split on forward and back slashes, except for double forward 
+#' or back slashes at the start of (UNC) paths.  These are included in the first 
+#' element of that split path.
+#' @examples
+#' (splits <- split_path(c(getwd(), "~", r_home())))
+#' # Reverse the operation
+#' sapply(splits, paste, collapse = "/")
+split_path <- function(x = dir())
+{
+  if(assertive::is_empty(x))
+  {
+    return(setNames(list(), character()))
+  }
+  original_x <- x <- assertive::coerce_to(x, "character")
+  x <- standardize_path(x)
+  setNames(
+    strsplit(x, "(?<=[^/\\\\])[/\\\\]", perl = TRUE),
+    original_x
+  )
+}
+
 #' Standardize paths
 #' 
 #' Standardi[sz]e path names so that they can be more easily compared.
-#' @param x A character vector of paths.
+#' @param x A character vector of file paths. Defaults to files in the 
+#' current directory.
 #' @param sep String separator between directory levels in the output.
 #' @return A character vector of paths, pointing to the same locations as the
 #' input, but in a standardized form.
