@@ -311,6 +311,7 @@ replace_extension <- function(x = dir(), new_extension)
 #' (splits <- split_path(c(getwd(), "~", r_home())))
 #' # Reverse the operation
 #' sapply(splits, paste, collapse = "/")
+#' @export
 split_path <- function(x = dir())
 {
   if(assertive::is_empty(x))
@@ -414,10 +415,11 @@ sys_which <- function(x, sep = c("/", "\\"))
 #' @param package A string with the name of a single package. An error occurs if 
 #' more than one package name is given.
 #' @param library_location a character vector with path names of R libraries. 
-#' See the ‘Details’ section of \code{\link[base]{system.file}} for the meaning 
+#' See the 'Details section of \code{\link[base]{system.file}} for the meaning 
 #' of the default value of NULL.
 #' @param must_work If \code{TRUE}, an error is given if there are no matching 
 #' files.
+#' @param sep String separator between directory levels in the output.
 #' @return A character vector of positive length, containing the file paths that 
 #' matched \code{...}, or the empty string, \code{""}, if none matched (unless 
 #' \code{mustWork = TRUE}).
