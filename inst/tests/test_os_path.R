@@ -2,7 +2,7 @@ test_that(
   "os_path works correctly with standardize = FALSE",
   {
     expected <- strsplit(Sys.getenv("PATH"), ";")[[1]]
-    expect_identical(os_path(), expected)
+    expect_identical(os_path(standardize = FALSE), expected)
   }
 )
 
@@ -15,6 +15,6 @@ test_that(
       mustWork = FALSE
     )
     expected <- sub("/?$", "", expected)
-    expect_identical(os_path(standardize = TRUE), expected)
+    expect_identical(os_path(), expected)
   }
 )
