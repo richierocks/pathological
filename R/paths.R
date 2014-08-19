@@ -435,8 +435,9 @@ sys_which <- function(x, sep = c("/", "\\"))
 #' files.
 #' @param sep String separator between directory levels in the output.
 #' @return A character vector of positive length, containing the file paths that 
-#' matched \code{...}, or the empty string, \code{""}, if none matched (unless 
-#' \code{mustWork = TRUE}).
+#' matched \code{...}, or a missing string, \code{NA}, if none matched (unless 
+#' \code{mustWork = TRUE}).  (This behaviour for missing paths differs from 
+#' \code{system.file}.)
 #' If matching the root of a package, there is no trailing separator.
 #' system.file() with no arguments gives the root of the base package.
 #' @seealso \code{\link[base]{system.file}}
@@ -450,7 +451,7 @@ sys_which <- function(x, sep = c("/", "\\"))
 system_file <- function(..., package = "base", library_location = NULL, 
   must_work = FALSE, sep = c("/", "\\"))
 {
-  standardize_path(
+  paths <- standardize_path(
     system.file(
       ..., 
       package  = package, 
@@ -459,6 +460,7 @@ system_file <- function(..., package = "base", library_location = NULL,
     ), 
     sep = sep
   )
+  ifelse(nzchar(paths), paths, NA_character_)
 }
 
 #' Create a temp file/dir
