@@ -221,6 +221,8 @@ dir_copy <- function(...)
 #' @param x A character vector of file paths. Defaults to the current directory.
 #' @return A character vector of drive paths on Windows systems, or forward 
 #' slashes on Unix-based systems.
+#' @examples
+#' get_drive(c("~", r_home(), temp_dir()))
 get_drive <- function(x = getwd())
 {
   if(assertive::is_windows())
