@@ -3,15 +3,7 @@ test_that(
   {
     x <- character()
     x2 <- NULL
-    expected <- structure(
-      data.frame(
-        dirname = character(), 
-        filename = character(), 
-        extension = character(),
-        stringsAsFactors = FALSE
-      ),
-      class = c("decomposed_path", "data.frame")
-    )
+    expected <- setNames(list(), character())
     expect_equal(split_path(x), expected)
     expect_equal(split_path(x2), expected)
   }
