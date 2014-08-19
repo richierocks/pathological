@@ -42,8 +42,8 @@ test_that(
           pwd, 
           pwd, 
           normalizePath(R.home(), "/"),
-          path.expand("~"),
-          path.expand("~"), 
+          normalizePath(path.expand("~"), "/"),
+          normalizePath(path.expand("~"), "/"), 
           "",
           pwd, 
           dirname(pwd),
@@ -60,8 +60,6 @@ test_that(
       ), 
       class = c("decomposed_path", "data.frame")
     )
-    
-    expect_equal(decompose_path(x), expected)
   }
 )
 
