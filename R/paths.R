@@ -14,7 +14,7 @@ cygwinify_path <- function(x = dir())
   if(!assertive::is_windows())
   {
     warning(
-      "This function is expecting to be run under windows, but the OS is ", 
+      "This function is expecting to be run under Windows, but the OS is ", 
       .Platform$OS.type
     )
   }
