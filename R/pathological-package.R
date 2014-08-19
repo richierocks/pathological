@@ -9,7 +9,7 @@
 #' of the filename. \code{recompose_path} takes the result of 
 #' \code{decompose_path} and returns complete paths.
 #' 
-#' \code{dir_copy} copies the contents of a directory, possibly recursively.
+#' \code{copy_dir} copies the contents of a directory, possibly recursively.
 #'
 #' @author Richie Cotton
 #' @docType package
