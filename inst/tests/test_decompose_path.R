@@ -100,7 +100,7 @@ test_that(
         row.names = x,
         stringsAsFactors = FALSE
       ), 
-      class = c("decomposed_path", "matrix")
+      class = c("decomposed_path", "data.frame")
     )    
     expect_warning(actual <- decompose_path(x), "Coercing .+ to class 'character'\\.")
     expect_equal(actual, expected)
