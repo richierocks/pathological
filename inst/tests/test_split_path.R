@@ -1,7 +1,3 @@
-library(testthat)
-library(assertive)
-library(stringr)
-
 test_that(
   "split_path works with a zero length input",
   {

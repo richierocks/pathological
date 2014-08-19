@@ -1,5 +1,3 @@
-library(testthat)
-
 dir2 <- function(path = ".", pattern = NULL, recursive = TRUE, ...)
 {
   dir(  
