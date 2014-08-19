@@ -371,14 +371,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   )
   
   # strip trailing slashes
-  nch <- nchar(std_x)
-  has_trailing_slash <- substring(std_x, nch, nch) == sep
-  std_x[has_trailing_slash] <- substring(
-    std_x[has_trailing_slash], 
-    1L, 
-    nch[has_trailing_slash] - 1L
-  )
-  std_x
+  stringr::str_replace(std_x, if(sep == "/") "/?$" else "\\\\?$", "")  
 }
 
 #' @rdname standardize_path
