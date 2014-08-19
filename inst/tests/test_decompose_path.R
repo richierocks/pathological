@@ -29,7 +29,7 @@ test_that(
       "another dir\\bar.tar.gz", # double extension
       "baz",                     # no extension
       "quux. quuux.tbz2",        # single ext, dots in filename
-      R.home(),                  # a dir
+      r_home(),                  # a dir
       "~",                       # another dir
       "~/quuuux.tar.xz",         # a file in a dir
       "",                        # empty 
@@ -106,12 +106,44 @@ test_that(
       ), 
       class = c("decomposed_path", "matrix")
     )    
-    expect_warning(answer <- decompose_path(x), "Coercing .+ to class 'character'\\.")
-    expect_equal(answer, expected)
+    expect_warning(actual <- decompose_path(x), "Coercing .+ to class 'character'\\.")
+    expect_equal(actual, expected)
   }
 )
 
+test_that(
+  "get_extension works correctly",
+  {
+    x <- c(
+      "somedir/foo.tgz",         # single extension
+      "another dir\\bar.tar.gz", # double extension
+      "baz",                     # no extension
+      "quux. quuux.tbz2",        # single ext, dots in filename
+      r_home()                   # a dir
+    )
+    expected <- c("tgz", "tar.gz", "", "tbz2", "")
+    expect_identical(get_extension(x), expected)
+  }
+)
 
+test_that(
+  "strip_extension works correctly",
+  {
+    x <- c(
+      "somedir/foo.tgz",         # single extension
+      "another dir\\bar.tar.gz", # double extension
+      "baz",                     # no extension
+      "quux. quuux.tbz2",        # single ext, dots in filename
+      r_home()                   # a dir
+    )
+    expected <- normalizePath(
+      c("somedir/foo", "another dir/bar", "baz", "quux. quuux", R.home()), 
+      "/",
+      mustWork = FALSE
+    )
+    expect_identical(strip_extension(x), expected)
+  }
+)
 
 
 
