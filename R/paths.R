@@ -453,8 +453,8 @@ system_file <- function(..., package = "base", library_location = NULL,
   standardize_path(
     system.file(
       ..., 
-      package = package, 
-      lib.loc = library_location, 
+      package  = package, 
+      lib.loc  = library_location, 
       mustWork = must_work
     ), 
     sep = sep
