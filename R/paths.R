@@ -223,6 +223,7 @@ dir_copy <- function(...)
 #' slashes on Unix-based systems.
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
+#' @export
 get_drive <- function(x = getwd())
 {
   if(assertive::is_windows())
