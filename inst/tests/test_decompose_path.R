@@ -141,6 +141,30 @@ test_that(
   }
 )
 
+test_that(
+  "replace_extension works correctly",
+  {
+    x <- c(
+      "somedir/foo.tgz",         # single extension
+      "another dir\\bar.tar.gz", # double extension
+      "baz",                     # no extension
+      "quux. quuux.tbz2",        # single ext, dots in filename
+      r_home()                   # a dir
+    )
+    new_extension <- "NEW"
+    expected <- paste(
+      normalizePath(
+        c("somedir/foo", "another dir/bar", "baz", "quux. quuux", R.home()), 
+        "/",
+        mustWork = FALSE
+      ), 
+      new_extension, 
+      sep = "."
+    )
+    expect_identical(replace_extension(x, new_extension), expected)
+  }
+)
+
 
 
 
