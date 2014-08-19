@@ -245,15 +245,19 @@ get_extension <- function(x = dir())
 #' 
 #' The locations in the operating system \code{PATH} environment variable.
 #' @param sep String separator between directory levels in the output.
+#' @param standardize Should the paths be standardized?
 #' @return A character vector of paths.
 #' @seealso \code{\link[base]{Sys.getenv}}
 #' @examples
 #' os_path()
 #' @export
-os_path <- function(sep = c("/", "\\"))
+os_path <- function(sep = c("/", "\\"), standardize = TRUE)
 {
   path <- strsplit(Sys.getenv("PATH"), ";")[[1]]
-  standardize_path(path, sep = sep)  
+  if(standardize)
+  {
+    standardize_path(path, sep = sep)  
+  } else path
 }
 
 #' The R home directory
