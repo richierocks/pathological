@@ -310,7 +310,20 @@ recompose_path.decomposed_path <- function(x, ...)
 #' @export
 replace_extension <- function(x = dir(), new_extension)
 {
-  paste(strip_extension(x), new_extension, sep = ".")
+  is_dir_x <- is_dir(x)
+  if(any(is_dir_x))
+  {
+    warning(
+      "The directories ", 
+      toString(sQuote(x[is_dir_x])), 
+      " have no file extensions to replace."
+    )
+  }
+  ifelse(
+    is_dir_x,
+    x,
+    paste(strip_extension(x), new_extension, sep = ".")
+  )
 }
 
 #' Split a path into directory components
