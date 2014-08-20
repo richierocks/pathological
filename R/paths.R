@@ -240,7 +240,7 @@ get_drive <- function(x = getwd())
 #' @export
 get_extension <- function(x = dir())
 {
-  decompose_path(x)[, 3L]
+  setNames(decompose_path(x)[, 3L], x)  
 }
 
 #' The OS path 
