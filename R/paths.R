@@ -195,7 +195,7 @@ decompose_path <- function(x = dir())
   decomposed_x <- data.frame(
     dirname   = ifelse(
       not_missing,
-      ifelse(is_dir_x, x, dirname(x)), 
+      ifelse(is_dir_x, x, standardize_path(dirname(x))), #restandardisation required
       NA_character_
     ),
     filename  = filename_x, 
