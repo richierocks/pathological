@@ -425,17 +425,22 @@ standardise_path <- standardize_path
 strip_extension <- function(x = dir(), include_dir = TRUE)
 {
   decomposed <- decompose_path(x)
-  if(include_dir) 
+  stripped <- if(include_dir) 
   {
     ifelse(
       is.na(x),
       NA_character_,
-      file.path(decomposed[, 1L], decomposed[, 2L])
+      ifelse(
+        nzchar(decomposed$filename),
+        file.path(decomposed$dirname, decomposed$filename),
+        decomposed$dirname
+      )
     )
   } else
   {
-    decomposed[, 2L]
+    decomposed$filename
   }
+  setNames(stripped, x)
 }
 
 #' Find paths to executables
