@@ -26,6 +26,8 @@
 #' unlink(file.path(tempdir(), "etc"), recursive = TRUE)
 #' unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
 #' }
+#' @importFrom assertive is_dir
+#' @importFrom plyr tryapply
 #' @export
 copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, 
                      recursive = TRUE)
@@ -41,9 +43,9 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
   )
   
   #Create missing directories, silently.
-  is_directory <- assertive::is_dir(file.path(source_dir, filenames))
+  is_directory <- is_dir(file.path(source_dir, filenames))
   directories <- c(target_dir, file.path(target_dir, filenames[is_directory]))
-  plyr::tryapply(
+  tryapply(
     directories,
     dir.create,
     showWarnings = FALSE, 
@@ -83,10 +85,14 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
 #' @seealso \code{standardize_path}
 #' @examples
 #' cygwinify_path(c("~", "\\\\some/network/drive"))
+#' @importFrom assertive is_windows
+#' @importFrom stringr fixed
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_split_fixed
 #' @export
 cygwinify_path <- function(x = dir())
 {
-  if(!assertive::is_windows())
+  if(!is_windows())
   {
     warning(
       "This function is expecting to be run under Windows, but the OS is ", 
@@ -94,9 +100,9 @@ cygwinify_path <- function(x = dir())
     )
   }
   cygwinified_x <- standardize_path(x)
-  colon <- stringr::fixed(":")
-  has_drive <- stringr::str_detect(cygwinified_x, colon)
-  split_path <- stringr::str_split_fixed(cygwinified_x[has_drive], colon, 2L)
+  colon <- fixed(":")
+  has_drive <- str_detect(cygwinified_x, colon)
+  split_path <- str_split_fixed(cygwinified_x[has_drive], colon, 2L)
   cygwinified_x[has_drive] <- paste0(
     "/cygdrive/",
     split_path[, 1L],
@@ -141,10 +147,17 @@ cygwinify_path <- function(x = dir())
 #' strip_extension(x)
 #' strip_extension(x, FALSE)
 #' recompose_path(decomposed)
+#' @importFrom assertive is_empty
+#' @importFrom assertive coerce_to
+#' @importFrom assertive is_not_na
+#' @importFrom assertive is_dir
+#' @importFrom stringr str_detect
+#' @importFrom stringr fixed
+#' @importFrom stringr str_match
 #' @export
 decompose_path <- function(x = dir())
 {
-  if(assertive::is_empty(x))
+  if(is_empty(x))
   {
     return(
       structure(
@@ -158,17 +171,17 @@ decompose_path <- function(x = dir())
       )
     )
   }
-  original_x <- x <- assertive::coerce_to(x, "character")
+  original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
-  not_missing <- assertive::is_not_na(x)
-  is_dir_x <- assertive::is_dir(x)
+  not_missing <- is_not_na(x)
+  is_dir_x <- is_dir(x)
   
   basename_x <- ifelse(
     not_missing,
     ifelse(is_dir_x, "", basename(x)),
     NA_character_
   )
-  has_extension <- stringr::str_detect(basename_x, stringr::fixed("."))
+  has_extension <- str_detect(basename_x, fixed("."))
     
   # match one or more letters, numbers and allowed punctuation characters
   # (the filename without extension)
@@ -183,7 +196,7 @@ decompose_path <- function(x = dir())
   
   if(any(not_missing_and_has_extension))
   {
-    split_name <- stringr::str_match(
+    split_name <- str_match(
       basename_x[not_missing_and_has_extension], 
       rx
     )
@@ -224,10 +237,11 @@ dir_copy <- function(...)
 #' slashes on Unix-based systems.
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
+#' @importFrom assertive is_windows
 #' @export
 get_drive <- function(x = getwd())
 {
-  if(assertive::is_windows())
+  if(is_windows())
   {
     vapply(strsplit(standardize_path(x), "/"), head, character(1), n = 1)
   } else
@@ -291,10 +305,11 @@ recompose_path <- function(x, ...)
 
 #' @rdname decompose_path
 #' @method recompose_path decomposed_path
+#' @importFrom assertive is_not_na
 #' @export
 recompose_path.decomposed_path <- function(x, ...)
 {
-  not_missing <- assertive::is_not_na(x$filename)
+  not_missing <- is_not_na(x$filename)
   has_an_extension <- nzchar(as.character(x[not_missing, "extension"]))
   path <- rep.int(NA_character_, nrow(x))
   base_x <- ifelse(
@@ -340,14 +355,16 @@ replace_extension <- function(x = dir(), new_extension)
 #' (splits <- split_path(c(getwd(), "~", r_home())))
 #' # Reverse the operation
 #' sapply(splits, paste, collapse = "/")
+#' @importFrom assertive is_empty
+#' @importFrom assertive coerce_to
 #' @export
 split_path <- function(x = dir())
 {
-  if(assertive::is_empty(x))
+  if(is_empty(x))
   {
     return(setNames(list(), character()))
   }
-  original_x <- x <- assertive::coerce_to(x, "character")
+  original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
   setNames(
     strsplit(x, "(?<=[^/\\\\])[/\\\\]", perl = TRUE),
@@ -369,6 +386,7 @@ split_path <- function(x = dir())
 #' standardize_path(c(".", "..", "~", R.home(), NA))
 #' standardize_path(c(".", "..", "~", R.home(), NA), "\\")
 #' @importFrom assertive is_empty
+#' @importFrom assertive is_not_missing_nor_empty_character
 #' @importFrom assertive coerce_to
 #' @importFrom assertive is_unix
 #' @importFrom stringr str_replace
