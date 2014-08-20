@@ -363,29 +363,57 @@ split_path <- function(x = dir())
 #' @param sep String separator between directory levels in the output.
 #' @return A character vector of paths, pointing to the same locations as the
 #' input, but in a standardized form.
-#' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}}
+#' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}},
+#' \code{\link[R.utils]{getAbsolutePath}}
 #' @examples
 #' standardize_path(c(".", "..", "~", R.home(), NA))
 #' standardize_path(c(".", "..", "~", R.home(), NA), "\\")
+#' @importFrom assertive is_empty
+#' @importFrom assertive coerce_to
+#' @importFrom assertive is_unix
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_detect
 #' @export
 standardize_path <- function(x = dir(), sep = c("/", "\\"))
 {
-  if(assertive::is_empty(x))
+  if(is_empty(x))
   {
     return(character())
   }
   sep <- match.arg(sep)
-  x <- assertive::coerce_to(x, "character")
+  x <- coerce_to(x, "character")
   
-  # standardize = expand and normalize
-  std_x <- ifelse(
-    is.na(x),
+  ok <- is_not_missing_nor_empty_character(x)
+  
+  # standardize = expand + normalize
+  # normalizePath is uncomfortable with backslashes under Unix.
+  x[ok] <- str_replace_all(x[ok], "[/\\\\]", "/")
+  x[ok] <- ifelse(
+    is.na(x[ok]),
     NA_character_,
-    normalizePath(path.expand(x), sep, FALSE)
+    normalizePath(x[ok], "/", FALSE)
   )
   
+  # again under Unix, normalizePath won't make path absolute
+  if(is_unix())
+  {
+    x[ok] <- ifelse(
+      str_detect(x[ok], "^/"),
+      x[ok], 
+      file.path(getwd(), x[ok], fsep = "/")
+    )
+  }
+  
   # strip trailing slashes
-  stringr::str_replace(std_x, if(sep == "/") "/?$" else "\\\\?$", "")  
+  x[ok] <- str_replace(x[ok], "/?$", "")  
+  
+  # Replace / with the chosen slash
+  if(sep == "\\")
+  {
+    x[ok] <- str_replace_all(x[ok], "/", "\\")
+  }
+  x
 }
 
 #' @rdname standardize_path
