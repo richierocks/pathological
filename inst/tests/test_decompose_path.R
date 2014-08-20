@@ -60,6 +60,7 @@ test_that(
       ), 
       class = c("decomposed_path", "data.frame")
     )
+    expect_equal(decompose_path(x), expected)
   }
 )
 
@@ -116,6 +117,7 @@ test_that(
       r_home()                   # a dir
     )
     expected <- c("tgz", "tar.gz", "", "tbz2", "")
+    names(expected) <- x
     expect_identical(get_extension(x), expected)
   }
 )
@@ -130,11 +132,10 @@ test_that(
       "quux. quuux.tbz2",        # single ext, dots in filename
       r_home()                   # a dir
     )
-    expected <- normalizePath(
-      c("somedir/foo", "another dir/bar", "baz", "quux. quuux", R.home()), 
-      "/",
-      mustWork = FALSE
+    expected <- standardize_path(
+      c("somedir/foo", "another dir/bar", "baz", "quux. quuux", r_home()), 
     )
+    names(expected) <- x
     expect_identical(strip_extension(x), expected)
   }
 )
@@ -150,16 +151,22 @@ test_that(
       r_home()                   # a dir
     )
     new_extension <- "NEW"
-    expected <- paste(
-      normalizePath(
-        c("somedir/foo", "another dir/bar", "baz", "quux. quuux", R.home()), 
-        "/",
-        mustWork = FALSE
-      ), 
-      new_extension, 
-      sep = "."
+    expected <- c(
+      paste(
+        standardize_path(
+          c("somedir/foo", "another dir/bar", "baz", "quux. quuux"), 
+        ), 
+        new_extension, 
+        sep = "."
+      ),
+      r_home()
     )
-    expect_identical(replace_extension(x, new_extension), expected)
+    names(expected) <- x
+    expect_warning(
+      actual <- replace_extension(x, new_extension), 
+      "The directories .* have no file extensions to replace."
+    )
+    expect_identical(actual, expected)
   }
 )
 
