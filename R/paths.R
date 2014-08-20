@@ -240,7 +240,7 @@ get_drive <- function(x = getwd())
 #' @export
 get_extension <- function(x = dir())
 {
-  setNames(decompose_path(x)[, 3L], x)  
+  setNames(decompose_path(x)$extension, x)  
 }
 
 #' The OS path 
@@ -294,7 +294,7 @@ recompose_path <- function(x, ...)
 #' @export
 recompose_path.decomposed_path <- function(x, ...)
 {
-  not_missing <- assertive::is_not_na(x[, "filename"])
+  not_missing <- assertive::is_not_na(x$filename)
   has_an_extension <- nzchar(as.character(x[not_missing, "extension"]))
   path <- rep.int(NA_character_, nrow(x))
   base_x <- ifelse(
