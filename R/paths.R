@@ -269,7 +269,13 @@ get_extension <- function(x = dir())
 #' @export
 os_path <- function(sep = c("/", "\\"), standardize = TRUE)
 {
-  path <- strsplit(Sys.getenv("PATH"), ";")[[1]]
+  path <- Sys.getenv("PATH", NA)
+  if(is.na(path))
+  {
+    warning("The 'PATH' environment variable has not been set.")
+    return(character())
+  }
+  path <- strsplit(path, ";")[[1]]
   if(standardize)
   {
     standardize_path(path, sep = sep)  
