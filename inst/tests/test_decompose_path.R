@@ -18,44 +18,16 @@ test_that(
 )
 
 test_that(
-  "decompose_path handles filenames with directories, a variety of file extensions, and dots in filenames.",
+  "decompose_path handles paths with no directory and a single extension in the filename.",
   {
-    x <- c(
-      "somedir/foo.tgz",         # single extension
-      "another dir\\bar.tar.gz", # double extension
-      "baz",                     # no extension
-      "quux. quuux.tbz2",        # single ext, dots in filename
-      r_home(),                  # a dir
-      "~",                       # another dir
-      "~/quuuux.tar.xz",         # a file in a dir
-      "",                        # empty 
-      ".",                       # current dir
-      "..",                      # parent dir
-      NA_character_              # missing
-    )
+    x <- "foo.tgz"
     pwd <- getwd()
     expected <- structure(
       data.frame(
-        dirname = c(
-          file.path(pwd, "somedir"), 
-          file.path(pwd, "another dir"),
-          pwd, 
-          pwd, 
-          normalizePath(R.home(), "/"),
-          normalizePath(path.expand("~"), "/"),
-          normalizePath(path.expand("~"), "/"), 
-          "",
-          pwd, 
-          dirname(pwd),
-          NA
-        ),
-        filename = c(
-          "foo", "bar", "baz", "quux. quuux", "", "", "quuuux", "", "", "", NA
-        ),
-        extension = c(
-          "tgz", "tar.gz", "", "tbz2", "", "", "tar.xz", "", "", "", NA
-        ),
-        row.names = ifelse(is.na(x), "<NA>", x), 
+        dirname          = pwd,
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
         stringsAsFactors = FALSE
       ), 
       class = c("decomposed_path", "data.frame")
@@ -65,19 +37,354 @@ test_that(
 )
 
 test_that(
+  "decompose_path handles paths with a directory and a single extension in the filename.",
+  {
+    x <- "somedir/foo.tgz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = file.path(pwd, "somedir"),
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles paths with no directory and a double extension in the filename.",
+  {
+    x <- "foo.tar.gz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = pwd,
+        filename         = "foo",
+        extension        = "tar.gz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles paths with a directory and a double extension in the filename.",
+  {
+    x <- "somedir/foo.tar.gz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = file.path(pwd, "somedir"),
+        filename         = "foo",
+        extension        = "tar.gz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+
+test_that(
+  "decompose_path handles paths with no directory and no extension in the filename.",
+  {
+    x <- "foo"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = pwd,
+        filename         = "foo",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles paths with a directory and no extension in the filename.",
+  {
+    x <- "somedir/foo"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = file.path(pwd, "somedir"),
+        filename         = "foo",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles filenames containing a '.' and an extension.",
+  {
+    x <- "foo. bar.zip"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = pwd,
+        filename         = "foo. bar",
+        extension        = "zip",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles backslashes in the directory name.",
+  {
+    x <- "somedir\\foo.tgz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = file.path(pwd, "somedir"),
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles mixed forward and backslashes in the directory name.",
+  {
+    x <- "somedir\\another dir/foo.tgz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = file.path(pwd, "somedir", "another dir"),
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles absolute paths to directories.",
+  {
+    x <- R.home()
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = normalizePath(R.home(), "/", mustWork = FALSE),
+        filename         = "",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles '~'.",
+  {
+    x <- "~"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = normalizePath("~", "/", mustWork = FALSE),
+        filename         = "",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles files inside '~'.",
+  {
+    x <- "~/foo.tgz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = dirname(normalizePath(x, "/", mustWork = FALSE)),
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles the current directory as '.'.",
+  {
+    x <- "."
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = pwd,
+        filename         = "",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles the parent directory as '..'.",
+  {
+    x <- ".."
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = dirname(pwd),
+        filename         = "",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles files inside '.'.",
+  {
+    x <- "./foo.tgz"
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname          = pwd,
+        filename         = "foo",
+        extension        = "tgz",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles empty strings.",
+  {
+    x <- ""
+    expected <- structure(
+      data.frame(
+        dirname          = "",
+        filename         = "",
+        extension        = "",
+        row.names        = x, 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles missing paths.",
+  {
+    x <- NA
+    expected <- structure(
+      data.frame(
+        dirname          = NA_character_,
+        filename         = NA_character_,
+        extension        = NA_character_,
+        row.names        = "<NA>", 
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )
+    expect_warning(actual <- decompose_path(x), "Coercing .+ to class 'character'\\.")
+    expect_equal(actual, expected)
+  }
+)
+
+catz <- c(
+  "catz/lolcat.gif",
+  "moar cats/nyan cat.jpeg",
+  "catz\\catz in loft\\ceiling cat.jpg",
+  "catz/musical catz\\keyboard cat.bmp",
+  "catbread.png",
+  "kitties\\bonsai kitten.tiff",
+  "kitties\\hipster kitty.pdf"
+)
+
+test_that(
+  "decompose_path works with a character vector input.",
+  {
+    x <- catz
+    pwd <- getwd()
+    expected <- structure(
+      data.frame(
+        dirname = c(
+          file.path(pwd, "catz"),
+          file.path(pwd, "moar cats"),
+          file.path(pwd, "catz/catz in loft"),
+          file.path(pwd, "catz/musical catz"), getwd(),
+          file.path(pwd, "kitties"),
+          file.path(pwd, "kitties")
+        ),
+        filename = c(
+          "lolcat", "nyan cat", "ceiling cat", "keyboard cat", 
+          "catbread", "bonsai kitten", "hipster kitty"
+        ),
+        extension = c(
+          "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
+        ),
+        row.names = x,
+        stringsAsFactors = FALSE
+      ), 
+      class = c("decomposed_path", "data.frame")
+    )    
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
   "decompose_path works with a factor input.",
   {
-    x <- factor(
-      c(
-        "catz/lolcat.gif",
-        "moar cats/nyan cat.jpeg",
-        "catz\\catz in loft\\ceiling cat.jpg",
-        "catz/musical catz\\keyboard cat.bmp",
-        "catbread.png",
-        "kitties\\bonsai kitten.tiff",
-        "kitties\\hipster kitty.pdf"
-      )
-    )
+    x <- factor(catz)
     pwd <- getwd()
     expected <- structure(
       data.frame(
@@ -106,39 +413,202 @@ test_that(
   }
 )
 
+
 test_that(
-  "get_extension works correctly",
+  "get_extension works with paths with no directory and a single extension in the filename.",
   {
-    x <- c(
-      "somedir/foo.tgz",         # single extension
-      "another dir\\bar.tar.gz", # double extension
-      "baz",                     # no extension
-      "quux. quuux.tbz2",        # single ext, dots in filename
-      r_home()                   # a dir
-    )
-    expected <- c("tgz", "tar.gz", "", "tbz2", "")
+    x <- "foo.tgz"
+    expected <- "tgz"
     names(expected) <- x
-    expect_identical(get_extension(x), expected)
+    expect_equal(get_extension(x), expected)
   }
 )
 
 test_that(
-  "strip_extension works correctly",
+  "get_extension works with paths with a directory and a single extension in the filename.",
   {
-    x <- c(
-      "somedir/foo.tgz",         # single extension
-      "another dir\\bar.tar.gz", # double extension
-      "baz",                     # no extension
-      "quux. quuux.tbz2",        # single ext, dots in filename
-      r_home()                   # a dir
-    )
-    expected <- standardize_path(
-      c("somedir/foo", "another dir/bar", "baz", "quux. quuux", r_home()), 
-    )
+    x <- "somedir/foo.tgz"
+    expected <- "tgz"
     names(expected) <- x
-    expect_identical(strip_extension(x), expected)
+    expect_equal(get_extension(x), expected)
   }
 )
+
+test_that(
+  "get_extension works with paths with no directory and a double extension in the filename.",
+  {
+    x <- "foo.tar.gz"
+    expected <- "tar.gz"
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "get_extension works with paths with a directory and a double extension in the filename.",
+  {
+    x <- "somedir/foo.tar.gz"
+    expected <- "tar.gz"
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "get_extension works with paths with no directory and no extension in the filename.",
+  {
+    x <- "foo"
+    expected <- ""
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "get_extension works with paths with a directory and no extension in the filename.",
+  {
+    x <- "somedir/foo"
+    expected <- ""
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "get_extension handles filenames containing a '.' and an extension.",
+  {
+    x <- "foo. bar.zip"
+    expected <- "zip"
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "get_extension handles directories.",
+  {
+    x <- R.home()
+    expected <- ""
+    names(expected) <- x
+    expect_equal(get_extension(x), expected)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with no directory and a single extension in the filename.",
+  {
+    x <- "foo.tgz"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with a directory and a single extension in the filename.",
+  {
+    x <- "somedir/foo.tgz"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "somedir", "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with no directory and a double extension in the filename.",
+  {
+    x <- "foo.tar.gz"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with a directory and a double extension in the filename.",
+  {
+    x <- "somedir/foo.tar.gz"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "somedir", "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with no directory and no extension in the filename.",
+  {
+    x <- "foo"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension works with paths with a directory and no extension in the filename.",
+  {
+    x <- "somedir/foo"
+    pwd <- getwd()
+    expected <- "foo"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "somedir", "foo")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension handles filenames containing a '.' and an extension.",
+  {
+    x <- "foo. bar.zip"
+    pwd <- getwd()
+    expected <- "foo. bar"
+    names(expected) <- x
+    expected2 <- file.path(pwd, "foo. bar")
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+test_that(
+  "strip_extension handles directories.",
+  {
+    x <- R.home()
+    pwd <- getwd()
+    expected <- ""
+    names(expected) <- x
+    expected2 <- normalizePath(x, "/", mustWork = FALSE)
+    names(expected2) <- x
+    expect_equal(strip_extension(x, include_dir = FALSE), expected)
+    expect_equal(strip_extension(x), expected2)
+  }
+)
+
+
+
+
 
 test_that(
   "replace_extension works correctly",
