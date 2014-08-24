@@ -1,16 +1,27 @@
+create_expected_decomposed_path <- function(dirname, filename, extension, row.names)
+{
+  structure(
+    data.frame(
+      dirname          = dirname,
+      filename         = filename,
+      extension        = extension,
+      row.names        = row.names, 
+      stringsAsFactors = FALSE
+    ), 
+    class = c("decomposed_path", "data.frame")
+  )
+}
+
 test_that(
   "decompose_path works with a zero length input",
   {
     x <- character()
     x2 <- NULL
-    expected <- structure(
-      data.frame(
-        dirname = character(), 
-        filename = character(), 
-        extension = character(),
-        stringsAsFactors = FALSE
-      ),
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname   = character(), 
+      filename  = character(), 
+      extension = character(),
+      rowname   = character()
     )
     expect_equal(decompose_path(x), expected)
     expect_equal(decompose_path(x2), expected)
@@ -22,15 +33,11 @@ test_that(
   {
     x <- "foo.tgz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -41,15 +48,11 @@ test_that(
   {
     x <- "somedir/foo.tgz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = file.path(pwd, "somedir"),
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "somedir"),
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -60,15 +63,11 @@ test_that(
   {
     x <- "foo.tar.gz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "foo",
-        extension        = "tar.gz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "foo",
+      extension        = "tar.gz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -79,15 +78,12 @@ test_that(
   {
     x <- "somedir/foo.tar.gz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = file.path(pwd, "somedir"),
-        filename         = "foo",
-        extension        = "tar.gz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "somedir"),
+      filename         = "foo",
+      extension        = "tar.gz",
+      row.names        = x, 
+      stringsAsFactors = FALSE
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -99,15 +95,11 @@ test_that(
   {
     x <- "foo"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "foo",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "foo",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -118,15 +110,11 @@ test_that(
   {
     x <- "somedir/foo"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = file.path(pwd, "somedir"),
-        filename         = "foo",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "somedir"),
+      filename         = "foo",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -137,15 +125,11 @@ test_that(
   {
     x <- "foo. bar.zip"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "foo. bar",
-        extension        = "zip",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "foo. bar",
+      extension        = "zip",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -156,15 +140,11 @@ test_that(
   {
     x <- "somedir\\foo.tgz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = file.path(pwd, "somedir"),
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "somedir"),
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -175,15 +155,11 @@ test_that(
   {
     x <- "somedir\\another dir/foo.tgz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = file.path(pwd, "somedir", "another dir"),
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "somedir", "another dir"),
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -193,16 +169,11 @@ test_that(
   "decompose_path handles absolute paths to directories.",
   {
     x <- R.home()
-    pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = normalizePath(R.home(), "/", mustWork = FALSE),
-        filename         = "",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = normalizePath(R.home(), "/", mustWork = FALSE),
+      filename         = "",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -213,15 +184,11 @@ test_that(
   {
     x <- "~"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = normalizePath("~", "/", mustWork = FALSE),
-        filename         = "",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = normalizePath("~", "/", mustWork = FALSE),
+      filename         = "",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -231,16 +198,11 @@ test_that(
   "decompose_path handles files inside '~'.",
   {
     x <- "~/foo.tgz"
-    pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = dirname(normalizePath(x, "/", mustWork = FALSE)),
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = dirname(normalizePath(x, "/", mustWork = FALSE)),
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -251,15 +213,11 @@ test_that(
   {
     x <- "."
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -270,15 +228,11 @@ test_that(
   {
     x <- ".."
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = dirname(pwd),
-        filename         = "",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = dirname(pwd),
+      filename         = "",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -289,15 +243,11 @@ test_that(
   {
     x <- "./foo.tgz"
     pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname          = pwd,
-        filename         = "foo",
-        extension        = "tgz",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = pwd,
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -307,15 +257,11 @@ test_that(
   "decompose_path handles empty strings.",
   {
     x <- ""
-    expected <- structure(
-      data.frame(
-        dirname          = "",
-        filename         = "",
-        extension        = "",
-        row.names        = x, 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = "",
+      filename         = "",
+      extension        = "",
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -325,17 +271,16 @@ test_that(
   "decompose_path handles missing paths.",
   {
     x <- NA
-    expected <- structure(
-      data.frame(
-        dirname          = NA_character_,
-        filename         = NA_character_,
-        extension        = NA_character_,
-        row.names        = "<NA>", 
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
+    expected <- create_expected_decomposed_path(
+      dirname          = NA_character_,
+      filename         = NA_character_,
+      extension        = NA_character_,
+      row.names        = "<NA>"
     )
-    expect_warning(actual <- decompose_path(x), "Coercing .+ to class 'character'\\.")
+    expect_warning(
+      actual <- decompose_path(x), 
+      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+    )
     expect_equal(actual, expected)
   }
 )
@@ -350,34 +295,30 @@ catz <- c(
   "kitties\\hipster kitty.pdf"
 )
 
+expected_catz <- create_expected_decomposed_path(
+  dirname   = c(
+    file.path(pwd, "catz"),
+    file.path(pwd, "moar cats"),
+    file.path(pwd, "catz/catz in loft"),
+    file.path(pwd, "catz/musical catz"), getwd(),
+    file.path(pwd, "kitties"),
+    file.path(pwd, "kitties")
+  ),
+  filename  = c(
+    "lolcat", "nyan cat", "ceiling cat", "keyboard cat", 
+    "catbread", "bonsai kitten", "hipster kitty"
+  ),
+  extension = c(
+    "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
+  ),
+  row.names = x
+)
+
 test_that(
   "decompose_path works with a character vector input.",
   {
     x <- catz
-    pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname = c(
-          file.path(pwd, "catz"),
-          file.path(pwd, "moar cats"),
-          file.path(pwd, "catz/catz in loft"),
-          file.path(pwd, "catz/musical catz"), getwd(),
-          file.path(pwd, "kitties"),
-          file.path(pwd, "kitties")
-        ),
-        filename = c(
-          "lolcat", "nyan cat", "ceiling cat", "keyboard cat", 
-          "catbread", "bonsai kitten", "hipster kitty"
-        ),
-        extension = c(
-          "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
-        ),
-        row.names = x,
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
-    )    
-    expect_equal(decompose_path(x), expected)
+    expect_equal(decompose_path(x), expected_catz)
   }
 )
 
@@ -385,31 +326,11 @@ test_that(
   "decompose_path works with a factor input.",
   {
     x <- factor(catz)
-    pwd <- getwd()
-    expected <- structure(
-      data.frame(
-        dirname = c(
-          file.path(pwd, "catz"),
-          file.path(pwd, "moar cats"),
-          file.path(pwd, "catz/catz in loft"),
-          file.path(pwd, "catz/musical catz"), getwd(),
-          file.path(pwd, "kitties"),
-          file.path(pwd, "kitties")
-        ),
-        filename = c(
-          "lolcat", "nyan cat", "ceiling cat", "keyboard cat", 
-          "catbread", "bonsai kitten", "hipster kitty"
-        ),
-        extension = c(
-          "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
-        ),
-        row.names = x,
-        stringsAsFactors = FALSE
-      ), 
-      class = c("decomposed_path", "data.frame")
-    )    
-    expect_warning(actual <- decompose_path(x), "Coercing .+ to class 'character'\\.")
-    expect_equal(actual, expected)
+    expect_warning(
+      actual <- decompose_path(x), 
+      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+    )
+    expect_equal(actual, expected_catz)
   }
 )
 
@@ -605,9 +526,6 @@ test_that(
     expect_equal(strip_extension(x), expected2)
   }
 )
-
-
-
 
 
 test_that(
