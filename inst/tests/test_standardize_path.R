@@ -19,6 +19,19 @@ test_that(
 )
 
 test_that(
+  "standardize_path works with missing inputs",
+  {
+    x <- NA
+    expected <- setNames(NA_character_, NA)
+    expect_warning(
+      actual <- standardize_path(x),
+      "Coercing .+ to class .{1,3}character.{1,3}\\."
+    )
+    expect_equal(actual, expected)
+  }
+)
+
+test_that(
   "standardize_path works with relative paths with forward slashes.",
   {
     x <- "somedir/foo.tar.gz"
