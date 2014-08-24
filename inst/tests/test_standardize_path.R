@@ -1,4 +1,24 @@
 test_that(
+  "standardize_path works with a zero length input",
+  {
+    x <- character()
+    x2 <- NULL
+    expected <- setNames(character(), character())
+    expect_equal(standardize_path(x), expected)
+    expect_equal(standardize_path(x2), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with empty strings",
+  {
+    x <- ""
+    expected <- setNames("", "")
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
   "standardize_path works with relative paths with forward slashes.",
   {
     x <- "somedir/foo.tar.gz"

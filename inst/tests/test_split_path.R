@@ -16,6 +16,28 @@ test_that(
 )
 
 test_that(
+  "split_path works with empty strings",
+  {
+    x <- ""
+    expected <- setNames(list(character()), "")
+    expect_equal(split_path(x), expected)
+  }
+)
+
+test_that(
+  "split_path works with missing values",
+  {
+    x <- NA
+    expected <- setNames(list(NA_character_), NA)
+    expect_warning(
+      actual <- split_path(x),
+      "Coercing .+ to class .{1,3}character.{1,3}\\."
+    )
+    expect_equal(actual, expected)
+  }
+)
+
+test_that(
   "split_path works with absolute Windows paths with forward slashes.",
   {
     x <- "c:/foo/bar"
