@@ -415,10 +415,10 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
 {
   if(is_empty(x))
   {
-    return(character())
+    return(setNames(character(), character()))
   }
   sep <- match.arg(sep)
-  x <- coerce_to(x, "character")
+  x <- original_x <- coerce_to(x, "character")
   
   ok <- is_not_missing_nor_empty_character(x)
   
@@ -449,7 +449,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   {
     x[ok] <- str_replace_all(x[ok], "/", "\\")
   }
-  x
+  setNames(x, original_x)
 }
 
 #' @rdname standardize_path
