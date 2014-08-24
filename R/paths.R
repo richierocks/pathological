@@ -335,7 +335,7 @@ recompose_path.decomposed_path <- function(x, ...)
 
 #' @rdname decompose_path
 #' @export
-replace_extension <- function(x = dir(), new_extension, include_dir = TRUE)
+replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
   if(!nzchar(new_extension))
   {
@@ -350,10 +350,11 @@ replace_extension <- function(x = dir(), new_extension, include_dir = TRUE)
       " have no file extensions to replace."
     )
   }
+  stripped <- strip_extension(x, include_dir = include_dir)
   ifelse(
     is_dir_x,
-    x,
-    paste(strip_extension(x, include_dir = include_dir), new_extension, sep = ".")
+    stripped,
+    paste(stripped, new_extension, sep = ".")
   )
 }
 
@@ -457,22 +458,41 @@ standardise_path <- standardize_path
 
 #' @rdname decompose_path
 #' @export
-strip_extension <- function(x = dir(), include_dir = TRUE)
+strip_extension <- function(x = dir(), include_dir = NA)
 {
-  decomposed <- decompose_path(x)
-  stripped <- if(include_dir) 
+  # Empty string x gets returned as empty string
+  stripped <- character(length(x))
+  # Missing x gets returned as NA
+  stripped[is.na(x)] <- NA_character_
+  
+  #Everything else
+  ok <- nzchar(x) & !is.na(x)
+  decomposed <- decompose_path(x[ok])
+  
+  stripped[ok] <- if(is.na(include_dir))
   {
+    # For include_dir = NA, keep directory same as input
+    dirname_x <- ifelse(is_dir(x[ok]), x[ok], dirname(x[ok]))
     ifelse(
-      is.na(x),
-      NA_character_,
+      nzchar(decomposed$filename),
       ifelse(
-        nzchar(decomposed$filename),
-        file.path(decomposed$dirname, decomposed$filename),
-        decomposed$dirname
-      )
+        dirname_x == ".",
+        decomposed$filename,                              # no directory
+        file.path(dirname_x, decomposed$filename)         # both
+      ),
+      dirname_x                                           # no filename
+    )    
+  } else if(include_dir) 
+  {
+    # For include_dir = TRUE, add standardized directory
+    ifelse(
+      nzchar(decomposed$filename),
+      file.path(decomposed$dirname, decomposed$filename), # both
+      decomposed$dirname                                  # no filename
     )
   } else
   {
+    # For include_dir = FALSE, strip directory
     decomposed$filename
   }
   setNames(stripped, x)
