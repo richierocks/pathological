@@ -1,15 +1,16 @@
 create_expected_decomposed_path <- function(dirname, filename, extension, row.names)
 {
-  structure(
+  out <- structure(
     data.frame(
       dirname          = dirname,
       filename         = filename,
       extension        = extension,
-      row.names        = row.names, 
       stringsAsFactors = FALSE
     ), 
     class = c("decomposed_path", "data.frame")
   )
+  rownames(out) <- row.names
+  out
 }
 
 test_that(
