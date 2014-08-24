@@ -22,7 +22,7 @@ test_that(
       dirname   = character(), 
       filename  = character(), 
       extension = character(),
-      rowname   = character()
+      row.names   = character()
     )
     expect_equal(decompose_path(x), expected)
     expect_equal(decompose_path(x2), expected)
@@ -296,6 +296,7 @@ catz <- c(
   "kitties\\hipster kitty.pdf"
 )
 
+pwd <- getwd()
 expected_catz <- create_expected_decomposed_path(
   dirname   = c(
     file.path(pwd, "catz"),
