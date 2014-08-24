@@ -18,7 +18,7 @@ test_that(
     target_dir <- file.path(tempdir(), "etc")
     on.exit(unlink(target_dir))
     copy_dir(source_dir, target_dir, recursive = FALSE)
-    expect_identical(
+    expect_equal(
       dir2(source_dir, recursive = FALSE), 
       dir2(target_dir, recursive = FALSE)
     )   
@@ -32,7 +32,7 @@ test_that(
     target_dir <- file.path(tempdir(), "etc")
     on.exit(unlink(target_dir, recursive = TRUE))
     copy_dir(source_dir, target_dir)
-    expect_identical(dir2(source_dir), dir2(target_dir))   
+    expect_equal(dir2(source_dir), dir2(target_dir))   
   }
 )
 

@@ -556,7 +556,7 @@ test_that(
 #       actual <- replace_extension(x, new_extension), 
 #       "The directories .* have no file extensions to replace."
 #     )
-#     expect_identical(actual, expected)
+#     expect_equal(actual, expected)
 #   }
 # )
 
@@ -567,7 +567,7 @@ test_that(
     new_extension <- "NEW"
     expected <- "somedir/foo.NEW"
     names(expected) <- x
-    expect_identical(replace_extension(x, new_extension), expected)
+    expect_equal(replace_extension(x, new_extension), expected)
   }
 )
 
@@ -578,7 +578,7 @@ test_that(
     new_extension <- "NEW"
     expected <- "somedir/foo.NEW"
     names(expected) <- x
-    expect_identical(replace_extension(x, new_extension), expected)
+    expect_equal(replace_extension(x, new_extension), expected)
   }
 )
 
@@ -589,7 +589,7 @@ test_that(
     new_extension <- "NEW"
     expected <- "somedir/foo.NEW"
     names(expected) <- x
-    expect_identical(replace_extension(x, new_extension), expected)
+    expect_equal(replace_extension(x, new_extension), expected)
   }
 )
 
@@ -606,7 +606,7 @@ test_that(
       actual <- replace_extension(x, new_extension), 
       "The directories .* have no file extensions to replace."
     )
-    expect_identical(actual, expected)
+    expect_equal(actual, expected)
   }
 )
 
@@ -621,7 +621,7 @@ test_that(
       actual <- replace_extension(x, new_extension), 
       "'new_extension' is empty.  Did you want strip_extension instead?"
     )
-    expect_identical(actual, expected)
+    expect_equal(actual, expected)
   }
 )
 

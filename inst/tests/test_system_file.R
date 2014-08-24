@@ -3,7 +3,7 @@ test_that(
   {
     actual <- system_file()
     expected <- normalizePath(find.package("base"), "/")
-    expect_identical(actual, expected)
+    expect_equal(actual, expected)
   }
 )
 
