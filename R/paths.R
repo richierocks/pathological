@@ -120,13 +120,18 @@ cygwinify_path <- function(x = dir())
 #' \code{decompose_path} and returns complete paths.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
-#' @param include_dir Should the directory part of the path be included?
+#' @param include_dir Should the directory part of the path be included? If 
+#' \code{NA}, the default, keep the directory from the input.  If \code{TRUE},
+#' standardize the directory.  If \code{FALSE}, strip the directory.
 #' @param new_extension A new extension to replace the existing ones.
 #' @param ... Not currently used.
 #' @return \code{decompose_path} returns a character matrix with three 
 #' columns named \code{"dirname"}, \code{"filename"} and \code{"extension"}.
-#' \code{strip_extension} returns a character vector of the second column,
-#' and \code{get_extension} returns a character vector of the third column.
+#' \code{strip_extension} returns a character vector of the filename, possibly 
+#' with a directory (see \code{include_dir} argument).
+#' \code{strip_extension} returns a character vector of the filename with a new 
+#' extension, possibly with a directory (see \code{include_dir} argument).
+#' \code{get_extension} returns a character vector of the third column.
 #' \code{recompose_path} returns a character vector of paths.
 #' @examples
 #' x <- c(
