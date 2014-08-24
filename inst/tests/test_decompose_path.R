@@ -530,27 +530,77 @@ test_that(
 )
 
 
+# test_that(
+#   "replace_extension works correctly",
+#   {
+#     x <- c(
+#       "somedir/foo.tgz",         # single extension
+#       "another dir\\bar.tar.gz", # double extension
+#       "baz",                     # no extension
+#       "quux. quuux.tbz2",        # single ext, dots in filename
+#       r_home()                   # a dir
+#     )
+#     new_extension <- "NEW"
+#     expected <- c(
+#       paste(
+#         standardize_path(
+#           c("somedir/foo", "another dir/bar", "baz", "quux. quuux"), 
+#         ), 
+#         new_extension, 
+#         sep = "."
+#       ),
+#       r_home()
+#     )
+#     names(expected) <- x
+#     expect_warning(
+#       actual <- replace_extension(x, new_extension), 
+#       "The directories .* have no file extensions to replace."
+#     )
+#     expect_identical(actual, expected)
+#   }
+# )
+
 test_that(
-  "replace_extension works correctly",
+  "replace_extension handles filenames with a single extension.",
   {
-    x <- c(
-      "somedir/foo.tgz",         # single extension
-      "another dir\\bar.tar.gz", # double extension
-      "baz",                     # no extension
-      "quux. quuux.tbz2",        # single ext, dots in filename
-      r_home()                   # a dir
-    )
+    x <- "somedir/foo.tgz"
     new_extension <- "NEW"
-    expected <- c(
-      paste(
-        standardize_path(
-          c("somedir/foo", "another dir/bar", "baz", "quux. quuux"), 
-        ), 
-        new_extension, 
-        sep = "."
-      ),
-      r_home()
-    )
+    expected <- "somedir/foo.NEW"
+    names(expected) <- x
+    expect_identical(replace_extension(x, new_extension), expected)
+  }
+)
+
+test_that(
+  "replace_extension handles filenames with a double extension.",
+  {
+    x <- "somedir/foo.tar.gz"
+    new_extension <- "NEW"
+    expected <- "somedir/foo.NEW"
+    names(expected) <- x
+    expect_identical(replace_extension(x, new_extension), expected)
+  }
+)
+
+test_that(
+  "replace_extension handles filenames with no extension.",
+  {
+    x <- "somedir/foo"
+    new_extension <- "NEW"
+    expected <- "somedir/foo.NEW"
+    names(expected) <- x
+    expect_identical(replace_extension(x, new_extension), expected)
+  }
+)
+
+test_that(
+  "replace_extension handles directories.",
+  {
+    # This has to be a real directory since it is not possible to tell if
+    # a non-existent 'foo' refers to a directory or filename.
+    x <- getwd()
+    new_extension <- "NEW"
+    expected <- x
     names(expected) <- x
     expect_warning(
       actual <- replace_extension(x, new_extension), 
@@ -560,6 +610,19 @@ test_that(
   }
 )
 
-
+test_that(
+  "replace_extension handles empty replacement extensions.",
+  {
+    x <- "somedir/foo.tgz"
+    new_extension <- ""
+    expected <- "somedir/foo."
+    names(expected) <- x
+    expect_warning(
+      actual <- replace_extension(x, new_extension), 
+      "'new_extension' is empty.  Did you want strip_extension instead?"
+    )
+    expect_identical(actual, expected)
+  }
+)
 
 
