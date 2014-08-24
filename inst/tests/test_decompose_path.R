@@ -83,8 +83,7 @@ test_that(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
       extension        = "tar.gz",
-      row.names        = x, 
-      stringsAsFactors = FALSE
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -313,7 +312,7 @@ expected_catz <- create_expected_decomposed_path(
   extension = c(
     "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
   ),
-  row.names = x
+  row.names = catz
 )
 
 test_that(
@@ -417,17 +416,20 @@ test_that(
   }
 )
 
+
 test_that(
   "strip_extension works with paths with no directory and a single extension in the filename.",
   {
     x <- "foo.tgz"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "foo", 
+      true  = file.path(getwd(), "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -435,13 +437,15 @@ test_that(
   "strip_extension works with paths with a directory and a single extension in the filename.",
   {
     x <- "somedir/foo.tgz"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "somedir", "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "somedir/foo", 
+      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -449,13 +453,15 @@ test_that(
   "strip_extension works with paths with no directory and a double extension in the filename.",
   {
     x <- "foo.tar.gz"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "foo", 
+      true  = file.path(getwd(), "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -463,13 +469,15 @@ test_that(
   "strip_extension works with paths with a directory and a double extension in the filename.",
   {
     x <- "somedir/foo.tar.gz"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "somedir", "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "somedir/foo", 
+      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -477,13 +485,15 @@ test_that(
   "strip_extension works with paths with no directory and no extension in the filename.",
   {
     x <- "foo"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "foo", 
+      true  = file.path(getwd(), "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -491,13 +501,15 @@ test_that(
   "strip_extension works with paths with a directory and no extension in the filename.",
   {
     x <- "somedir/foo"
-    pwd <- getwd()
-    expected <- "foo"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "somedir", "foo")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "somedir/foo", 
+      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      false = "foo"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -505,13 +517,15 @@ test_that(
   "strip_extension handles filenames containing a '.' and an extension.",
   {
     x <- "foo. bar.zip"
-    pwd <- getwd()
-    expected <- "foo. bar"
-    names(expected) <- x
-    expected2 <- file.path(pwd, "foo. bar")
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = "foo. bar", 
+      true  = file.path(getwd(), "foo. bar", fsep = "/"), 
+      false = "foo. bar"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
@@ -519,55 +533,42 @@ test_that(
   "strip_extension handles directories.",
   {
     x <- R.home()
-    pwd <- getwd()
-    expected <- ""
-    names(expected) <- x
-    expected2 <- normalizePath(x, "/", mustWork = FALSE)
-    names(expected2) <- x
-    expect_equal(strip_extension(x, include_dir = FALSE), expected)
-    expect_equal(strip_extension(x), expected2)
+    expected <- list(
+      na    = x, 
+      true  = r_home(), 
+      false = ""
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(strip_extension(x), expected$na)
+    expect_equal(strip_extension(x, include_dir = TRUE), expected$true)
+    expect_equal(strip_extension(x, include_dir = FALSE), expected$false)
   }
 )
 
-
-# test_that(
-#   "replace_extension works correctly",
-#   {
-#     x <- c(
-#       "somedir/foo.tgz",         # single extension
-#       "another dir\\bar.tar.gz", # double extension
-#       "baz",                     # no extension
-#       "quux. quuux.tbz2",        # single ext, dots in filename
-#       r_home()                   # a dir
-#     )
-#     new_extension <- "NEW"
-#     expected <- c(
-#       paste(
-#         standardize_path(
-#           c("somedir/foo", "another dir/bar", "baz", "quux. quuux"), 
-#         ), 
-#         new_extension, 
-#         sep = "."
-#       ),
-#       r_home()
-#     )
-#     names(expected) <- x
-#     expect_warning(
-#       actual <- replace_extension(x, new_extension), 
-#       "The directories .* have no file extensions to replace."
-#     )
-#     expect_equal(actual, expected)
-#   }
-# )
 
 test_that(
   "replace_extension handles filenames with a single extension.",
   {
     x <- "somedir/foo.tgz"
     new_extension <- "NEW"
-    expected <- "somedir/foo.NEW"
-    names(expected) <- x
-    expect_equal(replace_extension(x, new_extension), expected)
+    expected <- list(
+      na    = "somedir/foo.NEW", 
+      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      false = "foo.NEW"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(
+      replace_extension(x, new_extension), 
+      expected$na
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = TRUE), 
+      expected$true
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = FALSE), 
+      expected$false
+    )
   }
 )
 
@@ -576,9 +577,24 @@ test_that(
   {
     x <- "somedir/foo.tar.gz"
     new_extension <- "NEW"
-    expected <- "somedir/foo.NEW"
-    names(expected) <- x
-    expect_equal(replace_extension(x, new_extension), expected)
+    expected <- list(
+      na    = "somedir/foo.NEW", 
+      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      false = "foo.NEW"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(
+      replace_extension(x, new_extension), 
+      expected$na
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = TRUE), 
+      expected$true
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = FALSE), 
+      expected$false
+    )
   }
 )
 
@@ -587,9 +603,24 @@ test_that(
   {
     x <- "somedir/foo"
     new_extension <- "NEW"
-    expected <- "somedir/foo.NEW"
-    names(expected) <- x
-    expect_equal(replace_extension(x, new_extension), expected)
+    expected <- list(
+      na    = "somedir/foo.NEW", 
+      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      false = "foo.NEW"
+    )
+    expected <- lapply(expected, function(y) setNames(y, x))
+    expect_equal(
+      replace_extension(x, new_extension), 
+      expected$na
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = TRUE), 
+      expected$true
+    )
+    expect_equal(
+      replace_extension(x, new_extension, include_dir = FALSE), 
+      expected$false
+    )
   }
 )
 
@@ -598,15 +629,31 @@ test_that(
   {
     # This has to be a real directory since it is not possible to tell if
     # a non-existent 'foo' refers to a directory or filename.
-    x <- getwd()
+    x <- R.home()
     new_extension <- "NEW"
-    expected <- x
-    names(expected) <- x
-    expect_warning(
-      actual <- replace_extension(x, new_extension), 
-      "The directories .* have no file extensions to replace."
+    expected <- list(
+      na    = x, 
+      true  = r_home(), 
+      false = ""
     )
-    expect_equal(actual, expected)
+    expected <- lapply(expected, function(y) setNames(y, x))
+    error_rx <- "The directories .* have no file extensions to replace."
+    actual <- list()
+    expect_warning(
+      actual$na <- replace_extension(x, new_extension), 
+      error_rx
+    )
+    expect_warning(
+      actual$true <- replace_extension(x, new_extension, include_dir = TRUE), 
+      error_rx
+    )
+    expect_warning(
+      actual$false <- replace_extension(x, new_extension, include_dir = FALSE), 
+      error_rx
+    )
+    expect_equal(actual$na, expected$na)
+    expect_equal(actual$true, expected$true)
+    expect_equal(actual$false, expected$false)
   }
 )
 
@@ -615,13 +662,29 @@ test_that(
   {
     x <- "somedir/foo.tgz"
     new_extension <- ""
-    expected <- "somedir/foo."
-    names(expected) <- x
-    expect_warning(
-      actual <- replace_extension(x, new_extension), 
-      "'new_extension' is empty.  Did you want strip_extension instead?"
+    expected <- list(
+      na    = "somedir/foo.", 
+      true  = file.path(getwd(), "somedir", "foo.", fsep = "/"), 
+      false = "foo."
     )
-    expect_equal(actual, expected)
+    expected <- lapply(expected, function(y) setNames(y, x))
+    error_rx <- "'new_extension' is empty.  Did you want strip_extension instead?"
+    actual <- list()
+    expect_warning(
+      actual$na <- replace_extension(x, new_extension), 
+      error_rx
+    )
+    expect_warning(
+      actual$true <- replace_extension(x, new_extension, include_dir = TRUE), 
+      error_rx
+    )
+    expect_warning(
+      actual$false <- replace_extension(x, new_extension, include_dir = FALSE), 
+      error_rx
+    )
+    expect_equal(actual$na, expected$na)
+    expect_equal(actual$true, expected$true)
+    expect_equal(actual$false, expected$false)
   }
 )
 
