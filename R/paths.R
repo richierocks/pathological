@@ -329,8 +329,12 @@ recompose_path.decomposed_path <- function(x, ...)
 
 #' @rdname decompose_path
 #' @export
-replace_extension <- function(x = dir(), new_extension)
+replace_extension <- function(x = dir(), new_extension, include_dir = TRUE)
 {
+  if(!nzchar(new_extension))
+  {
+    warning("'new_extension' is empty.  Did you want strip_extension instead?")
+  }
   is_dir_x <- is_dir(x)
   if(any(is_dir_x))
   {
@@ -343,14 +347,14 @@ replace_extension <- function(x = dir(), new_extension)
   ifelse(
     is_dir_x,
     x,
-    paste(strip_extension(x), new_extension, sep = ".")
+    paste(strip_extension(x, include_dir = include_dir), new_extension, sep = ".")
   )
 }
 
 #' Split a path into directory components
 #' 
-#' Splits a character vector of paths into directory components.  The opposite of 
-#' \code{\link[base]{file.path}}.
+#' Splits a character vector of paths into directory components.  The opposite  
+#' of \code{\link[base]{file.path}}.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
 #' @return A named list of character vectors containing the split paths.
