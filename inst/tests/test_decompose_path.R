@@ -279,7 +279,7 @@ test_that(
     )
     expect_warning(
       actual <- decompose_path(x), 
-      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+      "Coercing .+ to class .{1,3}character.{1,3}\\."
     )
     expect_equal(actual, expected)
   }
@@ -329,7 +329,7 @@ test_that(
     x <- factor(catz)
     expect_warning(
       actual <- decompose_path(x), 
-      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+      "Coercing .+ to class .{1,3}character.{1,3}\\."
     )
     expect_equal(actual, expected_catz)
   }
