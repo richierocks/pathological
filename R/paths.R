@@ -170,7 +170,8 @@ decompose_path <- function(x = dir())
           dirname = character(), 
           filename = character(), 
           extension = character(),
-          stringsAsFactors = FALSE
+          stringsAsFactors = FALSE,
+          row.names = character()
         ),
         class = c("decomposed_path", "data.frame")
       )
