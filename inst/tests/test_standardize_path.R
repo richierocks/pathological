@@ -34,26 +34,83 @@ test_that(
 test_that(
   "standardize_path works with relative paths with forward slashes.",
   {
-    x <- "somedir/foo.tar.gz"
+    x <- "somedir/foo.tgz"
     pwd <- getwd()
-    expected <- file.path(pwd, "somedir", "foo.tar.gz", fsep = "/")
+    expected <- setNames(
+      file.path(pwd, "somedir", "foo.tgz", fsep = "/"),
+      x
+    )
+    expect_equal(standardize_path(x), expected)
   }
 )
 
 test_that(
   "standardize_path works with relative paths with back slashes.",
   {
-    x <- "somedir\\foo.tar.gz"
+    x <- "somedir\\foo.tgz"
     pwd <- getwd()
-    expected <- file.path(pwd, "somedir", "foo.tar.gz", fsep = "/")
+    expected <- setNames(
+      file.path(pwd, "somedir", "foo.tgz", fsep = "/"),
+      x
+    )
+    expect_equal(standardize_path(x), expected)
   }
 )
 
 test_that(
   "standardize_path works with relative paths with mixed forward and back slashes.",
   {
-    x <- "somedir/another dir\\foo.tar.gz"
+    x <- "somedir/another dir\\foo.tgz"
     pwd <- getwd()
-    expected <- file.path(pwd, "somedir", "another dir", "foo.tar.gz", fsep = "/")
+    expected <- setNames(
+      file.path(pwd, "somedir", "another dir", "foo.tgz", fsep = "/"),
+      x
+    )
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with absolute Windows paths with forward slashes.",
+  {
+    x <- "c:/foo/bar"
+    expected <- setNames("c:/foo/bar", x)
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with absolute Windows paths with back slashes.",
+  {
+    x <- "c:\\foo\\bar"
+    expected <- setNames("c:/foo/bar", x)
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with absolute Windows paths with mixed forward and back slashes.",
+  {
+    x <- "c:/foo\\bar"
+    expected <- setNames("c:/foo/bar", x)
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with absolute UNC paths with forward slashes.",
+  {
+    x <- "//foo/bar"
+    expected <- setNames("//foo/bar", x)
+    expect_equal(standardize_path(x), expected)
+  }
+)
+
+test_that(
+  "standardize_path works with absolute UNC paths with back slashes.",
+  {
+    x <- "\\\\foo\\bar"
+    expected <- setNames("//foo/bar", x)
+    expect_equal(standardize_path(x), expected)
   }
 )

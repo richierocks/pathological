@@ -120,10 +120,10 @@ cygwinify_path <- function(x = dir())
 #' \code{decompose_path} and returns complete paths.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
+#' @param new_extension A new extension to replace the existing ones.
 #' @param include_dir Should the directory part of the path be included? If 
 #' \code{NA}, the default, keep the directory from the input.  If \code{TRUE},
 #' standardize the directory.  If \code{FALSE}, strip the directory.
-#' @param new_extension A new extension to replace the existing ones.
 #' @param ... Not currently used.
 #' @return \code{decompose_path} returns a character matrix with three 
 #' columns named \code{"dirname"}, \code{"filename"} and \code{"extension"}.
@@ -274,9 +274,9 @@ get_extension <- function(x = dir())
 #' @seealso \code{\link[base]{Sys.getenv}}
 #' @examples
 #' os_path()
-#' @importFrom asssertive is_windows
-#' @importFrom asssertive assert_is_a_bool
-#' @importFrom asssertive assert_is_a_string
+#' @importFrom assertive is_windows
+#' @importFrom assertive assert_is_a_bool
+#' @importFrom assertive assert_is_a_string
 #' @export
 os_path <- function(sep = c("/", "\\"), standardize = TRUE, 
   splitter = if(is_windows()) ";" else ":")
@@ -345,6 +345,7 @@ recompose_path.decomposed_path <- function(x, ...)
 }
 
 #' @rdname decompose_path
+#' @importFrom assertive is_dir
 #' @export
 replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
@@ -397,7 +398,7 @@ split_path <- function(x = dir())
   split_x <- strsplit(x, "(?<=[^/\\\\])[/\\\\]", perl = TRUE)
   # setting names in a list, as of R3.1.1 processes backslashes cat-style, so 
   # need to duplicate them
-  original_x <- str_replace_all(original_x, fixed("\\"), "\\\\")
+  # original_x <- str_replace_all(original_x, fixed("\\"), "\\\\")
   setNames(split_x, original_x)
 }
 
@@ -418,6 +419,7 @@ split_path <- function(x = dir())
 #' @importFrom assertive is_not_missing_nor_empty_character
 #' @importFrom assertive coerce_to
 #' @importFrom assertive is_unix
+#' @importFrom assertive is_windows
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_detect
@@ -446,10 +448,17 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   if(is_unix())
   {
     x[ok] <- ifelse(
-      str_detect(x[ok], "^/"),
+      str_detect(x[ok], "^(/|[[:alpha:]]:)"),
       x[ok], 
       file.path(getwd(), x[ok], fsep = "/")
     )
+  }
+  
+  # Under Windows, normalizePath prefixes UNC paths with backslashes rather than 
+  # forward slashes
+  if(is_windows())
+  {
+    x[ok] <- str_replace(x[ok], "^\\\\\\\\", "//")
   }
   
   # strip trailing slashes
@@ -468,6 +477,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
 standardise_path <- standardize_path
 
 #' @rdname decompose_path
+#' @importFrom assertive is_dir
 #' @export
 strip_extension <- function(x = dir(), include_dir = NA)
 {
