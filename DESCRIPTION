@@ -1,8 +1,8 @@
 Package: pathological
 Type: Package
 Title: Path manipulation utilities
-Version: 0.0-2
-Date: 2014-08-19
+Version: 0.0-3
+Date: 2014-08-25
 Author: Richard Cotton [aut, cre], Janko Thyson [ctb]
 Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),

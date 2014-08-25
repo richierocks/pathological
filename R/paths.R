@@ -114,9 +114,9 @@ cygwinify_path <- function(x = dir())
 #' Split a path into its components
 #' 
 #' \code{decompose_path} splits a path into the directory name, filename 
-#' without extension, and extension. \code{strip_extension} and 
-#' \code{get_extension} provide shortcuts to the second and third parts
-#' of the filename. \code{recompose_path} takes the result of 
+#' without extension, and extension. \code{strip_extension}, 
+#' \code{get_extension} and \code{replace_extension} provide shortcuts to 
+#' manipulate the file extension. \code{recompose_path} takes the result of 
 #' \code{decompose_path} and returns complete paths.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
@@ -129,8 +129,8 @@ cygwinify_path <- function(x = dir())
 #' columns named \code{"dirname"}, \code{"filename"} and \code{"extension"}.
 #' \code{strip_extension} returns a character vector of the filename, possibly 
 #' with a directory (see \code{include_dir} argument).
-#' \code{strip_extension} returns a character vector of the filename with a new 
-#' extension, possibly with a directory (see \code{include_dir} argument).
+#' \code{replace_extension} returns a character vector of the filename with a  
+#' newextension, possibly with a directory (see \code{include_dir} argument).
 #' \code{get_extension} returns a character vector of the third column.
 #' \code{recompose_path} returns a character vector of paths.
 #' @examples
@@ -346,9 +346,13 @@ recompose_path.decomposed_path <- function(x, ...)
 
 #' @rdname decompose_path
 #' @importFrom assertive is_dir
+#' @importFrom assertive assert_is_a_bool
+#' @importFrom assertive assert_is_character
 #' @export
 replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
+  assert_is_character(new_extension)
+  assert_is_a_bool(include_dir)
   if(!nzchar(new_extension))
   {
     warning("'new_extension' is empty.  Did you want strip_extension instead?")
