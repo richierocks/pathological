@@ -268,20 +268,31 @@ get_extension <- function(x = dir())
 #' The locations in the operating system \code{PATH} environment variable.
 #' @param sep String separator between directory levels in the output.
 #' @param standardize Should the paths be standardized?
+#' @param splitter The character to split the PATH environment variable on.
+#' Defaults to a semi-colon on Windows systems and a colon elsewhere.
 #' @return A character vector of paths.
 #' @seealso \code{\link[base]{Sys.getenv}}
 #' @examples
 #' os_path()
+#' @importFrom asssertive is_windows
+#' @importFrom asssertive assert_is_a_bool
+#' @importFrom asssertive assert_is_a_string
 #' @export
-os_path <- function(sep = c("/", "\\"), standardize = TRUE)
+os_path <- function(sep = c("/", "\\"), standardize = TRUE, 
+  splitter = if(is_windows()) ";" else ":")
 {
-  path <- Sys.getenv("PATH", NA)
-  if(is.na(path))
+  assert_is_a_bool(standardize)
+  assert_is_a_string(splitter)
+  
+  path <- Sys.getenv("PATH")
+  path <- if(!nzchar(path))
   {
-    warning("The 'PATH' environment variable has not been set.")
-    return(character())
+    warning("The 'PATH' environment variable is unset or empty.")
+    character()
+  } else
+  {
+    strsplit(path, splitter)[[1]]
   }
-  path <- strsplit(path, ";")[[1]]
   if(standardize)
   {
     standardize_path(path, sep = sep)  
@@ -561,7 +572,7 @@ system_file <- function(..., package = "base", library_location = NULL,
 
 #' Create a temp file/dir
 #' 
-#' Wrappers to \code{tempdir} and \code{tempfile} that returns standardized 
+#' Wrappers to \code{tempdir} and \code{tempfile} that return standardized 
 #' paths.
 #' @param ... Passed to \code{tempfile}
 #' @param sep String separator between directory levels in the output.
