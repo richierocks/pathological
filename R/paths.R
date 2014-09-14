@@ -84,7 +84,7 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
 #' @return A character vector of the cygwinified inputs.
 #' @seealso \code{standardize_path}
 #' @examples
-#' cygwinify_path(c("~", "\\\\some/network/drive"))
+#' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
 #' @importFrom assertive is_windows
 #' @importFrom stringr fixed
 #' @importFrom stringr str_detect
@@ -96,8 +96,10 @@ cygwinify_path <- function(x = dir())
   {
     warning(
       "This function is expecting to be run under Windows, but the OS is ", 
-      .Platform$OS.type
+      .Platform$OS.type,
+      ".  Returning x untouched."
     )
+    return(invisible(x))
   }
   cygwinified_x <- standardize_path(x)
   colon <- fixed(":")
@@ -445,7 +447,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   x[ok] <- ifelse(
     is.na(x[ok]),
     NA_character_,
-    normalizePath(x[ok], "/", FALSE)
+    normalizePath(x[ok], "/", mustWork = FALSE)
   )
   
   # again under Unix, normalizePath won't make path absolute
