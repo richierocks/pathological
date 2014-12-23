@@ -84,7 +84,9 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
 #' @return A character vector of the cygwinified inputs.
 #' @seealso \code{standardize_path}
 #' @examples
+#' \dontrun{
 #' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
+#' }
 #' @importFrom assertive is_windows
 #' @importFrom stringr fixed
 #' @importFrom stringr str_detect
@@ -158,6 +160,7 @@ cygwinify_path <- function(x = dir())
 #' @importFrom assertive coerce_to
 #' @importFrom assertive is_not_na
 #' @importFrom assertive is_dir
+#' @importFrom assertive strip_attributes
 #' @importFrom stringr str_detect
 #' @importFrom stringr fixed
 #' @importFrom stringr str_match
@@ -169,11 +172,11 @@ decompose_path <- function(x = dir())
     return(
       structure(
         data.frame(
-          dirname = character(), 
-          filename = character(), 
-          extension = character(),
+          dirname          = character(), 
+          filename         = character(), 
+          extension        = character(),
           stringsAsFactors = FALSE,
-          row.names = character()
+          row.names        = character()
         ),
         class = c("decomposed_path", "data.frame")
       )
@@ -181,7 +184,7 @@ decompose_path <- function(x = dir())
   }
   original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
-  not_missing <- is_not_na(x)
+  not_missing <- strip_attributes(is_not_na(x))
   is_dir_x <- is_dir(x)
   
   basename_x <- ifelse(
@@ -350,6 +353,7 @@ recompose_path.decomposed_path <- function(x, ...)
 #' @importFrom assertive is_dir
 #' @importFrom assertive assert_is_a_bool
 #' @importFrom assertive assert_is_character
+#' @importFrom assertive strip_attributes
 #' @export
 replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
@@ -359,7 +363,7 @@ replace_extension <- function(x = dir(), new_extension, include_dir = NA)
   {
     warning("'new_extension' is empty.  Did you want strip_extension instead?")
   }
-  is_dir_x <- is_dir(x)
+  is_dir_x <- strip_attributes(is_dir(x))
   if(any(is_dir_x))
   {
     warning(
@@ -369,10 +373,13 @@ replace_extension <- function(x = dir(), new_extension, include_dir = NA)
     )
   }
   stripped <- strip_extension(x, include_dir = include_dir)
-  ifelse(
-    is_dir_x,
-    stripped,
-    paste(stripped, new_extension, sep = ".")
+  setNames(
+    ifelse(
+      is_dir_x,
+      stripped,
+      paste(stripped, new_extension, sep = ".")
+    ),
+    names(stripped)
   )
 }
 
