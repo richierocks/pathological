@@ -3,6 +3,21 @@ pathological
 
 R package of utilities for handling paths, files and directories
 
+### Installation
+
+To install, you first need the devtools package.
+
+```{r}
+install.packages("devtools")
+```
+
+Then you can install the pathological package using
+
+```{r}
+library(devtools)
+install_github("pathological", "richierocks")
+```
+
 ### Decomposing paths
 
 `decompose_path` splits a path into a directory name, file name (without 
