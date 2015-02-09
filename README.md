@@ -19,7 +19,7 @@ On Windows, `get_drive` returns the drive name of the path.
 
 `copy_dir` copies the contents of a directory.
 
-### Standarizing paths
+### Standardizing paths
 
 `standardize_path` (and `standardise_path`, for British English fans) is a 
 wrapper to `base::normalizePath` that standardizes the form of a path, to make
