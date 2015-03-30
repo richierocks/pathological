@@ -708,6 +708,7 @@ strip_extension <- function(x = dir(), include_dir = NA)
 #' \code{Sys.which}.)
 #' @seealso \code{\link[base]{Sys.which}}
 #' @examples
+#' sys_which("R")              # R executable
 #' sys_which(c("make", "gcc")) # tools for running Rcpp
 #' @export
 sys_which <- function(x, sep = c("/", "\\"))
