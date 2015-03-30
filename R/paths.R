@@ -354,8 +354,11 @@ is_windows_drive <- function(x)
     return(rep.int(FALSE, length(x)))
   }
   original_x <- x <- coerce_to(x, "character")
-  x <- standardize_path(x)
-  yn <- str_detect(x, "^[[:alpha:]]:$") # [/\\]? not needed due to st'dization
+  # Want to resolve paths with . or ..
+  starts_with_dots <- str_detect(x, "^\\.{1,2}[/\\]?")
+  # Can't use standardize_path since we want that fn to use this
+  x[starts_with_dots] <- normalizePath(x[starts_with_dots]) 
+  yn <- str_detect(x, "^[[:alpha:]]:[/\\]?$")
   setNames(yn, original_x)
 }
 
