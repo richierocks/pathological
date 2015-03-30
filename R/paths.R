@@ -559,7 +559,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   # Replace / with the chosen slash
   if(sep == "\\")
   {
-    x[ok] <- str_replace_all(x[ok], "/", "\\")
+    x[ok] <- str_replace_all(x[ok], fixed("/"), "\\")
   }
   setNames(x, original_x)
 }
