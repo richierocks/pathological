@@ -279,6 +279,7 @@ dir_copy <- function(...)
 #' @param x A character vector of file paths. Defaults to the current directory.
 #' @return A character vector of drive paths on Windows systems, or forward 
 #' slashes on Unix-based systems.
+#' @seealso \code{\link{is_windows_drive}}
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
 #' @importFrom assertive is_windows
@@ -312,14 +313,25 @@ get_extension <- function(x = dir())
 #' optionally followed by a slash or backslash.
 #' Paths are standardardized before checking, so \code{.} and \code{..} are 
 #' resolved to their actual locations rather than always returning \code{FALSE}.
+#' @seealso \code{\link{get_drive}}
 #' @examples
 #' x <- c("c:", "c:/", "c:\\", "C:", "C:/", "C:\\", "c:/c", "cc:", NA)
-#' is_windows_drive(x)
+#' # Warnings about OS suppressed so package checks pass on non-Windows systems.
+#' suppressWarnings(is_windows_drive(x))
+#' @importFrom assertive is_windows
 #' @importFrom assertive coerce_to
 #' @importFrom stringr str_detect
 #' @export
 is_windows_drive <- function(x)
 {
+  if(!is_windows())
+  {
+    warning(
+      "This function is expecting to be run under Windows, but the OS is ", 
+      .Platform$OS.type,
+      "."
+    )
+  }
   original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
   yn <- str_detect(x, "^[[:alpha:]]:$") # [/\\]? not needed due to st'dization
