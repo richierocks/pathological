@@ -268,6 +268,31 @@ get_extension <- function(x = dir())
   setNames(decompose_path(x)$extension, x)  
 }
 
+#' Is the path a Windows drive?
+#' 
+#' Checks to see if the path is a Windows drive.
+#' @param x A character vector of file paths. Defaults to files in the 
+#' current directory.
+#' @return A logical vector, \code{TRUE} when the path is a Windows drive name.
+#' @note The check is done by regular expression: values are considered to be 
+#' Windows drive name if they consist of a letter followed by a colon, 
+#' optionally followed by a slash or backslash.
+#' Paths are standardardized before checking, so \code{.} and \code{..} are 
+#' resolved to their actual locations rather than always returning \code{FALSE}.
+#' @examples
+#' x <- c("c:", "c:/", "c:\\", "C:", "C:/", "C:\\", "c:/c", "cc:", NA)
+#' is_windows_drive(x)
+#' @importFrom assertive coerce_to
+#' @importFrom stringr str_detect
+#' @export
+is_windows_drive <- function(x)
+{
+  original_x <- x <- coerce_to(x, "character")
+  x <- standardize_path(x)
+  yn <- str_detect(x, "^[[:alpha:]]:$") # [/\\]? not needed due to st'dization
+  setNames(yn, original_x)
+}
+
 #' The OS path 
 #' 
 #' The locations in the operating system \code{PATH} environment variable.
