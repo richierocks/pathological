@@ -468,10 +468,10 @@ r_profile_site <- function(sep = c("/", "\\"))
   if(is.na(x))
   {
     # "If this variable is unset, the default is ‘R_HOME/etc/Rprofile.site’"
-    path <- r_home("etc", "Rprofile.site", sep = sep)
-    if(file.exists(path))
+    x <- r_home("etc", "Rprofile.site", sep = sep)
+    x <- if(file.exists(x))
     {
-      path
+      x
     } else
     {
       NA_character_
