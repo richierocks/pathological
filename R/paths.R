@@ -302,6 +302,25 @@ get_extension <- function(x = dir())
   setNames(decompose_path(x)$extension, x)  
 }
 
+#' Get the libraries on your machine
+#' 
+#' Wrapper to \code{\link[base]{.libPaths}} that gets all the libraries that R 
+#' knows about on your machine.
+#' @param index A numberic or logical vector specifying the index of the 
+#' libraries to return.  By default, all libraries are returned.
+#' @param sep String separator between directory levels in the output.
+#' @return A character vector of paths to libraries.
+#' @seealso \code{\link[base]{.libPaths}}
+#' @references \url{http://cran.r-project.org/doc/FAQ/R-FAQ.html#What-is-the-difference-between-package-and-library_003f}
+#' @examples
+#' get_libraries()
+#' get_libraries(1)
+#' @export
+get_libraries <- function(index = TRUE, sep = c("/", "\\"))
+{
+  unname(standardize_path(.libPaths()[index], sep = sep))
+}
+
 #' Is the path a Windows drive?
 #' 
 #' Checks to see if the path is a Windows drive.
