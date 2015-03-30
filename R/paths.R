@@ -308,6 +308,7 @@ get_extension <- function(x = dir())
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
 #' @return A logical vector, \code{TRUE} when the path is a Windows drive name.
+#' On non-Windows machines, the return value is \code{FALSE} everywhere.
 #' @note The check is done by regular expression: values are considered to be 
 #' Windows drive name if they consist of a letter followed by a colon, 
 #' optionally followed by a slash or backslash.
@@ -331,6 +332,7 @@ is_windows_drive <- function(x)
       .Platform$OS.type,
       "."
     )
+    return(rep.int(FALSE, length(x)))
   }
   original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
