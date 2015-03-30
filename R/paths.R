@@ -393,7 +393,75 @@ os_path <- function(sep = c("/", "\\"), standardize = TRUE,
 #' @export
 r_home <- function(component = "home", ..., sep = c("/", "\\"))
 {
+  sep <- match.arg(sep)
   standardize_path(file.path(Vectorize(R.home)(component), ...), sep = sep)
+}
+
+#' Get the location of the R profile
+#' 
+#' Gets the location of the user of site R profile startup file.
+#' @param sep String separator between directory levels in the output.
+#' @return A string giving the path the \code{".Rprofile"} or 
+#' \code{"Rprofile.site"}.  If the file cannot be found, NA is returned.
+#' @seealso \code{\link[base]{Startup}} for how this is calculated.
+#' @examples
+#' r_profile()
+#' r_profile_site()
+#' r_profile("\\")
+#' r_profile_site("\\")
+#' @export
+r_profile <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The path of this file can be specified by the R_PROFILE_USER environment 
+  # variable"
+  x <- Sys.getenv("R_PROFILE_USER", NA)
+  if(is.na(x))
+  {
+    # "If this is unset, a file called ‘.Rprofile’ is searched for in the 
+    # current directory"
+    x <- if(file.exists(".Rprofile"))
+    {
+      ".Rprofile"
+    } else if(file.exists("~/.Rprofile"))
+    {
+      # "or in the user's home directory (in that order)"
+      "~/.Rprofile"
+    } else 
+    {
+      NA_character_
+    }
+  } 
+  x <- standardize_path(x, sep = sep)    
+  unname(x)
+}
+
+#' @rdname r_profile
+#' @export
+r_profile_site <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The path of this file is taken from the value of the R_PROFILE environment 
+  # variable"
+  x <- Sys.getenv("R_PROFILE", NA)
+  if(is.na(x))
+  {
+    # "If this variable is unset, the default is ‘R_HOME/etc/Rprofile.site’"
+    path <- r_home("etc", "Rprofile.site", sep = sep)
+    if(file.exists(path))
+    {
+      path
+    } else
+    {
+      NA_character_
+    }
+  } else
+  {
+    x <- standardize_path(x, sep = sep)
+  }
+  unname(x)
 }
 
 #' @rdname decompose_path
