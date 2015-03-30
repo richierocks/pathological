@@ -75,6 +75,39 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
   invisible(ok)
 }
 
+#' Create or remove directories
+#' 
+#' A vectorized version of \code{\link[base]{dir.create}}, and 
+#' \code{\link[base]{unlink}} with more convenient defaults.
+#' @param x A character vector of paths of directories to create/remove. 
+#' For \code{create_dirs}, it defaults to a directory inside \code{tempdir()}.
+#' @return A logical vector of successes of failures.
+#' @note \code{\link[base]{unlink}}, and consequently \code{remove_dirs},
+#' sometimes fails to remove empty directories.
+#' See \url{https://bugs.r-project.org/bugzilla3/show_bug.cgi?id=16287}.
+#' @seealso \code{\link[base]{dir.create}}, \code{\link[base]{unlink}}
+#' @examples
+#' \donttest{
+#' dirs <- file.path(temp_dir(), c("foo", "bar/baz"))
+#' create_dirs(dirs)
+#' 
+#' # Check this worked:
+#' assert_all_are_dirs(dirs)
+#' 
+#' # Clean up
+#' remove_dirs(dirs)
+#' }
+#' @export
+create_dirs <- function(x = temp_file(pattern = "dir"))
+{
+  vapply(
+    setNames(x, x),
+    dir.create,
+    logical(1),
+    recursive = TRUE
+  )
+}
+
 #' Make a path suitable for cygwin
 #' 
 #' By default, cygwin complains about standard paths.  This function converts 
@@ -372,6 +405,13 @@ recompose_path.decomposed_path <- function(x, ...)
   )
   path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
   path
+}
+
+#' @rdname create_dirs
+#' @export
+remove_dirs <- function(x)
+{
+  unlink(x, recursive = TRUE, force = TRUE)
 }
 
 #' @rdname decompose_path
