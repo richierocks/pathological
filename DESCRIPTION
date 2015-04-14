@@ -8,6 +8,8 @@ Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
     email = "richierocks@gmail.com"), person("Janko", "Thyson", role = "ctb"))
 Description: Utilities for paths, files and directories.
+URL: https://github.com/richierocks/pathological
+BugReports: https://github.com/richierocks/pathological/issues
 Depends:
     R (>= 2.15.0)
 Imports:
