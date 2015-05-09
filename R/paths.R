@@ -75,6 +75,39 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
   invisible(ok)
 }
 
+#' Create or remove directories
+#' 
+#' A vectorized version of \code{\link[base]{dir.create}}, and 
+#' \code{\link[base]{unlink}} with more convenient defaults.
+#' @param x A character vector of paths of directories to create/remove. 
+#' For \code{create_dirs}, it defaults to a directory inside \code{tempdir()}.
+#' @return A logical vector of successes of failures.
+#' @note \code{\link[base]{unlink}}, and consequently \code{remove_dirs},
+#' sometimes fails to remove empty directories.
+#' See \url{https://bugs.r-project.org/bugzilla3/show_bug.cgi?id=16287}.
+#' @seealso \code{\link[base]{dir.create}}, \code{\link[base]{unlink}}
+#' @examples
+#' \donttest{
+#' dirs <- file.path(temp_dir(), c("foo", "bar/baz"))
+#' create_dirs(dirs)
+#' 
+#' # Check this worked:
+#' assert_all_are_dirs(dirs)
+#' 
+#' # Clean up
+#' remove_dirs(dirs)
+#' }
+#' @export
+create_dirs <- function(x = temp_file(pattern = "dir"))
+{
+  vapply(
+    setNames(x, x),
+    dir.create,
+    logical(1),
+    recursive = TRUE
+  )
+}
+
 #' Make a path suitable for cygwin
 #' 
 #' By default, cygwin complains about standard paths.  This function converts 
@@ -84,7 +117,9 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
 #' @return A character vector of the cygwinified inputs.
 #' @seealso \code{standardize_path}
 #' @examples
-#' cygwinify_path(c("~", "\\\\some/network/drive"))
+#' \dontrun{
+#' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
+#' }
 #' @importFrom assertive is_windows
 #' @importFrom stringr fixed
 #' @importFrom stringr str_detect
@@ -96,8 +131,10 @@ cygwinify_path <- function(x = dir())
   {
     warning(
       "This function is expecting to be run under Windows, but the OS is ", 
-      .Platform$OS.type
+      .Platform$OS.type,
+      ".  Returning x untouched."
     )
+    return(invisible(x))
   }
   cygwinified_x <- standardize_path(x)
   colon <- fixed(":")
@@ -114,19 +151,24 @@ cygwinify_path <- function(x = dir())
 #' Split a path into its components
 #' 
 #' \code{decompose_path} splits a path into the directory name, filename 
-#' without extension, and extension. \code{strip_extension} and 
-#' \code{get_extension} provide shortcuts to the second and third parts
-#' of the filename. \code{recompose_path} takes the result of 
+#' without extension, and extension. \code{strip_extension}, 
+#' \code{get_extension} and \code{replace_extension} provide shortcuts to 
+#' manipulate the file extension. \code{recompose_path} takes the result of 
 #' \code{decompose_path} and returns complete paths.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
-#' @param include_dir Should the directory part of the path be included?
 #' @param new_extension A new extension to replace the existing ones.
+#' @param include_dir Should the directory part of the path be included? If 
+#' \code{NA}, the default, keep the directory from the input.  If \code{TRUE},
+#' standardize the directory.  If \code{FALSE}, strip the directory.
 #' @param ... Not currently used.
 #' @return \code{decompose_path} returns a character matrix with three 
 #' columns named \code{"dirname"}, \code{"filename"} and \code{"extension"}.
-#' \code{strip_extension} returns a character vector of the second column,
-#' and \code{get_extension} returns a character vector of the third column.
+#' \code{strip_extension} returns a character vector of the filename, possibly 
+#' with a directory (see \code{include_dir} argument).
+#' \code{replace_extension} returns a character vector of the filename with a  
+#' newextension, possibly with a directory (see \code{include_dir} argument).
+#' \code{get_extension} returns a character vector of the third column.
 #' \code{recompose_path} returns a character vector of paths.
 #' @examples
 #' x <- c(
@@ -151,6 +193,7 @@ cygwinify_path <- function(x = dir())
 #' @importFrom assertive coerce_to
 #' @importFrom assertive is_not_na
 #' @importFrom assertive is_dir
+#' @importFrom assertive strip_attributes
 #' @importFrom stringr str_detect
 #' @importFrom stringr fixed
 #' @importFrom stringr str_match
@@ -162,10 +205,11 @@ decompose_path <- function(x = dir())
     return(
       structure(
         data.frame(
-          dirname = character(), 
-          filename = character(), 
-          extension = character(),
-          stringsAsFactors = FALSE
+          dirname          = character(), 
+          filename         = character(), 
+          extension        = character(),
+          stringsAsFactors = FALSE,
+          row.names        = character()
         ),
         class = c("decomposed_path", "data.frame")
       )
@@ -173,7 +217,7 @@ decompose_path <- function(x = dir())
   }
   original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
-  not_missing <- is_not_na(x)
+  not_missing <- strip_attributes(is_not_na(x))
   is_dir_x <- is_dir(x)
   
   basename_x <- ifelse(
@@ -235,6 +279,7 @@ dir_copy <- function(...)
 #' @param x A character vector of file paths. Defaults to the current directory.
 #' @return A character vector of drive paths on Windows systems, or forward 
 #' slashes on Unix-based systems.
+#' @seealso \code{\link{is_windows_drive}}
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
 #' @importFrom assertive is_windows
@@ -257,29 +302,146 @@ get_extension <- function(x = dir())
   setNames(decompose_path(x)$extension, x)  
 }
 
+#' Get the libraries on your machine
+#' 
+#' Wrapper to \code{\link[base]{.libPaths}} that gets all the libraries that R 
+#' knows about on your machine.
+#' @param index A numberic or logical vector specifying the index of the 
+#' libraries to return.  By default, all libraries are returned.
+#' @param sep String separator between directory levels in the output.
+#' @return A character vector of paths to libraries.
+#' @seealso \code{\link[base]{.libPaths}}
+#' @references \url{http://cran.r-project.org/doc/FAQ/R-FAQ.html#What-is-the-difference-between-package-and-library_003f}
+#' @examples
+#' get_libraries()
+#' get_libraries(1)
+#' @export
+get_libraries <- function(index = TRUE, sep = c("/", "\\"))
+{
+  unname(standardize_path(.libPaths()[index], sep = sep))
+}
+
+#' Is the path a Windows drive?
+#' 
+#' Checks to see if the path is a Windows drive.
+#' @param x A character vector of file paths. Defaults to files in the 
+#' current directory.
+#' @return A logical vector, \code{TRUE} when the path is a Windows drive name.
+#' On non-Windows machines, the return value is \code{FALSE} everywhere.
+#' @note The check is done by regular expression: values are considered to be 
+#' Windows drive name if they consist of a letter followed by a colon, 
+#' optionally followed by a slash or backslash.
+#' Paths are standardardized before checking, so \code{.} and \code{..} are 
+#' resolved to their actual locations rather than always returning \code{FALSE}.
+#' @seealso \code{\link{get_drive}}
+#' @examples
+#' x <- c("c:", "c:/", "c:\\", "C:", "C:/", "C:\\", "c:/c", "cc:", NA)
+#' # Warnings about OS suppressed so package checks pass on non-Windows systems.
+#' suppressWarnings(is_windows_drive(x))
+#' @importFrom assertive is_windows
+#' @importFrom assertive coerce_to
+#' @importFrom stringr str_detect
+#' @export
+is_windows_drive <- function(x)
+{
+  if(!is_windows())
+  {
+    warning(
+      "This function is expecting to be run under Windows, but the OS is ", 
+      .Platform$OS.type,
+      "."
+    )
+    return(rep.int(FALSE, length(x)))
+  }
+  original_x <- x <- coerce_to(x, "character")
+  # Want to resolve paths with . or ..
+  starts_with_dots <- str_detect(x, "^\\.{1,2}[/\\]?")
+  # Can't use standardize_path since we want that fn to use this
+  x[starts_with_dots] <- normalizePath(x[starts_with_dots]) 
+  yn <- str_detect(x, "^[[:alpha:]]:[/\\]?$")
+  setNames(yn, original_x)
+}
+
 #' The OS path 
 #' 
 #' The locations in the operating system \code{PATH} environment variable.
 #' @param sep String separator between directory levels in the output.
 #' @param standardize Should the paths be standardized?
+#' @param splitter The character to split the PATH environment variable on.
+#' Defaults to a semi-colon on Windows systems and a colon elsewhere.
 #' @return A character vector of paths.
 #' @seealso \code{\link[base]{Sys.getenv}}
 #' @examples
 #' os_path()
+#' @importFrom assertive is_windows
+#' @importFrom assertive assert_is_a_bool
+#' @importFrom assertive assert_is_a_string
 #' @export
-os_path <- function(sep = c("/", "\\"), standardize = TRUE)
+os_path <- function(sep = c("/", "\\"), standardize = TRUE, 
+  splitter = if(is_windows()) ";" else ":")
 {
-  path <- Sys.getenv("PATH", NA)
-  if(is.na(path))
+  assert_is_a_bool(standardize)
+  assert_is_a_string(splitter)
+  
+  path <- Sys.getenv("PATH")
+  path <- if(!nzchar(path))
   {
-    warning("The 'PATH' environment variable has not been set.")
-    return(character())
+    warning("The 'PATH' environment variable is unset or empty.")
+    character()
+  } else
+  {
+    strsplit(path, splitter)[[1]]
   }
-  path <- strsplit(path, ";")[[1]]
   if(standardize)
   {
     standardize_path(path, sep = sep)  
   } else path
+}
+
+#' Get the parent dir
+#' 
+#' Gets the parent directory of the input.
+#' @param x A character vector of file paths. 
+#' @param sep String separator between directory levels in the output.
+#' @return A character vector of parent directories of the input.
+#' @note Missing values are returned as missing.  On Windows, the parent of a 
+#' drive, e.g., \code{"c:/"} is itself.  Likewise, under Unix, the parent of 
+#' \code{"/"} is itself.
+#' @examples
+#' (x <- c(
+#'   sys_which("R"),
+#'   r_home(),
+#'   r_profile_site(),
+#'   "c:/",  # different behaviour under Windows/Unix
+#'   "~",
+#'   "/",
+#'   "foo/bar/nonexistent",
+#'   NA
+#' ))
+#' parent_dir(x)
+#' @export
+parent_dir <- function(x, sep = c("/", "\\")) 
+{
+  sep <- match.arg(sep)
+  original_x <- x <- coerce_to(x, "character")
+  x <- standardize_path(x)
+  not_missing <- is_not_na(x)
+  win_drive <- suppressWarnings(is_windows_drive(x))
+  pdir <- rep.int(NA_character_, length(x))
+  pdir[not_missing] <- ifelse(
+    win_drive[not_missing],
+    x[not_missing],
+    ifelse(
+      strip_attributes(is_dir(x[not_missing])),
+      dirname(x[not_missing]),
+      dirname(dirname(x[not_missing]))
+    )
+  )
+  if(sep == "\\")
+  {
+    pdir[not_missing] <- str_replace_all(pdir[not_missing], "/", "\\")
+  }
+  setNames(pdir, original_x)
 }
 
 #' The R home directory
@@ -299,7 +461,75 @@ os_path <- function(sep = c("/", "\\"), standardize = TRUE)
 #' @export
 r_home <- function(component = "home", ..., sep = c("/", "\\"))
 {
+  sep <- match.arg(sep)
   standardize_path(file.path(Vectorize(R.home)(component), ...), sep = sep)
+}
+
+#' Get the location of the R profile
+#' 
+#' Gets the location of the user of site R profile startup file.
+#' @param sep String separator between directory levels in the output.
+#' @return A string giving the path the \code{".Rprofile"} or 
+#' \code{"Rprofile.site"}.  If the file cannot be found, NA is returned.
+#' @seealso \code{\link[base]{Startup}} for how this is calculated.
+#' @examples
+#' r_profile()
+#' r_profile_site()
+#' r_profile("\\")
+#' r_profile_site("\\")
+#' @export
+r_profile <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The path of this file can be specified by the R_PROFILE_USER environment 
+  # variable"
+  x <- Sys.getenv("R_PROFILE_USER", NA)
+  if(is.na(x))
+  {
+    # "If this is unset, a file called ‘.Rprofile’ is searched for in the 
+    # current directory"
+    x <- if(file.exists(".Rprofile"))
+    {
+      ".Rprofile"
+    } else if(file.exists("~/.Rprofile"))
+    {
+      # "or in the user's home directory (in that order)"
+      "~/.Rprofile"
+    } else 
+    {
+      NA_character_
+    }
+  } 
+  x <- standardize_path(x, sep = sep)    
+  unname(x)
+}
+
+#' @rdname r_profile
+#' @export
+r_profile_site <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The path of this file is taken from the value of the R_PROFILE environment 
+  # variable"
+  x <- Sys.getenv("R_PROFILE", NA)
+  if(is.na(x))
+  {
+    # "If this variable is unset, the default is ‘R_HOME/etc/Rprofile.site’"
+    x <- r_home("etc", "Rprofile.site", sep = sep)
+    x <- if(file.exists(x))
+    {
+      x
+    } else
+    {
+      NA_character_
+    }
+  } else
+  {
+    x <- standardize_path(x, sep = sep)
+  }
+  unname(x)
 }
 
 #' @rdname decompose_path
@@ -327,11 +557,28 @@ recompose_path.decomposed_path <- function(x, ...)
   path
 }
 
-#' @rdname decompose_path
+#' @rdname create_dirs
 #' @export
-replace_extension <- function(x = dir(), new_extension)
+remove_dirs <- function(x)
 {
-  is_dir_x <- is_dir(x)
+  unlink(x, recursive = TRUE, force = TRUE)
+}
+
+#' @rdname decompose_path
+#' @importFrom assertive is_dir
+#' @importFrom assertive assert_is_a_bool
+#' @importFrom assertive assert_is_character
+#' @importFrom assertive strip_attributes
+#' @export
+replace_extension <- function(x = dir(), new_extension, include_dir = NA)
+{
+  assert_is_character(new_extension)
+  assert_is_a_bool(include_dir)
+  if(!nzchar(new_extension))
+  {
+    warning("'new_extension' is empty.  Did you want strip_extension instead?")
+  }
+  is_dir_x <- strip_attributes(is_dir(x))
   if(any(is_dir_x))
   {
     warning(
@@ -340,17 +587,21 @@ replace_extension <- function(x = dir(), new_extension)
       " have no file extensions to replace."
     )
   }
-  ifelse(
-    is_dir_x,
-    x,
-    paste(strip_extension(x), new_extension, sep = ".")
+  stripped <- strip_extension(x, include_dir = include_dir)
+  setNames(
+    ifelse(
+      is_dir_x,
+      stripped,
+      paste(stripped, new_extension, sep = ".")
+    ),
+    names(stripped)
   )
 }
 
 #' Split a path into directory components
 #' 
-#' Splits a character vector of paths into directory components.  The opposite of 
-#' \code{\link[base]{file.path}}.
+#' Splits a character vector of paths into directory components.  The opposite  
+#' of \code{\link[base]{file.path}}.
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
 #' @return A named list of character vectors containing the split paths.
@@ -375,7 +626,7 @@ split_path <- function(x = dir())
   split_x <- strsplit(x, "(?<=[^/\\\\])[/\\\\]", perl = TRUE)
   # setting names in a list, as of R3.1.1 processes backslashes cat-style, so 
   # need to duplicate them
-  original_x <- str_replace_all(original_x, fixed("\\"), "\\\\")
+  # original_x <- str_replace_all(original_x, fixed("\\"), "\\\\")
   setNames(split_x, original_x)
 }
 
@@ -396,6 +647,7 @@ split_path <- function(x = dir())
 #' @importFrom assertive is_not_missing_nor_empty_character
 #' @importFrom assertive coerce_to
 #' @importFrom assertive is_unix
+#' @importFrom assertive is_windows
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_detect
@@ -404,10 +656,10 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
 {
   if(is_empty(x))
   {
-    return(character())
+    return(setNames(character(), character()))
   }
   sep <- match.arg(sep)
-  x <- coerce_to(x, "character")
+  x <- original_x <- coerce_to(x, "character")
   
   ok <- is_not_missing_nor_empty_character(x)
   
@@ -417,17 +669,24 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   x[ok] <- ifelse(
     is.na(x[ok]),
     NA_character_,
-    normalizePath(x[ok], "/", FALSE)
+    normalizePath(x[ok], "/", mustWork = FALSE)
   )
   
   # again under Unix, normalizePath won't make path absolute
   if(is_unix())
   {
     x[ok] <- ifelse(
-      str_detect(x[ok], "^/"),
+      str_detect(x[ok], "^(/|[[:alpha:]]:)"),
       x[ok], 
       file.path(getwd(), x[ok], fsep = "/")
     )
+  }
+  
+  # Under Windows, normalizePath prefixes UNC paths with backslashes rather than 
+  # forward slashes
+  if(is_windows())
+  {
+    x[ok] <- str_replace(x[ok], "^\\\\\\\\", "//")
   }
   
   # strip trailing slashes
@@ -436,9 +695,9 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   # Replace / with the chosen slash
   if(sep == "\\")
   {
-    x[ok] <- str_replace_all(x[ok], "/", "\\")
+    x[ok] <- str_replace_all(x[ok], fixed("/"), "\\")
   }
-  x
+  setNames(x, original_x)
 }
 
 #' @rdname standardize_path
@@ -446,23 +705,43 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
 standardise_path <- standardize_path
 
 #' @rdname decompose_path
+#' @importFrom assertive is_dir
 #' @export
-strip_extension <- function(x = dir(), include_dir = TRUE)
+strip_extension <- function(x = dir(), include_dir = NA)
 {
-  decomposed <- decompose_path(x)
-  stripped <- if(include_dir) 
+  # Empty string x gets returned as empty string
+  stripped <- character(length(x))
+  # Missing x gets returned as NA
+  stripped[is.na(x)] <- NA_character_
+  
+  #Everything else
+  ok <- nzchar(x) & !is.na(x)
+  decomposed <- decompose_path(x[ok])
+  
+  stripped[ok] <- if(is.na(include_dir))
   {
+    # For include_dir = NA, keep directory same as input
+    dirname_x <- ifelse(is_dir(x[ok]), x[ok], dirname(x[ok]))
     ifelse(
-      is.na(x),
-      NA_character_,
+      nzchar(decomposed$filename),
       ifelse(
-        nzchar(decomposed$filename),
-        file.path(decomposed$dirname, decomposed$filename),
-        decomposed$dirname
-      )
+        dirname_x == ".",
+        decomposed$filename,                              # no directory
+        file.path(dirname_x, decomposed$filename)         # both
+      ),
+      dirname_x                                           # no filename
+    )    
+  } else if(include_dir) 
+  {
+    # For include_dir = TRUE, add standardized directory
+    ifelse(
+      nzchar(decomposed$filename),
+      file.path(decomposed$dirname, decomposed$filename), # both
+      decomposed$dirname                                  # no filename
     )
   } else
   {
+    # For include_dir = FALSE, strip directory
     decomposed$filename
   }
   setNames(stripped, x)
@@ -478,6 +757,7 @@ strip_extension <- function(x = dir(), include_dir = TRUE)
 #' \code{Sys.which}.)
 #' @seealso \code{\link[base]{Sys.which}}
 #' @examples
+#' sys_which("R")              # R executable
 #' sys_which(c("make", "gcc")) # tools for running Rcpp
 #' @export
 sys_which <- function(x, sep = c("/", "\\"))
@@ -531,7 +811,7 @@ system_file <- function(..., package = "base", library_location = NULL,
 
 #' Create a temp file/dir
 #' 
-#' Wrappers to \code{tempdir} and \code{tempfile} that returns standardized 
+#' Wrappers to \code{tempdir} and \code{tempfile} that return standardized 
 #' paths.
 #' @param ... Passed to \code{tempfile}
 #' @param sep String separator between directory levels in the output.

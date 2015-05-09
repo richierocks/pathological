@@ -5,7 +5,7 @@ create_expected_decomposed_path <- function(dirname, filename, extension, row.na
       dirname          = dirname,
       filename         = filename,
       extension        = extension,
-      row.names        = row.names, 
+      row.names        = row.names,
       stringsAsFactors = FALSE
     ), 
     class = c("decomposed_path", "data.frame")
@@ -21,7 +21,7 @@ test_that(
       dirname   = character(), 
       filename  = character(), 
       extension = character(),
-      rowname   = character()
+      row.names   = character()
     )
     expect_equal(decompose_path(x), expected)
     expect_equal(decompose_path(x2), expected)
@@ -82,8 +82,7 @@ test_that(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
       extension        = "tar.gz",
-      row.names        = x, 
-      stringsAsFactors = FALSE
+      row.names        = x
     )
     expect_equal(decompose_path(x), expected)
   }
@@ -295,6 +294,7 @@ catz <- c(
   "kitties\\hipster kitty.pdf"
 )
 
+pwd <- getwd()
 expected_catz <- create_expected_decomposed_path(
   dirname   = c(
     file.path(pwd, "catz"),
@@ -311,7 +311,7 @@ expected_catz <- create_expected_decomposed_path(
   extension = c(
     "gif", "jpeg", "jpg", "bmp", "png", "tiff", "pdf"
   ),
-  row.names = x
+  row.names = catz
 )
 
 test_that(
@@ -551,13 +551,9 @@ test_that(
     )
     names(expected) <- x
     expect_warning(
-      actual <- replace_extension(x, new_extension), 
-      "The directories .* have no file extensions to replace."
+      actual <- decompose_path(x), 
+      "Coercing .+ to class .{1,3}character.{1,3}\\."
     )
-    expect_identical(actual, expected)
+    expect_equal(actual, expected_catz)
   }
 )
-
-
-
-

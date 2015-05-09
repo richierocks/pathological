@@ -1,13 +1,15 @@
 Package: pathological
 Type: Package
-Title: Path manipulation utilities
-Version: 0.0-2
-Date: 2014-08-19
+Title: Path Manipulation Utilities
+Version: 0.0-5
+Date: 2015-03-30
 Author: Richard Cotton [aut, cre], Janko Thyson [ctb]
 Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
     email = "richierocks@gmail.com"), person("Janko", "Thyson", role = "ctb"))
 Description: Utilities for paths, files and directories.
+URL: https://github.com/richierocks/pathological
+BugReports: https://github.com/richierocks/pathological/issues
 Depends:
     R (>= 2.15.0)
 Imports:
@@ -19,3 +21,7 @@ Suggests:
 License: Unlimited
 LazyLoad: yes
 Roxygen: list(wrap = FALSE)
+Acknowledgments: Development of this package was partially funded by the
+    Proteomics Core at Weill Cornell Medical College in Qatar
+    <http://qatar-weill.cornell.edu>.  The Core is supported by 'Biomedical
+    Research Program' funds, a program funded by Qatar Foundation.
