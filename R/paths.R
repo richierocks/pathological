@@ -232,7 +232,7 @@ decompose_path <- function(x = dir())
   # then a single period
   # then match one of more letters numbers and periods
   # (the file extension)
-  rx <- "^([][[:alnum:] `!@#$%^&()_=+{},.;'-]+?)\\.([[:alnum:].]+)$"
+  rx <- "^([]\\[[:alnum:] `!@#$%^&()_=+{},.;'-]+?)\\.([[:alnum:].]+)$"
   
   filename_x <- ifelse(not_missing, basename_x, NA_character_)
   extension_x <- ifelse(not_missing, "", NA_character_)
@@ -355,10 +355,10 @@ is_windows_drive <- function(x)
   }
   original_x <- x <- coerce_to(x, "character")
   # Want to resolve paths with . or ..
-  starts_with_dots <- str_detect(x, "^\\.{1,2}[/\\]?")
+  starts_with_dots <- str_detect(x, "^\\.{1,2}[/\\\\]?")
   # Can't use standardize_path since we want that fn to use this
   x[starts_with_dots] <- normalizePath(x[starts_with_dots]) 
-  yn <- str_detect(x, "^[[:alpha:]]:[/\\]?$")
+  yn <- str_detect(x, "^[[:alpha:]]:[/\\\\]?$")
   setNames(yn, original_x)
 }
 
