@@ -487,7 +487,7 @@ r_profile <- function(sep = c("/", "\\"))
   x <- Sys.getenv("R_PROFILE_USER", NA)
   if(is.na(x))
   {
-    # "If this is unset, a file called ‘.Rprofile’ is searched for in the 
+    # "If this is unset, a file called '.Rprofile' is searched for in the 
     # current directory"
     x <- if(file.exists(".Rprofile"))
     {
@@ -516,7 +516,7 @@ r_profile_site <- function(sep = c("/", "\\"))
   x <- Sys.getenv("R_PROFILE", NA)
   if(is.na(x))
   {
-    # "If this variable is unset, the default is ‘R_HOME/etc/Rprofile.site’"
+    # "If this variable is unset, the default is 'R_HOME/etc/Rprofile.site'"
     x <- r_home("etc", "Rprofile.site", sep = sep)
     x <- if(file.exists(x))
     {
