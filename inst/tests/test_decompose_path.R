@@ -198,7 +198,7 @@ test_that(
   {
     x <- "~/foo.tgz"
     expected <- create_expected_decomposed_path(
-      dirname          = dirname(normalizePath(x, "/", mustWork = FALSE)),
+      dirname          = normalizePath(dirname(x), "/", mustWork = FALSE),
       filename         = "foo",
       extension        = "tgz",
       row.names        = x
