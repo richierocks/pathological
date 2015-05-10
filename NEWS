@@ -1,3 +1,5 @@
+0.0-6 Fixes for stringr 1.0.0.
+0.0-5 Added is_windows_drive, r_profile, get_libraries.
 0.0-3 More testing, quality fixes.
 0.0-2 First releasable version. Added wrappers to base-R's file and dir 
 functions for consistent syntax and output.  Also added more utility functions 
