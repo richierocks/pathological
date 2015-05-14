@@ -462,7 +462,8 @@ parent_dir <- function(x, sep = c("/", "\\"))
 r_home <- function(component = "home", ..., sep = c("/", "\\"))
 {
   sep <- match.arg(sep)
-  standardize_path(file.path(Vectorize(R.home)(component), ...), sep = sep)
+  roots <- vapply(component, R.home, character(1))
+  standardize_path(file.path(roots, ...), sep = sep)
 }
 
 #' Get the location of the R profile
