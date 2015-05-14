@@ -444,6 +444,61 @@ parent_dir <- function(x, sep = c("/", "\\"))
   setNames(pdir, original_x)
 }
 
+#' @rdname r_profile
+#' @export
+r_environ <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The name of the user file can be specified by the R_ENVIRON_USER 
+  # environment variable"
+  x <- Sys.getenv("R_ENVIRON_USER", NA)
+  if(is.na(x))
+  {
+    # "if this is unset, the files searched for are '.Renviron' in the current"
+    x <- if(file.exists(".Renviron"))
+    {
+      ".Rprofile"
+    } else if(file.exists("~/.Renviron"))
+    {
+      # "or in the user's home directory (in that order)"
+      "~/.Rprofile"
+    } else 
+    {
+      NA_character_
+    }
+  } 
+  x <- standardize_path(x, sep = sep)    
+  unname(x)
+}
+
+#' @rdname r_profile
+#' @export
+r_environ_site <- function(sep = c("/", "\\"))
+{
+  sep <- match.arg(sep)
+  # From ?Startup:
+  # "The name of the site file is the one pointed to by the environment variable 
+  # R_ENVIRON"
+  x <- Sys.getenv("R_ENVIRON", NA)
+  if(is.na(x))
+  {
+    # "if this is unset, 'R_HOME/etc/Renviron.site' is used"
+    x <- r_home("etc", "Renviron.site", sep = sep)
+    x <- if(file.exists(x))
+    {
+      x
+    } else
+    {
+      NA_character_
+    }
+  } else
+  {
+    x <- standardize_path(x, sep = sep)
+  }
+  unname(x)
+}
+
 #' The R home directory
 #' 
 #' Return a path to a file in the R home directory.  A vectorized, standardized
@@ -466,18 +521,20 @@ r_home <- function(component = "home", ..., sep = c("/", "\\"))
   standardize_path(file.path(roots, ...), sep = sep)
 }
 
-#' Get the location of the R profile
+#' Get the location of the R profile/environ
 #' 
-#' Gets the location of the user of site R profile startup file.
+#' Gets the location of the user or site R profile and environ startup files.
 #' @param sep String separator between directory levels in the output.
-#' @return A string giving the path the \code{".Rprofile"} or 
-#' \code{"Rprofile.site"}.  If the file cannot be found, NA is returned.
+#' @return A string giving the path the \code{".Rprofile"}, \code{".Renviron"}, 
+#' \code{"Rprofile.site"}, or \code{".Renviron.site"}.  If the file cannot be 
+#' found, NA is returned.
 #' @seealso \code{\link[base]{Startup}} for how this is calculated.
 #' @examples
+#' r_environ()
+#' r_environ_site()
 #' r_profile()
 #' r_profile_site()
-#' r_profile("\\")
-#' r_profile_site("\\")
+#' @aliases startup environ
 #' @export
 r_profile <- function(sep = c("/", "\\"))
 {
