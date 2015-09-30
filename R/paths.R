@@ -26,7 +26,7 @@
 #' unlink(file.path(tempdir(), "etc"), recursive = TRUE)
 #' unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
 #' }
-#' @importFrom assertive is_dir
+#' @importFrom assertive.files is_dir
 #' @importFrom plyr tryapply
 #' @export
 copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE, 
@@ -120,7 +120,7 @@ create_dirs <- function(x = temp_file(pattern = "dir"))
 #' \dontrun{
 #' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
 #' }
-#' @importFrom assertive is_windows
+#' @importFrom assertive.reflection is_windows
 #' @importFrom stringr fixed
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_split_fixed
@@ -189,11 +189,11 @@ cygwinify_path <- function(x = dir())
 #' strip_extension(x)
 #' strip_extension(x, FALSE)
 #' recompose_path(decomposed)
-#' @importFrom assertive is_empty
-#' @importFrom assertive coerce_to
-#' @importFrom assertive is_not_na
-#' @importFrom assertive is_dir
-#' @importFrom assertive strip_attributes
+#' @importFrom assertive.properties is_empty
+#' @importFrom assertive.base coerce_to
+#' @importFrom assertive.base is_not_na
+#' @importFrom assertive.files is_dir
+#' @importFrom assertive.base strip_attributes
 #' @importFrom stringr str_detect
 #' @importFrom stringr fixed
 #' @importFrom stringr str_match
@@ -282,7 +282,7 @@ dir_copy <- function(...)
 #' @seealso \code{\link{is_windows_drive}}
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
-#' @importFrom assertive is_windows
+#' @importFrom assertive.reflection is_windows
 #' @export
 get_drive <- function(x = getwd())
 {
@@ -338,8 +338,8 @@ get_libraries <- function(index = TRUE, sep = c("/", "\\"))
 #' x <- c("c:", "c:/", "c:\\", "C:", "C:/", "C:\\", "c:/c", "cc:", NA)
 #' # Warnings about OS suppressed so package checks pass on non-Windows systems.
 #' suppressWarnings(is_windows_drive(x))
-#' @importFrom assertive is_windows
-#' @importFrom assertive coerce_to
+#' @importFrom assertive.reflection is_windows
+#' @importFrom assertive.base coerce_to
 #' @importFrom stringr str_detect
 #' @export
 is_windows_drive <- function(x)
@@ -373,9 +373,9 @@ is_windows_drive <- function(x)
 #' @seealso \code{\link[base]{Sys.getenv}}
 #' @examples
 #' os_path()
-#' @importFrom assertive is_windows
-#' @importFrom assertive assert_is_a_bool
-#' @importFrom assertive assert_is_a_string
+#' @importFrom assertive.reflection is_windows
+#' @importFrom assertive.types assert_is_a_bool
+#' @importFrom assertive.types assert_is_a_string
 #' @export
 os_path <- function(sep = c("/", "\\"), standardize = TRUE, 
   splitter = if(is_windows()) ";" else ":")
@@ -599,7 +599,7 @@ recompose_path <- function(x, ...)
 
 #' @rdname decompose_path
 #' @method recompose_path decomposed_path
-#' @importFrom assertive is_not_na
+#' @importFrom assertive.base is_not_na
 #' @export
 recompose_path.decomposed_path <- function(x, ...)
 {
@@ -623,10 +623,10 @@ remove_dirs <- function(x)
 }
 
 #' @rdname decompose_path
-#' @importFrom assertive is_dir
-#' @importFrom assertive assert_is_a_bool
-#' @importFrom assertive assert_is_character
-#' @importFrom assertive strip_attributes
+#' @importFrom assertive.files is_dir
+#' @importFrom assertive.types assert_is_a_bool
+#' @importFrom assertive.types assert_is_character
+#' @importFrom assertive.base strip_attributes
 #' @export
 replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
@@ -670,8 +670,8 @@ replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 #' (splits <- split_path(c(getwd(), "~", r_home())))
 #' # Reverse the operation
 #' sapply(splits, paste, collapse = "/")
-#' @importFrom assertive is_empty
-#' @importFrom assertive coerce_to
+#' @importFrom assertive.properties is_empty
+#' @importFrom assertive.base coerce_to
 #' @export
 split_path <- function(x = dir())
 {
@@ -701,11 +701,11 @@ split_path <- function(x = dir())
 #' @examples
 #' standardize_path(c(".", "..", "~", R.home(), NA))
 #' standardize_path(c(".", "..", "~", R.home(), NA), "\\")
-#' @importFrom assertive is_empty
-#' @importFrom assertive is_not_missing_nor_empty_character
-#' @importFrom assertive coerce_to
-#' @importFrom assertive is_unix
-#' @importFrom assertive is_windows
+#' @importFrom assertive.base coerce_to
+#' @importFrom assertive.properties is_empty
+#' @importFrom assertive.reflection is_unix
+#' @importFrom assertive.reflection is_windows
+#' @importFrom assertive.strings is_non_missing_nor_empty_character
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_detect
@@ -719,7 +719,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   sep <- match.arg(sep)
   x <- original_x <- coerce_to(x, "character")
   
-  ok <- is_not_missing_nor_empty_character(x)
+  ok <- is_non_missing_nor_empty_character(x)
   
   # standardize = expand + normalize
   # normalizePath is uncomfortable with backslashes under Unix.
@@ -763,7 +763,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
 standardise_path <- standardize_path
 
 #' @rdname decompose_path
-#' @importFrom assertive is_dir
+#' @importFrom assertive.files is_dir
 #' @export
 strip_extension <- function(x = dir(), include_dir = NA)
 {
