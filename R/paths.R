@@ -83,8 +83,8 @@ choose_dir <- function(default = "", sep = c("/", "\\"))
   assert_is_windows()
   sep <- match.arg(sep)
   caption <- gettext("Select a folder", domain = "R-pathological")
-  x <- choose.dir(default, caption)
-  standardize_path(x, sep)
+  x <- utils::choose.dir(default, caption)
+  standardize_path(x, sep, include_names = FALSE)
 }
 
 #' Choose files interactively
@@ -156,7 +156,7 @@ choose_files <- function(default = "", multi = FALSE, sep = c("/", "\\"))
       error = function(e) character()
     )
   }
-  standardize_path(x, sep)
+  standardize_path(x, sep, include_names = FALSE)
 }
 
 #' Create or remove directories
@@ -181,6 +181,7 @@ choose_files <- function(default = "", multi = FALSE, sep = c("/", "\\"))
 #' # Clean up
 #' remove_dirs(dirs)
 #' }
+#' @importFrom stats setNames
 #' @export
 create_dirs <- function(x = temp_file(pattern = "dir"))
 {
@@ -367,6 +368,7 @@ dir_copy <- function(...)
 #' @examples
 #' get_drive(c("~", r_home(), temp_dir()))
 #' @importFrom assertive.reflection is_windows
+#' @importFrom utils head
 #' @export
 get_drive <- function(x = getwd())
 {
@@ -380,6 +382,7 @@ get_drive <- function(x = getwd())
 }
 
 #' @rdname decompose_path
+#' @importFrom stats setNames
 #' @export
 get_extension <- function(x = dir())
 {
@@ -402,7 +405,7 @@ get_extension <- function(x = dir())
 #' @export
 get_libraries <- function(index = TRUE, sep = c("/", "\\"))
 {
-  unname(standardize_path(.libPaths()[index], sep = sep))
+  standardize_path(.libPaths()[index], sep = sep, include_names = FALSE)
 }
 
 #' Is the path a Windows drive?
@@ -424,6 +427,7 @@ get_libraries <- function(index = TRUE, sep = c("/", "\\"))
 #' suppressWarnings(is_windows_drive(x))
 #' @importFrom assertive.reflection is_windows
 #' @importFrom assertive.base coerce_to
+#' @importFrom stats setNames
 #' @importFrom stringr str_detect
 #' @export
 is_windows_drive <- function(x)
@@ -478,7 +482,7 @@ os_path <- function(sep = c("/", "\\"), standardize = TRUE,
   }
   if(standardize)
   {
-    standardize_path(path, sep = sep)  
+    standardize_path(path, sep = sep, include_names = FALSE)  
   } else path
 }
 
@@ -503,6 +507,7 @@ os_path <- function(sep = c("/", "\\"), standardize = TRUE,
 #'   NA
 #' ))
 #' parent_dir(x)
+#' @importFrom stats setNames
 #' @export
 parent_dir <- function(x, sep = c("/", "\\")) 
 {
@@ -552,7 +557,7 @@ r_environ <- function(sep = c("/", "\\"))
       NA_character_
     }
   } 
-  x <- standardize_path(x, sep = sep)    
+  x <- standardize_path(x, sep = sep, include_names = FALSE)    
   unname(x)
 }
 
@@ -578,7 +583,7 @@ r_environ_site <- function(sep = c("/", "\\"))
     }
   } else
   {
-    x <- standardize_path(x, sep = sep)
+    x <- standardize_path(x, sep = sep, include_names = FALSE)
   }
   unname(x)
 }
@@ -602,7 +607,7 @@ r_home <- function(component = "home", ..., sep = c("/", "\\"))
 {
   sep <- match.arg(sep)
   roots <- vapply(component, R.home, character(1))
-  standardize_path(file.path(roots, ...), sep = sep)
+  standardize_path(file.path(roots, ...), sep = sep, include_names = FALSE)
 }
 
 #' Get the location of the R profile/environ
@@ -643,7 +648,7 @@ r_profile <- function(sep = c("/", "\\"))
       NA_character_
     }
   } 
-  x <- standardize_path(x, sep = sep)    
+  x <- standardize_path(x, sep = sep, include_names = FALSE)    
   unname(x)
 }
 
@@ -669,7 +674,7 @@ r_profile_site <- function(sep = c("/", "\\"))
     }
   } else
   {
-    x <- standardize_path(x, sep = sep)
+    x <- standardize_path(x, sep = sep, include_names = FALSE)
   }
   unname(x)
 }
@@ -711,6 +716,7 @@ remove_dirs <- function(x)
 #' @importFrom assertive.types assert_is_a_bool
 #' @importFrom assertive.types assert_is_character
 #' @importFrom assertive.base strip_attributes
+#' @importFrom stats setNames
 #' @export
 replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 {
@@ -756,6 +762,7 @@ replace_extension <- function(x = dir(), new_extension, include_dir = NA)
 #' sapply(splits, paste, collapse = "/")
 #' @importFrom assertive.properties is_empty
 #' @importFrom assertive.base coerce_to
+#' @importFrom stats setNames
 #' @export
 split_path <- function(x = dir())
 {
@@ -778,6 +785,8 @@ split_path <- function(x = dir())
 #' @param x A character vector of file paths. Defaults to files in the 
 #' current directory.
 #' @param sep String separator between directory levels in the output.
+#' @param include_names A logical value indicating whether the output should be 
+#' named with the input file paths.
 #' @return A character vector of paths, pointing to the same locations as the
 #' input, but in a standardized form.
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}},
@@ -790,11 +799,12 @@ split_path <- function(x = dir())
 #' @importFrom assertive.reflection is_unix
 #' @importFrom assertive.reflection is_windows
 #' @importFrom assertive.strings is_non_missing_nor_empty_character
+#' @importFrom stats setNames
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_detect
 #' @export
-standardize_path <- function(x = dir(), sep = c("/", "\\"))
+standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE)
 {
   if(is_empty(x))
   {
@@ -839,7 +849,13 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"))
   {
     x[ok] <- str_replace_all(x[ok], fixed("/"), "\\")
   }
-  setNames(x, original_x)
+  if(include_names)
+  {
+    setNames(x, original_x) 
+  } else
+  {
+    unname(x)
+  }
 }
 
 #' @rdname standardize_path
@@ -904,7 +920,7 @@ strip_extension <- function(x = dir(), include_dir = NA)
 #' @export
 sys_which <- function(x, sep = c("/", "\\"))
 {
-  std_x <- standardize_path(Sys.which(x), sep = sep)
+  std_x <- standardize_path(Sys.which(x), sep = sep, include_names = FALSE)
   ifelse(nzchar(std_x), std_x, NA_character_)
 }
 
@@ -946,7 +962,8 @@ system_file <- function(..., package = "base", library_location = NULL,
       lib.loc  = library_location, 
       mustWork = must_work
     ), 
-    sep = sep
+    sep = sep, 
+    include_names = FALSE
   )
   ifelse(nzchar(paths), paths, NA_character_)
 }
@@ -967,12 +984,12 @@ system_file <- function(..., package = "base", library_location = NULL,
 #' @export
 temp_dir <- function(sep = c("/", "\\"))
 {
-  standardize_path(tempdir(), sep = sep)
+  standardize_path(tempdir(), sep = sep, include_names = FALSE)
 }
 
 #' @rdname temp_dir
 #' @export
 temp_file <- function(..., sep = c("/", "\\"))
 {
-  standardize_path(tempfile(...), sep = sep)
+  standardize_path(tempfile(...), sep = sep, include_names = FALSE)
 }
