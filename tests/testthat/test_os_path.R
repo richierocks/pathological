@@ -31,18 +31,16 @@ test_that(
 
 
 test_that(
-  "os_path works when the OS PATH environment variable is an non-empty string.",
+  "os_path works when the OS PATH environment variable is a non-empty string.",
   {
-    splitter <- if(assertive::is_windows()) ";" else ":"
-    path <- if(nzchar(Sys.getenv("PATH")))
-    {
-      Sys.getenv("PATH")
-    } else
+    splitter <- if(assertive.reflection::is_windows()) ";" else ":"
+    if(Sys.getenv("PATH") == "")
     {
       # PATH is empty.  Need to make one up.
       Sys.setenv(PATH = paste(R.home("bin"), getwd(), collapse = splitter))
       on.exit(Sys.setenv(PATH = ""))
     }
+    path <- Sys.getenv("PATH")
     expected_std_is_false <- strsplit(path, splitter)[[1]]
     expected_std_is_true <- standardize_path(expected_std_is_false)
     expect_equal(os_path(standardize = FALSE), expected_std_is_false)
