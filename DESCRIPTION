@@ -17,7 +17,6 @@ Imports:
     assertive.properties,
     assertive.types,
     assertive.files,
-    assertive.numbers,
     assertive.reflection,
     assertive.strings,
     plyr,
