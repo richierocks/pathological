@@ -42,7 +42,7 @@ test_that(
     }
     path <- Sys.getenv("PATH")
     expected_std_is_false <- strsplit(path, splitter)[[1]]
-    expected_std_is_true <- standardize_path(expected_std_is_false)
+    expected_std_is_true <- standardize_path(expected_std_is_false, include_names = FALSE)
     expect_equal(os_path(standardize = FALSE), expected_std_is_false)
     expect_equal(os_path(), expected_std_is_true)
   }
