@@ -91,12 +91,12 @@ choose_dir <- function(default = "", sep = c("/", "\\"))
 #' 
 #' Choose one or more files or a directory interactively using a pop-up dialog.
 #' @param default The default file to be selected.  See the Details section of
-#' \code{\link[utils]{choose.files}} for how to specify.  Only on Windows.
+#' \code{choose.files} for how to specify.  Only on Windows.
 #' @param multi Logical value indicating if multiple files can be selected.
 #' Only on Windows.
 #' @param sep String separator between directory levels in the output.
 #' @return A character vector of standardized file paths that were chosen.
-#' @note \code{choose_files} uses \code{\link[utils]{choose.files}} under Windows 
+#' @note \code{choose_files} uses \code{choose.files} under Windows 
 #' and \code{\link[base]{file.choose}} under other platforms.
 #' @importFrom assertive.reflection is_windows
 #' @examples 

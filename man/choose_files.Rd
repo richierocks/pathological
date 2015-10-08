@@ -11,7 +11,7 @@ choose_files(default = "", multi = FALSE, sep = c("/", "\\\\"))
 }
 \arguments{
 \item{default}{The default file to be selected.  See the Details section of
-\code{\link[utils]{choose.files}} for how to specify.  Only on Windows.}
+\code{choose.files} for how to specify.  Only on Windows.}
 
 \item{sep}{String separator between directory levels in the output.}
 
@@ -25,7 +25,7 @@ A character vector of standardized file paths that were chosen.
 Choose one or more files or a directory interactively using a pop-up dialog.
 }
 \note{
-\code{choose_files} uses \code{\link[utils]{choose.files}} under Windows
+\code{choose_files} uses \code{choose.files} under Windows
 and \code{\link[base]{file.choose}} under other platforms.
 }
 \examples{
