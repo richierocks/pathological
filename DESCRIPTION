@@ -1,8 +1,8 @@
 Package: pathological
 Type: Package
 Title: Path Manipulation Utilities
-Version: 0.0-8
-Date: 2015-09-03
+Version: 0.0-7
+Date: 2015-10-08
 Author: Richard Cotton [aut, cre], Janko Thyson [ctb]
 Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
@@ -13,14 +13,16 @@ BugReports: https://github.com/richierocks/pathological/issues
 Depends:
     R (>= 2.15.0)
 Imports:
-    assertive.base,
+    assertive.base (>= 0.0-3),
     assertive.properties,
     assertive.types,
     assertive.files,
     assertive.numbers,
+    assertive.reflection,
     assertive.strings,
     plyr,
-    stringr (>= 1.0.0)
+    stringr (>= 1.0.0),
+    utils
 Suggests:
     testthat
 License: Unlimited
