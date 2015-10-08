@@ -5,15 +5,18 @@
 \alias{standardize_path}
 \title{Standardize paths}
 \usage{
-standardize_path(x = dir(), sep = c("/", "\\\\"))
+standardize_path(x = dir(), sep = c("/", "\\\\"), include_names = TRUE)
 
-standardise_path(x = dir(), sep = c("/", "\\\\"))
+standardise_path(x = dir(), sep = c("/", "\\\\"), include_names = TRUE)
 }
 \arguments{
 \item{x}{A character vector of file paths. Defaults to files in the
 current directory.}
 
 \item{sep}{String separator between directory levels in the output.}
+
+\item{include_names}{A logical value indicating whether the output should be
+named with the input file paths.}
 }
 \value{
 A character vector of paths, pointing to the same locations as the
