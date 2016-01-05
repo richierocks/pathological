@@ -1,5 +1,7 @@
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active)
 [![Is the package on CRAN?](http://www.r-pkg.org/badges/version/pathological)](http://www.r-pkg.org/pkg/pathological)
+[![SemaphoreCI Build Status](https://semaphoreci.com/api/v1/projects/57d8160a-a325-49f2-bdac-f11a45c2bef2/635255/badge.svg)](https://semaphoreci.com/richierocks/pathological)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bijxs8tpi1iwkt9w?svg=true)](https://ci.appveyor.com/project/richierocks/pathological)
 
 pathological
 ============
