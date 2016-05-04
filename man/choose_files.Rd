@@ -30,10 +30,13 @@ and \code{\link[base]{file.choose}} under other platforms.
 }
 \examples{
 \donttest{
-choose_files()
-if(assertive.reflection::is_windows())
+if(interactive())
 {
-  choose_dir()
+  choose_files()
+  if(assertive.reflection::is_windows())
+  {
+    choose_dir()
+  }
 }
 }
 }

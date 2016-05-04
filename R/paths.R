@@ -101,10 +101,13 @@ choose_dir <- function(default = "", sep = c("/", "\\"))
 #' @importFrom assertive.reflection is_windows
 #' @examples 
 #' \donttest{
-#' choose_files()
-#' if(assertive.reflection::is_windows())
+#' if(interactive())
 #' {
-#'   choose_dir()
+#'   choose_files()
+#'   if(assertive.reflection::is_windows())
+#'   {
+#'     choose_dir()
+#'   }
 #' }
 #' }
 #' @export
