@@ -3,16 +3,23 @@
 \name{temp_dir}
 \alias{temp_dir}
 \alias{temp_file}
-\title{Create a temp file/dir}
+\title{Return paths to files or dirs within the temp dir}
 \usage{
-temp_dir(sep = c("/", "\\\\"))
+temp_dir(..., sep = c("/", "\\\\"))
 
-temp_file(..., sep = c("/", "\\\\"))
+temp_file(..., pattern = "file", fileext = "", sep = c("/", "\\\\"))
 }
 \arguments{
+\item{...}{Character vectors of further directories within the temp 
+directory. Passed to \code{\link[base]{file.path}}.}
+
 \item{sep}{String separator between directory levels in the output.}
 
-\item{...}{Passed to \code{tempfile}}
+\item{pattern}{Character vector of prefixes for the temp file name. 
+Passed to \code{\link[base]{tempfile}}.}
+
+\item{fileext}{Character vector of file extensions for the temp file. Passed 
+to \code{\link[base]{tempfile}}.}
 }
 \value{
 For \code{temp_file} a character vector giving the names of possible 
@@ -20,12 +27,12 @@ For \code{temp_file} a character vector giving the names of possible
 For \code{temp_dir}, the path of the per-session temporary directory.
 }
 \description{
-Wrappers to \code{tempdir} and \code{tempfile} that return standardized 
-paths.
+Vectorized wrappers to \code{tempdir} and \code{tempfile} that return  
+standardized paths.
 }
 \examples{
-temp_dir()
-temp_file()
+temp_dir(c("foo", "bar/baz"))
+temp_file(c("foo", "bar/baz"), fileext = c(".txt", ".R"))
 }
 \seealso{
 \code{\link[base]{tempdir}}
