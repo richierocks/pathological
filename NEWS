@@ -1,4 +1,7 @@
-0.0-8 Added r_environ(_site), choose_files, choose_dir fns.
+0.0-8 Added create_files fns.
+      create_dirs now only tries to create directories that don't already exist.
+      temp_dir, temp_file now vectorized & accept paths within temp dir via ... arg. (Minor breaking change.)
+0.0-7 Added r_environ(_site), choose_files, choose_dir fns.
       Works with new assertive.* pkgs.
       Some fns no longer return named output.
 0.0-6 Fixes for stringr 1.0.0.
