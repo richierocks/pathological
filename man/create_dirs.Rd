@@ -2,10 +2,13 @@
 % Please edit documentation in R/paths.R
 \name{create_dirs}
 \alias{create_dirs}
+\alias{create_files}
 \alias{remove_dirs}
-\title{Create or remove directories}
+\title{Create or remove files and directories}
 \usage{
 create_dirs(x = temp_file(pattern = "dir"))
+
+create_files(x = temp_file())
 
 remove_dirs(x)
 }
@@ -17,24 +20,29 @@ For \code{create_dirs}, it defaults to a directory inside \code{tempdir()}.}
 A logical vector of successes of failures.
 }
 \description{
-A vectorized version of \code{\link[base]{dir.create}}, and 
-\code{\link[base]{unlink}} with more convenient defaults.
+A vectorized version of \code{\link[base]{dir.create}}, and
+\code{\link[base]{file.create}} and \code{\link[base]{unlink}} with more 
+convenient defaults.
 }
 \note{
-\code{\link[base]{unlink}}, and consequently \code{remove_dirs},
-sometimes fails to remove empty directories.
-See \url{https://bugs.r-project.org/bugzilla3/show_bug.cgi?id=16287}.
+\code{create_dirs} will only attempt to create directories that don't 
+already exist.
 }
 \examples{
 \donttest{
-dirs <- file.path(temp_dir(), c("foo", "bar/baz"))
+dirs <- temp_dir(c("foo", "bar/baz"))
 create_dirs(dirs)
 
 # Check this worked:
-assert_all_are_dirs(dirs)
+assertive.files::assert_all_are_dirs(dirs)
+
+files <- temp_dir("blah/blah/blah", LETTERS)
+create_files(files)
+
+assertive.files::assert_all_are_existing_files(files)
 
 # Clean up
-remove_dirs(dirs)
+remove_dirs(temp_dir(c("foo", "bar", "blah")))
 }
 }
 \seealso{

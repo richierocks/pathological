@@ -162,38 +162,55 @@ choose_files <- function(default = "", multi = FALSE, sep = c("/", "\\"))
   standardize_path(x, sep, include_names = FALSE)
 }
 
-#' Create or remove directories
+#' Create or remove files and directories
 #' 
-#' A vectorized version of \code{\link[base]{dir.create}}, and 
-#' \code{\link[base]{unlink}} with more convenient defaults.
+#' A vectorized version of \code{\link[base]{dir.create}}, and
+#' \code{\link[base]{file.create}} and \code{\link[base]{unlink}} with more 
+#' convenient defaults.
 #' @param x A character vector of paths of directories to create/remove. 
 #' For \code{create_dirs}, it defaults to a directory inside \code{tempdir()}.
 #' @return A logical vector of successes of failures.
-#' @note \code{\link[base]{unlink}}, and consequently \code{remove_dirs},
-#' sometimes fails to remove empty directories.
-#' See \url{https://bugs.r-project.org/bugzilla3/show_bug.cgi?id=16287}.
+#' @note \code{create_dirs} will only attempt to create directories that don't 
+#' already exist.
 #' @seealso \code{\link[base]{dir.create}}, \code{\link[base]{unlink}}
 #' @examples
 #' \donttest{
-#' dirs <- file.path(temp_dir(), c("foo", "bar/baz"))
+#' dirs <- temp_dir(c("foo", "bar/baz"))
 #' create_dirs(dirs)
 #' 
 #' # Check this worked:
-#' assert_all_are_dirs(dirs)
+#' assertive.files::assert_all_are_dirs(dirs)
+#' 
+#' files <- temp_dir("blah/blah/blah", LETTERS)
+#' create_files(files)
+#' 
+#' assertive.files::assert_all_are_existing_files(files)
 #' 
 #' # Clean up
-#' remove_dirs(dirs)
+#' remove_dirs(temp_dir(c("foo", "bar", "blah")))
 #' }
 #' @importFrom stats setNames
 #' @export
 create_dirs <- function(x = temp_file(pattern = "dir"))
 {
-  vapply(
-    setNames(x, x),
+  doesnt_yet_exist <- !file.exists(x)
+  yn <- setNames(logical(length(x)), x)
+  yn[doesnt_yet_exist] <- vapply(
+    x[doesnt_yet_exist],
     dir.create,
-    logical(1),
+    logical(1), 
     recursive = TRUE
   )
+  yn
+}
+
+#' @rdname create_dirs
+#' @export
+create_files <- function(x = temp_file())
+{
+  dirs <- unique(dirname(standardize_path(x)))
+  create_dirs(dirs)
+  setNames(file.create(x), x)
 }
 
 #' Make a path suitable for cygwin
