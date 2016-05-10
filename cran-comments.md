@@ -1,11 +1,13 @@
 ## Release Summary
 
-This release contains new functionality for interactively choosing files and dirs, and updates the dependencies to work wit the latest versions of the assertive.* packages.
+This release contains new functionality for creating files, and improved 
+temp_dir and temp_file functions.
 
 ## Test Environments
 
-* Windows 7, R-devel r69463 and R-3.2.2patched r69455
-* Red Hat 4.4.7-4, R-3.1.2
+* Local Windows 7 & 10, R-devel 
+* Semaphore CI + Ubuntu 14.04, R-devel and R-release
+* AppVeyor + Windows Server 2012, R-devel
 
 ## R CMD check results
 
