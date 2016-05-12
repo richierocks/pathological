@@ -865,6 +865,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   )
   
   # again under Unix, normalizePath won't make path absolute
+  is_root <- str_detect(x[ok], "^(/|[[:alpha:]]:)")
   if(is_unix())
   {
     x[ok] <- ifelse(
@@ -882,7 +883,10 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   }
   
   # strip trailing slashes
-  x[ok] <- str_replace(x[ok], "/?$", "")  
+  if(!is_root)
+  {
+    x[ok] <- str_replace(x[ok], "/?$", "")  
+  }
   
   # Replace / with the chosen slash
   if(sep == "\\")
