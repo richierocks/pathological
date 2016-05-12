@@ -278,7 +278,7 @@ test_that(
     )
     expect_warning(
       actual <- decompose_path(x), 
-      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+      "Coercing .+ to class .character.\\."
     )
     expect_equal(actual, expected)
   }
@@ -328,8 +328,23 @@ test_that(
     x <- factor(catz)
     expect_warning(
       actual <- decompose_path(x), 
-      "Coercing .+ to class [[:punct:]]character[[:punct:]]\\."
+      "Coercing .+ to class .character.\\."
     )
     expect_equal(actual, expected_catz)
+  }
+)
+
+test_that(
+  "decompose_path handles paths with a unicode directory name.",
+  {
+    x <- "\u0108\u0158\u0104\u0143/foo.tgz"
+    pwd <- getwd()
+    expected <- create_expected_decomposed_path(
+      dirname          = file.path(pwd, "\u0108\u0158\u0104\u0143"),
+      filename         = "foo",
+      extension        = "tgz",
+      row.names        = x
+    )
+    expect_equal(decompose_path(x), expected)
   }
 )
