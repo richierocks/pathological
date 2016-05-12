@@ -875,13 +875,6 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
     )
   }
   
-  # Under Windows, normalizePath prefixes UNC paths with backslashes rather than 
-  # forward slashes
-  if(is_windows())
-  {
-    x[ok] <- str_replace(x[ok], "^\\\\\\\\", "//")
-  }
-  
   # strip trailing slashes
   if(!is_root)
   {
