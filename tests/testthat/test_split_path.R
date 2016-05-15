@@ -100,7 +100,7 @@ test_that(
   "split_path works with absolute UNC paths with forward slashes.",
   {
     x <- "//foo/bar"
-    expected1 <- c("//foo", "bar")
+    expected1 <- c("\\\\foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)
@@ -113,7 +113,7 @@ test_that(
   "split_path works with absolute UNC paths with back slashes.",
   {
     x <- "\\\\foo\\bar"
-    expected1 <- c("//foo", "bar")
+    expected1 <- c("\\\\foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)

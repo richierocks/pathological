@@ -101,7 +101,7 @@ test_that(
   "standardize_path works with absolute UNC paths with forward slashes.",
   {
     x <- "//foo/bar"
-    expected <- setNames("//foo/bar", x)
+    expected <- setNames("\\\\foo/bar", x)
     expect_equal(standardize_path(x), expected)
   }
 )
@@ -110,7 +110,7 @@ test_that(
   "standardize_path works with absolute UNC paths with back slashes.",
   {
     x <- "\\\\foo\\bar"
-    expected <- setNames("//foo/bar", x)
+    expected <- setNames("\\\\foo/bar", x)
     expect_equal(standardize_path(x), expected)
   }
 )

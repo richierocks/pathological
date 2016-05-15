@@ -869,16 +869,20 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   if(is_unix())
   {
     x[ok] <- ifelse(
-      str_detect(x[ok], "^(/|[[:alpha:]]:)"),
+      is_root,
       x[ok], 
       file.path(getwd(), x[ok], fsep = "/")
     )
   }
   
   # strip trailing slashes
-  if(!is_root)
+  x[ok][is_root] <- str_replace(x[ok][is_root], "/?$", "")  
+  
+  # Under Windows, normalizePath prefixes UNC paths with backslashes rather than 
+  # forward slashes
+  if(is_windows())
   {
-    x[ok] <- str_replace(x[ok], "/?$", "")  
+    x[ok] <- str_replace(x[ok], "^//", "\\\\")
   }
   
   # Replace / with the chosen slash
