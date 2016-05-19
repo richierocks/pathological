@@ -720,7 +720,12 @@ recompose_path.decomposed_path <- function(x, ...)
     paste(x[not_missing, "filename"], x[not_missing, "extension"], sep = "."),
     x[not_missing, "filename"]
   )
-  path[not_missing] <- file.path(x[not_missing, "dirname"], base_x)
+  has_a_dir <- nzchar(as.character(x[not_missing, "dirname"]))
+  path[not_missing] <- ifelse(
+    has_a_dir,
+    file.path(x[not_missing, "dirname"], base_x),
+    base_x
+  )
   path
 }
 
