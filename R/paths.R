@@ -726,6 +726,9 @@ recompose_path.decomposed_path <- function(x, ...)
     file.path(x[not_missing, "dirname"], base_x),
     base_x
   )
+  # strip trailing slashes
+  path <- str_replace(path, "/?$", "")  
+  
   path
 }
 
@@ -883,12 +886,13 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   # strip trailing slashes
   x[ok][is_root] <- str_replace(x[ok][is_root], "/?$", "")  
   
-  # Under Windows, normalizePath prefixes UNC paths with backslashes rather than 
-  # forward slashes
-  if(is_windows())
-  {
-    x[ok] <- str_replace(x[ok], "^//", "\\\\")
-  }
+  # UNC paths (those that start with double forward slash, at this point in the  
+  # code) should be double backslashes under Windows (to match behaviour of 
+  # normalizePath and getwd) but a single forward slash under Unix (since it
+  # just means root)
+  double_slash_value <- if(is_windows()) "\\\\" else "/"
+  x[ok] <- str_replace(x[ok], "^//", double_slash_value)
+  
   
   # Replace / with the chosen slash
   if(sep == "\\")

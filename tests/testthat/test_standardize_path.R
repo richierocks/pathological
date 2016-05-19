@@ -101,7 +101,15 @@ test_that(
   "standardize_path works with absolute UNC paths with forward slashes.",
   {
     x <- "//foo/bar"
-    expected <- setNames("\\\\foo/bar", x)
+    expected <- if(is_windows())
+    {
+      # under windows this is a UNC path
+      setNames("\\\\foo/bar", x)
+    } else 
+    {
+      # under unix, this is an absolute path
+      setNames("/foo/bar", x)
+    }
     expect_equal(standardize_path(x), expected)
   }
 )
@@ -110,7 +118,13 @@ test_that(
   "standardize_path works with absolute UNC paths with back slashes.",
   {
     x <- "\\\\foo\\bar"
-    expected <- setNames("\\\\foo/bar", x)
+    expected <- if(is_windows())
+    {
+      setNames("\\\\foo/bar", x)
+    } else
+    {
+      setNames("/foo/bar", x)
+    }
     expect_equal(standardize_path(x), expected)
   }
 )

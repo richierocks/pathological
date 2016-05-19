@@ -350,11 +350,11 @@ test_that(
 )
 
 test_that(
-  "decompose_path handles UNC paths with forawrd slashes.",
+  "decompose_path handles UNC paths with forward slashes.",
   {
     x <- "//foo/bar"
     expected <- create_expected_decomposed_path(
-      dirname          = "\\\\foo",
+      dirname          = if(is_windows()) "\\\\foo" else "/foo",
       filename         = "bar",
       extension        = "",
       row.names        = x
@@ -368,7 +368,7 @@ test_that(
   {
     x <- "\\\\foo/bar"
     expected <- create_expected_decomposed_path(
-      dirname          = "\\\\foo",
+      dirname          = if(is_windows()) "\\\\foo" else "/foo",
       filename         = "bar",
       extension        = "",
       row.names        = x
