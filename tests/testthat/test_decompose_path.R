@@ -348,3 +348,31 @@ test_that(
     expect_equal(decompose_path(x), expected)
   }
 )
+
+test_that(
+  "decompose_path handles UNC paths with forawrd slashes.",
+  {
+    x <- "//foo/bar"
+    expected <- create_expected_decomposed_path(
+      dirname          = "\\\\foo",
+      filename         = "bar",
+      extension        = "",
+      row.names        = x
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
+
+test_that(
+  "decompose_path handles UNC paths with backslashes.",
+  {
+    x <- "\\\\foo/bar"
+    expected <- create_expected_decomposed_path(
+      dirname          = "\\\\foo",
+      filename         = "bar",
+      extension        = "",
+      row.names        = x
+    )
+    expect_equal(decompose_path(x), expected)
+  }
+)
