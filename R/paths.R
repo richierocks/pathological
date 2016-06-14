@@ -862,37 +862,61 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   x <- original_x <- coerce_to(x, "character")
   
   ok <- is_non_missing_nor_empty_character(x)
-  
-  # standardize = expand + normalize
-  # normalizePath is uncomfortable with backslashes under Unix.
-  x[ok] <- str_replace_all(x[ok], "[/\\\\]", "/")
+
+  # Normalize, with smarter defaults, and returning NA for NA inputs.
   x[ok] <- ifelse(
     is.na(x[ok]),
     NA_character_,
     normalizePath(x[ok], "/", mustWork = FALSE)
   )
   
-  # again under Unix, normalizePath won't make path absolute
-  is_root <- str_detect(x[ok], "^(/|[[:alpha:]]:)")
+  # Under Unix, normalizePath treats backslashes as characters in a filename.
+  # It's often more useful to assume these are Windows file separators, that is,
+  # We should replace all backslashes with (forward) slashes...
+  # except leading double backslashed which are considered as UNC paths.
+  # This code needs to come after the call to normalizePath, which has smart
+  # OS-dependent detection of UNC paths.  That is:
+  # Under Windows, normalizePath will have changed a leading // to \\.
+  # Under Unix a leading // is 
+  # - considered as an absolute path and changed to / if the path exists
+  # - left as // if it doesn't exist
+  # A leading \\ is preserved under all platforms.
+  x[ok] <- ifelse(
+    str_detect(x[ok], "^\\\\\\\\"), 
+    paste0("\\\\", str_replace_all(substring(x[ok], 3), fixed("\\"), "/")), 
+    str_replace_all(x[ok], fixed("\\"), "/")
+  )
+  
+  # Turn leading // into / when normalizePath forgot to.
   if(is_unix())
   {
-    x[ok] <- ifelse(
-      is_root,
-      x[ok], 
-      file.path(getwd(), x[ok], fsep = "/")
-    )
+    has_leading_double_slash <- str_detect(x[ok], "^/{2}")
+    x[ok][has_leading_double_slash] <- substring(x[ok][has_leading_double_slash], 2)
   }
   
-  # strip trailing slashes
-  x[ok][is_root] <- str_replace(x[ok][is_root], "/?$", "")  
+  # Again under Unix, normalizePath won't always make path absolute
+  if(is_unix())
+  {
+    is_absolute <- str_detect(x[ok], "^([/\\\\]|[a-zA-Z]:)")
+    x[ok][!is_absolute] <- file.path(getwd(), x[ok], fsep = "/")
+  }
   
-  # UNC paths (those that start with double forward slash, at this point in the  
-  # code) should be double backslashes under Windows (to match behaviour of 
-  # normalizePath and getwd) but a single forward slash under Unix (since it
-  # just means root)
-  double_slash_value <- if(is_windows()) "\\\\" else "/"
-  x[ok] <- str_replace(x[ok], "^//", double_slash_value)
+  # Strip trailing slashes, except if it's a root dir
+  # Root dir is either:
+  #   / (Unix root dir) 
+  #   an ascii letter then : then maybe a \ or / (Windows drive)
+  # Usually \ (Windows current drive) too, but this will have been replaced by
+  # normalizePath.
+  is_root <- str_detect(x[ok], "^(/|[a-zA-Z]:[/\\\\]?)$")
+  x[ok][!is_root] <- str_replace(x[ok][!is_root], "/?$", "")
+  # Root dirs should always end in /
+  needs_a_slash <- str_detect(x[ok][is_root], "[^/]$")  
+  x[ok][is_root][needs_a_slash] <- paste0(x[ok][is_root][needs_a_slash], "/")
   
+  # Windows drive paths are sometimes but not always converted to upper case
+  # Make this consistently happen.
+  # At this point, the path should always start with a letter or a slash
+  x[ok] <- paste0(toupper(substring(x[ok], 1, 1)), substring(x[ok], 2))
   
   # Replace / with the chosen slash
   if(sep == "\\")
