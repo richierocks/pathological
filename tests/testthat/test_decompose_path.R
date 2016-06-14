@@ -368,7 +368,7 @@ test_that(
   {
     x <- "\\\\foo/bar"
     expected <- create_expected_decomposed_path(
-      dirname          = if(is_windows()) "\\\\foo" else "/foo",
+      dirname          = "\\\\foo",
       filename         = "bar",
       extension        = "",
       row.names        = x
