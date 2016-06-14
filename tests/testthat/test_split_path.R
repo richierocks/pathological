@@ -18,14 +18,14 @@ test_that(
 
 test_that(
   "split_path works with a NULL input",
-{
-  x <- NULL
-  actual <- split_path(x)
-  expect_is(actual, "list")
-  expect_equal(length(actual), 0L)
-  expect_equal(unname(actual), list())
-  expect_equal(names(actual), character())
-}
+  {
+    x <- NULL
+    actual <- split_path(x)
+    expect_is(actual, "list")
+    expect_equal(length(actual), 0L)
+    expect_equal(unname(actual), list())
+    expect_equal(names(actual), character())
+  }
 )
 
 test_that(
@@ -61,7 +61,7 @@ test_that(
   "split_path works with absolute Windows paths with forward slashes.",
   {
     x <- "c:/foo/bar"
-    expected1 <- c("c:", "foo", "bar")
+    expected1 <- c("C:", "foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)
@@ -74,7 +74,7 @@ test_that(
   "split_path works with absolute Windows paths with back slashes.",
   {
     x <- "c:\\foo\\bar"
-    expected1 <- c("c:", "foo", "bar")
+    expected1 <- c("C:", "foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)
@@ -87,7 +87,7 @@ test_that(
   "split_path works with absolute Windows paths with mixed forward and back slashes.",
   {
     x <- "c:/foo\\bar"
-    expected1 <- c("c:", "foo", "bar")
+    expected1 <- c("C:", "foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)
@@ -113,7 +113,7 @@ test_that(
   "split_path works with absolute UNC paths with back slashes.",
   {
     x <- "\\\\foo\\bar"
-    expected1 <- c(if(is_windows()) "\\\\foo" else "/foo", "bar")
+    expected1 <- c("\\\\foo", "bar")
     actual <- split_path(x)
     expect_is(actual, "list")
     expect_equal(length(actual), 1L)
