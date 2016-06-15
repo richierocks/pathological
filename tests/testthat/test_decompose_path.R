@@ -397,7 +397,8 @@ expected_catz <- create_expected_decomposed_path(
     file.path(pwd, "catz"),
     file.path(pwd, "moar cats"),
     file.path(pwd, "catz/catz in loft"),
-    file.path(pwd, "catz/musical catz"), getwd(),
+    file.path(pwd, "catz/musical catz"), 
+    pwd,
     file.path(pwd, "kitties"),
     file.path(pwd, "kitties")
   ),
