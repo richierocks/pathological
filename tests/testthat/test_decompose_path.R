@@ -226,7 +226,7 @@ test_that(
     expected_dir <- normalizePath(R.home(), "/", mustWork = FALSE)
     substring(expected_dir, 1, 1) <- toupper(substring(expected_dir, 1, 1))
     expected <- create_expected_decomposed_path(
-      dirname          = ,
+      dirname          = expected_dir,
       filename         = "",
       extension        = "",
       row.names        = x
