@@ -1,4 +1,4 @@
-0.0-9 Bug fix release: Standardize path enforces backslashes at the start of UNC paths.
+0.0-9 Bug fix release: standardize_path rewritten to fix some cross-platform issues.  In particular it enforces backslashes at the start of UNC paths.
 0.0-8 Added create_files fns.
       create_dirs now only tries to create directories that don't already exist.
       temp_dir, temp_file now vectorized & accept paths within temp dir via ... arg. (Minor breaking change.)

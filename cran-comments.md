@@ -1,7 +1,6 @@
 ## Release Summary
 
-This release contains new functionality for creating files, and improved 
-temp_dir and temp_file functions.
+This release fixes the problem with tests for standardize_path failing with UNC paths under Windows.  Testing and documentation has been exteded for this and related functions.  There are no new features.
 
 ## Test Environments
 

@@ -392,7 +392,7 @@ dir_copy <- function(...)
 #' slashes on Unix-based systems.
 #' @seealso \code{\link{is_windows_drive}}
 #' @examples
-#' get_drive(c("~", r_home(), temp_dir()))
+#' get_drive(c(".", "~", r_home(), temp_dir(), "\\\\foo/bar"))
 #' @importFrom assertive.reflection is_windows
 #' @importFrom utils head
 #' @export
