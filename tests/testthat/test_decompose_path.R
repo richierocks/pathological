@@ -12,6 +12,12 @@ create_expected_decomposed_path <- function(dirname, filename, extension, row.na
   )
 }
 
+std_getwd <- function() 
+{
+  # The standardization is only there to enforce upper case Windows drive letters  
+  standardize_path(getwd())
+}
+
 test_that(
   "decompose_path works with a zero length input",
   {
@@ -32,7 +38,7 @@ test_that(
   "decompose_path handles paths with no directory and a single extension in the filename.",
   {
     x <- "foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "foo",
@@ -47,7 +53,7 @@ test_that(
   "decompose_path handles paths with a directory and a single extension in the filename.",
   {
     x <- "somedir/foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
@@ -62,7 +68,7 @@ test_that(
   "decompose_path handles paths with no directory and a double extension in the filename.",
   {
     x <- "foo.tar.gz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "foo",
@@ -77,7 +83,7 @@ test_that(
   "decompose_path handles paths with a directory and a double extension in the filename.",
   {
     x <- "somedir/foo.tar.gz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
@@ -93,7 +99,7 @@ test_that(
   "decompose_path handles paths with no directory and no extension in the filename.",
   {
     x <- "foo"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "foo",
@@ -108,7 +114,7 @@ test_that(
   "decompose_path handles paths with a directory and no extension in the filename.",
   {
     x <- "somedir/foo"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
@@ -123,7 +129,7 @@ test_that(
   "decompose_path handles filenames containing a '.' and an extension.",
   {
     x <- "foo. bar.zip"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "foo. bar",
@@ -138,7 +144,7 @@ test_that(
   "decompose_path handles backslashes in the directory name.",
   {
     x <- "somedir\\foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "somedir"),
       filename         = "foo",
@@ -153,7 +159,7 @@ test_that(
   "decompose_path handles mixed forward and backslashes in the directory name.",
   {
     x <- "somedir\\another dir/foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "somedir", "another dir"),
       filename         = "foo",
@@ -182,7 +188,7 @@ test_that(
   "decompose_path handles '~'.",
   {
     x <- "~"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = normalizePath("~", "/", mustWork = FALSE),
       filename         = "",
@@ -211,7 +217,7 @@ test_that(
   "decompose_path handles the current directory as '.'.",
   {
     x <- "."
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "",
@@ -226,7 +232,7 @@ test_that(
   "decompose_path handles the parent directory as '..'.",
   {
     x <- ".."
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = dirname(pwd),
       filename         = "",
@@ -241,7 +247,7 @@ test_that(
   "decompose_path handles files inside '.'.",
   {
     x <- "./foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = pwd,
       filename         = "foo",
@@ -294,7 +300,7 @@ catz <- c(
   "kitties\\hipster kitty.pdf"
 )
 
-pwd <- getwd()
+pwd <- std_getwd()
 expected_catz <- create_expected_decomposed_path(
   dirname   = c(
     file.path(pwd, "catz"),
@@ -338,7 +344,7 @@ test_that(
   "decompose_path handles paths with a unicode directory name.",
   {
     x <- "\u0108\u0158\u0104\u0143/foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
       dirname          = file.path(pwd, "\u0108\u0158\u0104\u0143"),
       filename         = "foo",

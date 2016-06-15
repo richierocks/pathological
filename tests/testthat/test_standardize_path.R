@@ -157,7 +157,7 @@ test_that(
     expected <- if(assertive.reflection::is_windows())
     {
       # under windows this is the current drive
-      setNames(normalizePath("/", "/"), x)
+      setNames(toupper(normalizePath("/", "/")), x)
     } else 
     {
       # under unix, this is root
@@ -174,7 +174,7 @@ test_that(
     expected <- if(assertive.reflection::is_windows())
     {
       # under windows this is the current drive
-      setNames(normalizePath("/", "/"), x)
+      setNames(toupper(normalizePath("/", "/")), x)
     } else 
     {
       # under unix, this is root
