@@ -5,7 +5,7 @@ test_that(
     new_extension <- "NEW"
     expected <- list(
       na    = "somedir/foo.NEW", 
-      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo.NEW", fsep = "/"), 
       false = "foo.NEW"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -31,7 +31,7 @@ test_that(
     new_extension <- "NEW"
     expected <- list(
       na    = "somedir/foo.NEW", 
-      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo.NEW", fsep = "/"), 
       false = "foo.NEW"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -57,7 +57,7 @@ test_that(
     new_extension <- "NEW"
     expected <- list(
       na    = "somedir/foo.NEW", 
-      true  = file.path(getwd(), "somedir", "foo.NEW", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo.NEW", fsep = "/"), 
       false = "foo.NEW"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -116,7 +116,7 @@ test_that(
     new_extension <- ""
     expected <- list(
       na    = "somedir/foo.", 
-      true  = file.path(getwd(), "somedir", "foo.", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo.", fsep = "/"), 
       false = "foo."
     )
     expected <- lapply(expected, function(y) setNames(y, x))

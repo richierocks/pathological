@@ -3,6 +3,7 @@ test_that(
   {
     actual <- system_file()
     expected <- normalizePath(find.package("base"), "/")
+    substring(expected, 1, 1) <- toupper(substring(expected, 1, 1))
     expect_equal(actual, expected)
   }
 )

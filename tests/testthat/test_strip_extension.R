@@ -4,7 +4,7 @@ test_that(
     x <- "foo.tgz"
     expected <- list(
       na    = "foo", 
-      true  = file.path(getwd(), "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -20,7 +20,7 @@ test_that(
     x <- "somedir/foo.tgz"
     expected <- list(
       na    = "somedir/foo", 
-      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -36,7 +36,7 @@ test_that(
     x <- "foo.tar.gz"
     expected <- list(
       na    = "foo", 
-      true  = file.path(getwd(), "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -52,7 +52,7 @@ test_that(
     x <- "somedir/foo.tar.gz"
     expected <- list(
       na    = "somedir/foo", 
-      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -68,7 +68,7 @@ test_that(
     x <- "foo"
     expected <- list(
       na    = "foo", 
-      true  = file.path(getwd(), "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -84,7 +84,7 @@ test_that(
     x <- "somedir/foo"
     expected <- list(
       na    = "somedir/foo", 
-      true  = file.path(getwd(), "somedir", "foo", fsep = "/"), 
+      true  = file.path(std_getwd(), "somedir", "foo", fsep = "/"), 
       false = "foo"
     )
     expected <- lapply(expected, function(y) setNames(y, x))
@@ -100,7 +100,7 @@ test_that(
     x <- "foo. bar.zip"
     expected <- list(
       na    = "foo. bar", 
-      true  = file.path(getwd(), "foo. bar", fsep = "/"), 
+      true  = file.path(std_getwd(), "foo. bar", fsep = "/"), 
       false = "foo. bar"
     )
     expected <- lapply(expected, function(y) setNames(y, x))

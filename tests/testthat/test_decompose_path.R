@@ -12,12 +12,6 @@ create_expected_decomposed_path <- function(dirname, filename, extension, row.na
   )
 }
 
-std_getwd <- function() 
-{
-  # The standardization is only there to enforce upper case Windows drive letters  
-  standardize_path(getwd())
-}
-
 test_that(
   "decompose_path works with a zero length input",
   {
@@ -29,8 +23,18 @@ test_that(
       extension = character(),
       row.names   = character()
     )
-    expect_equal(decompose_path(x), expected)
-    expect_equal(decompose_path(x2), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
+    actual2 <- decompose_path(x2)
+    expect_s3_class(actual2, "decomposed_path")
+    expect_equal(actual2$dirname, expected$dirname)
+    expect_equal(actual2$filename, expected$filename)
+    expect_equal(actual2$extension, expected$extension)
+    expect_equal(rownames(actual2), rownames(expected))
   }
 )
 
@@ -45,7 +49,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -60,7 +69,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -75,7 +89,12 @@ test_that(
       extension        = "tar.gz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -90,7 +109,12 @@ test_that(
       extension        = "tar.gz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -106,7 +130,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -121,7 +150,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -136,7 +170,12 @@ test_that(
       extension        = "zip",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -151,7 +190,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -166,7 +210,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -180,7 +229,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -195,7 +249,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -209,7 +268,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -224,7 +288,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -239,7 +308,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -254,7 +328,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -268,7 +347,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -286,7 +370,12 @@ test_that(
       actual <- decompose_path(x), 
       "Coercing .+ to class .character.\\."
     )
-    expect_equal(actual, expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -324,7 +413,12 @@ test_that(
   "decompose_path works with a character vector input.",
   {
     x <- catz
-    expect_equal(decompose_path(x), expected_catz)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected_catz$dirname)
+    expect_equal(actual$filename, expected_catz$filename)
+    expect_equal(actual$extension, expected_catz$extension)
+    expect_equal(rownames(actual), rownames(expected_catz))
   }
 )
 
@@ -336,7 +430,11 @@ test_that(
       actual <- decompose_path(x), 
       "Coercing .+ to class .character.\\."
     )
-    expect_equal(actual, expected_catz)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected_catz$dirname)
+    expect_equal(actual$filename, expected_catz$filename)
+    expect_equal(actual$extension, expected_catz$extension)
+    expect_equal(rownames(actual), rownames(expected_catz))
   }
 )
 
@@ -351,7 +449,12 @@ test_that(
       extension        = "tgz",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -365,7 +468,12 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )
 
@@ -379,6 +487,11 @@ test_that(
       extension        = "",
       row.names        = x
     )
-    expect_equal(decompose_path(x), expected)
+    actual <- decompose_path(x)
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
   }
 )

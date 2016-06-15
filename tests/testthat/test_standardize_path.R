@@ -35,7 +35,7 @@ test_that(
   "standardize_path works with relative paths with forward slashes.",
   {
     x <- "somedir/foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- setNames(
       file.path(pwd, "somedir", "foo.tgz", fsep = "/"),
       x
@@ -48,7 +48,7 @@ test_that(
   "standardize_path works with relative paths with back slashes.",
   {
     x <- "somedir\\foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- setNames(
       file.path(pwd, "somedir", "foo.tgz", fsep = "/"),
       x
@@ -61,7 +61,7 @@ test_that(
   "standardize_path works with relative paths with mixed forward and back slashes.",
   {
     x <- "somedir/another dir\\foo.tgz"
-    pwd <- getwd()
+    pwd <- std_getwd()
     expected <- setNames(
       file.path(pwd, "somedir", "another dir", "foo.tgz", fsep = "/"),
       x
