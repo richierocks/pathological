@@ -25,6 +25,23 @@ input, but in a standardized form.
 \description{
 Standardi[sz]e path names so that they can be more easily compared.
 }
+\details{
+\code{standardize_path} wraps \code{\link[base]{normalizePath}},
+providing additional tweaks to the output.
+\itemize{
+\item{Missing inputs always return \code{NA_character_}.}
+\item{Leading double back slashes are preserved under all OSes regardless of
+the values of \code{sep}.}
+\item{Leading double forward slashes are converted to double back slash under
+Windows (they are likely UNC paths), and a single forward slash under Unixes
+(they are likely absolute paths).}
+\item{Other back and forward slashes are replaced by \code{sep}.}
+\item{Paths are always made absolute.}
+\item{Trailing slashes are always stripped, except for root (\code{"/"}) and
+Windows drives (\code{"C:/"}, etc.).}
+\item{Windows drives are always capitalized.}
+}
+}
 \examples{
 standardize_path(c(".", "..", "~", R.home(), NA))
 standardize_path(c(".", "..", "~", R.home(), NA), "\\\\")

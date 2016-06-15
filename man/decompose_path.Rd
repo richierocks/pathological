@@ -50,6 +50,14 @@ without extension, and extension. \code{strip_extension},
 manipulate the file extension. \code{recompose_path} takes the result of 
 \code{decompose_path} and returns complete paths.
 }
+\note{
+Decomposing and then recomposing a path is usually equivalent to 
+standardizing that path (though slower).  That is, usually
+\code{recompose_path(decompose_path(x)) == standardize_path(x)}.
+One exception to this is when the directory of x is a symbolic link to 
+another directory.  In this case \code{decompose_path} will follow the
+link but \code{standardize_path} won't.
+}
 \examples{
 x <- c(
   "somedir/foo.tgz",         # single extension

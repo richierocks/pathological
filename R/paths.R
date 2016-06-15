@@ -275,6 +275,12 @@ cygwinify_path <- function(x = dir())
 #' newextension, possibly with a directory (see \code{include_dir} argument).
 #' \code{get_extension} returns a character vector of the third column.
 #' \code{recompose_path} returns a character vector of paths.
+#' @note Decomposing and then recomposing a path is usually equivalent to 
+#' standardizing that path (though slower).  That is, usually
+#' \code{recompose_path(decompose_path(x)) == standardize_path(x)}.
+#' One exception to this is when the directory of x is a symbolic link to 
+#' another directory.  In this case \code{decompose_path} will follow the
+#' link but \code{standardize_path} won't.
 #' @examples
 #' x <- c(
 #'   "somedir/foo.tgz",         # single extension
@@ -837,6 +843,21 @@ split_path <- function(x = dir())
 #' named with the input file paths.
 #' @return A character vector of paths, pointing to the same locations as the
 #' input, but in a standardized form.
+#' @details \code{standardize_path} wraps \code{\link[base]{normalizePath}},
+#' providing additional tweaks to the output.
+#' \itemize{
+#' \item{Missing inputs always return \code{NA_character_}.}
+#' \item{Leading double back slashes are preserved under all OSes regardless of
+#' the values of \code{sep}.}
+#' \item{Leading double forward slashes are converted to double back slash under
+#' Windows (they are likely UNC paths), and a single forward slash under Unixes
+#' (they are likely absolute paths).}
+#' \item{Other back and forward slashes are replaced by \code{sep}.}
+#' \item{Paths are always made absolute.}
+#' \item{Trailing slashes are always stripped, except for root (\code{"/"}) and
+#' Windows drives (\code{"C:/"}, etc.).}
+#' \item{Windows drives are always capitalized.}
+#' }
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}},
 #' \code{\link[R.utils]{getAbsolutePath}}
 #' @examples
