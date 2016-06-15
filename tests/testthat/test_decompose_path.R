@@ -223,8 +223,10 @@ test_that(
   "decompose_path handles absolute paths to directories.",
   {
     x <- R.home()
+    expected_dir <- normalizePath(R.home(), "/", mustWork = FALSE)
+    substring(expected_dir, 1, 1) <- toupper(substring(expected_dir, 1, 1))
     expected <- create_expected_decomposed_path(
-      dirname          = normalizePath(R.home(), "/", mustWork = FALSE),
+      dirname          = ,
       filename         = "",
       extension        = "",
       row.names        = x
