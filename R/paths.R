@@ -884,6 +884,13 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   
   ok <- is_non_missing_nor_empty_character(x)
 
+  # normalizePath gives a silly result for "c:" under Windows, returning either
+  # r_home("bin") or temp_dir() or getwd()
+  # Convert it to "c:/" to fix.  Unclear if this affects only the OS drive
+  # or all mapped drives.  For safety, add a suffix to them all.
+  is_slashless_windows_drive <- str_detect(x[ok], "^[a-zA-Z]:$")
+  x[ok][is_slashless_windows_drive] <- paste0(x[ok][is_slashless_windows_drive], "/")
+  
   # Normalize, with smarter defaults, and returning NA for NA inputs.
   x[ok] <- ifelse(
     is.na(x[ok]),
