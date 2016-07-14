@@ -1,3 +1,4 @@
+0.1-0 Another bug fix release.
 0.0-9 Bug fix release: standardize_path rewritten to fix some cross-platform issues.  In particular it enforces backslashes at the start of UNC paths.
 0.0-8 Added create_files fns.
       create_dirs now only tries to create directories that don't already exist.
