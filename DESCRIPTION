@@ -20,7 +20,7 @@ Imports:
     assertive.reflection,
     assertive.strings,
     plyr,
-    stringr (>= 1.0.0),
+    stringi,
     utils,
     assertive.numbers
 Suggests:

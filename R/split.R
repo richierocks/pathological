@@ -26,8 +26,5 @@ split_path <- function(x = dir())
   original_x <- x <- coerce_to(x, "character")
   x <- standardize_path(x)
   split_x <- strsplit(x, "(?<=[^/\\\\])[/\\\\]", perl = TRUE)
-  # setting names in a list, as of R3.1.1 processes backslashes cat-style, so 
-  # need to duplicate them
-  # original_x <- str_replace_all(original_x, fixed("\\"), "\\\\")
   setNames(split_x, original_x)
 }

@@ -20,6 +20,7 @@
 #' ))
 #' parent_dir(x)
 #' @importFrom stats setNames
+#' @importFrom stringi stri_replace_all_fixed
 #' @export
 parent_dir <- function(x, sep = c("/", "\\")) 
 {
@@ -40,7 +41,7 @@ parent_dir <- function(x, sep = c("/", "\\"))
   )
   if(sep == "\\")
   {
-    pdir[not_missing] <- str_replace_all(pdir[not_missing], "/", "\\")
+    pdir[not_missing] <- stri_replace_all_fixed(pdir[not_missing], "/", "\\")
   }
   setNames(pdir, original_x)
 }

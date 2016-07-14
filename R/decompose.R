@@ -50,9 +50,9 @@
 #' @importFrom assertive.base is_not_na
 #' @importFrom assertive.files is_dir
 #' @importFrom assertive.base strip_attributes
-#' @importFrom stringr str_detect
-#' @importFrom stringr fixed
-#' @importFrom stringr str_match
+#' @importFrom stringi stri_detect_fixed
+#' @importFrom stringi stri_match_first_regex
+#' @importFrom stringi stri_replace_first_regex
 #' @export
 decompose_path <- function(x = dir())
 {
@@ -81,7 +81,7 @@ decompose_path <- function(x = dir())
     ifelse(is_dir_x, "", basename(x)),
     NA_character_
   )
-  has_extension <- str_detect(basename_x, fixed("."))
+  has_extension <- stri_detect_fixed(basename_x, ".")
     
   # match one or more letters, numbers and allowed punctuation characters
   # (the filename without extension)
@@ -96,7 +96,7 @@ decompose_path <- function(x = dir())
   
   if(any(not_missing_and_has_extension))
   {
-    split_name <- str_match(
+    split_name <- stri_match_first_regex(
       basename_x[not_missing_and_has_extension], 
       rx
     )
@@ -156,7 +156,7 @@ recompose_path.decomposed_path <- function(x, ...)
     base_x
   )
   # strip trailing slashes
-  path <- str_replace(path, "/?$", "")  
+  path <- stri_replace_first_regex(path, "/?$", "")  
   
   path
 }

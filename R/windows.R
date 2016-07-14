@@ -11,9 +11,8 @@
 #' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
 #' }
 #' @importFrom assertive.reflection is_windows
-#' @importFrom stringr fixed
-#' @importFrom stringr str_detect
-#' @importFrom stringr str_split_fixed
+#' @importFrom stringi stri_detect_fixed
+#' @importFrom stringi stri_split_fixed
 #' @export
 cygwinify_path <- function(x = dir())
 {
@@ -27,9 +26,8 @@ cygwinify_path <- function(x = dir())
     return(invisible(x))
   }
   cygwinified_x <- standardize_path(x)
-  colon <- fixed(":")
-  has_drive <- str_detect(cygwinified_x, colon)
-  split_path <- str_split_fixed(cygwinified_x[has_drive], colon, 2L)
+  has_drive <- stri_detect_fixed(cygwinified_x, ":")
+  split_path <- stri_split_fixed(cygwinified_x[has_drive], ":", 2L)
   cygwinified_x[has_drive] <- paste0(
     "/cygdrive/",
     split_path[, 1L],
@@ -84,7 +82,7 @@ get_drive <- function(x = getwd())
 #' @importFrom assertive.reflection is_windows
 #' @importFrom assertive.base coerce_to
 #' @importFrom stats setNames
-#' @importFrom stringr str_detect
+#' @importFrom stringi stri_detect_regex
 #' @export
 is_windows_drive <- function(x)
 {
@@ -99,9 +97,9 @@ is_windows_drive <- function(x)
   }
   original_x <- x <- coerce_to(x, "character")
   # Want to resolve paths with . or ..
-  starts_with_dots <- str_detect(x, "^\\.{1,2}[/\\\\]?")
+  starts_with_dots <- stri_detect_regex(x, "^\\.{1,2}[/\\\\]?")
   # Can't use standardize_path since we want that fn to use this
   x[starts_with_dots] <- normalizePath(x[starts_with_dots]) 
-  yn <- str_detect(x, "^[[:alpha:]]:[/\\\\]?$")
+  yn <- stri_detect_regex(x, "^[[:alpha:]]:[/\\\\]?$")
   setNames(yn, original_x)
 }

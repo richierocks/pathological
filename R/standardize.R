@@ -34,9 +34,9 @@
 #' @importFrom assertive.reflection is_windows
 #' @importFrom assertive.strings is_non_missing_nor_empty_character
 #' @importFrom stats setNames
-#' @importFrom stringr str_replace
-#' @importFrom stringr str_replace_all
-#' @importFrom stringr str_detect
+#' @importFrom stringi stri_replace_first_regex
+#' @importFrom stringi stri_replace_all_fixed
+#' @importFrom stringi stri_detect_regex
 #' @export
 standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE)
 {
@@ -53,7 +53,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   # r_home("bin") or temp_dir() or getwd()
   # Convert it to "c:/" to fix.  Unclear if this affects only the OS drive
   # or all mapped drives.  For safety, add a suffix to them all.
-  is_slashless_windows_drive <- str_detect(x[ok], "^[a-zA-Z]:$")
+  is_slashless_windows_drive <- stri_detect_regex(x[ok], "^[a-zA-Z]:$")
   x[ok][is_slashless_windows_drive] <- paste0(x[ok][is_slashless_windows_drive], "/")
   
   # Normalize, with smarter defaults, and returning NA for NA inputs.
@@ -75,22 +75,22 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   # - left as // if it doesn't exist
   # A leading \\ is preserved under all platforms.
   x[ok] <- ifelse(
-    str_detect(x[ok], "^\\\\\\\\"), 
-    paste0("\\\\", str_replace_all(substring(x[ok], 3), fixed("\\"), "/")), 
-    str_replace_all(x[ok], fixed("\\"), "/")
+    stri_detect_regex(x[ok], "^\\\\\\\\"), 
+    paste0("\\\\", stri_replace_all_fixed(substring(x[ok], 3), "\\", "/")), 
+    stri_replace_all_fixed(x[ok], "\\", "/")
   )
   
   # Turn leading // into / when normalizePath forgot to.
   if(is_unix())
   {
-    has_leading_double_slash <- str_detect(x[ok], "^/{2}")
+    has_leading_double_slash <- stri_detect_regex(x[ok], "^/{2}")
     x[ok][has_leading_double_slash] <- substring(x[ok][has_leading_double_slash], 2)
   }
   
   # Again under Unix, normalizePath won't always make path absolute
   if(is_unix())
   {
-    is_absolute <- str_detect(x[ok], "^([/\\\\]|[a-zA-Z]:)")
+    is_absolute <- stri_detect_regex(x[ok], "^([/\\\\]|[a-zA-Z]:)")
     x[ok][!is_absolute] <- file.path(getwd(), x[ok], fsep = "/")
   }
   
@@ -100,10 +100,10 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   #   an ascii letter then : then maybe a \ or / (Windows drive)
   # Usually \ (Windows current drive) too, but this will have been replaced by
   # normalizePath.
-  is_root <- str_detect(x[ok], "^(/|[a-zA-Z]:[/\\\\]?)$")
-  x[ok][!is_root] <- str_replace(x[ok][!is_root], "/?$", "")
+  is_root <- stri_detect_regex(x[ok], "^(/|[a-zA-Z]:[/\\\\]?)$")
+  x[ok][!is_root] <- stri_replace_first_regex(x[ok][!is_root], "/?$", "")
   # Root dirs should always end in /
-  needs_a_slash <- str_detect(x[ok][is_root], "[^/]$")  
+  needs_a_slash <- stri_detect_regex(x[ok][is_root], "[^/]$")  
   x[ok][is_root][needs_a_slash] <- paste0(x[ok][is_root][needs_a_slash], "/")
   
   # Windows drive paths are sometimes but not always converted to upper case
@@ -114,7 +114,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   # Replace / with the chosen slash
   if(sep == "\\")
   {
-    x[ok] <- str_replace_all(x[ok], fixed("/"), "\\")
+    x[ok] <- stri_replace_all_fixed(x[ok], "/", "\\")
   }
   if(include_names)
   {
