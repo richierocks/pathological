@@ -498,3 +498,30 @@ test_that(
     expect_equal(rownames(actual), rownames(expected))
   }
 )
+
+
+test_that(
+  "decompose_path works with NTFS Junctions",
+  {
+    skip_if_not(assertive.reflection::is_windows())
+    skip_on_cran()
+    source_dir <- tempfile("source")
+    target_dir <- tempfile("target")
+    create_dirs(target_dir)
+    create_ntfs_junction(source_dir, target_dir)
+    x <- c(source_dir, file.path(source_dir, "foo.bar"))
+    actual <- decompose_path(x)
+    expected <- create_expected_decomposed_path(
+      dirname          = rep.int(standardize_path(source_dir), 2),
+      filename         = c("", "foo"),
+      extension        = c("", "bar"),
+      row.names        = x
+    )
+    expect_s3_class(actual, "decomposed_path")
+    expect_equal(actual$dirname, expected$dirname)
+    expect_equal(actual$filename, expected$filename)
+    expect_equal(actual$extension, expected$extension)
+    expect_equal(rownames(actual), rownames(expected))
+  }
+)
+
