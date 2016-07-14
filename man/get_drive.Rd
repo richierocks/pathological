@@ -18,7 +18,9 @@ On a Windows system, this returns the drive letter of the path followed by a
 colon.  On other systems, it returns a single forward slash.
 }
 \examples{
+\donttest{ # often takes > 5s to run
 get_drive(c(".", "~", r_home(), temp_dir(), "\\\\\\\\foo/bar"))
+}
 }
 \seealso{
 \code{\link{is_windows_drive}}

@@ -47,7 +47,9 @@ cygwinify_path <- function(x = dir())
 #' slashes on Unix-based systems.
 #' @seealso \code{\link{is_windows_drive}}
 #' @examples
+#' \donttest{ # often takes > 5s to run
 #' get_drive(c(".", "~", r_home(), temp_dir(), "\\\\foo/bar"))
+#' }
 #' @importFrom assertive.reflection is_windows
 #' @importFrom utils head
 #' @export
