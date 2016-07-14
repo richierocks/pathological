@@ -22,7 +22,8 @@ Imports:
     plyr,
     stringi,
     utils,
-    assertive.numbers
+    assertive.numbers,
+    Rcpp
 Suggests:
     testthat
 License: Unlimited
