@@ -21,7 +21,8 @@ Imports:
     assertive.strings,
     plyr,
     stringr (>= 1.0.0),
-    utils
+    utils,
+    assertive.numbers
 Suggests:
     testthat
 License: Unlimited

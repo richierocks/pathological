@@ -39,3 +39,10 @@ create_ntfs_junction <- function(source_dir = tempfile("source"), target_dir = t
   result <- shell(paste("mklink /J", source_dir, target_dir), intern = TRUE)
   invisible(attr(result, "status") %||% 0)
 }
+
+
+# AppVeyor doesn't seem to be correctly installing dependencies.  In this case
+# the assertive.numbers dependency of assertive.files isn't installed. Import
+# a function from it to force the issue.
+#' @importFrom assertive.numbers is_equal_to
+NULL
