@@ -30,7 +30,6 @@ dir_data <- function(x = ".", pattern = NULL, all.files = FALSE)
   depth <- vapply(splits, length, integer(1))
   max_depth <- max(depth)
   vapply(splits, `length<-`, character(max_depth), max_depth) %>% 
-    simplify2array %>% 
     t %>% 
     data.frame
 }
