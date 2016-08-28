@@ -41,6 +41,7 @@ test_that(
 test_that(
   "decompose_path handles paths with no directory and a single extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo.tgz"
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -81,6 +82,7 @@ test_that(
 test_that(
   "decompose_path handles paths with no directory and a double extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo.tar.gz"
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -122,6 +124,7 @@ test_that(
 test_that(
   "decompose_path handles paths with no directory and no extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo"
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -162,6 +165,7 @@ test_that(
 test_that(
   "decompose_path handles filenames containing a '.' and an extension.",
   {
+    skip_on_cran()
     x <- "foo. bar.zip"
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -282,6 +286,7 @@ test_that(
 test_that(
   "decompose_path handles the current directory as '.'.",
   {
+    skip_on_cran()
     x <- "."
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -302,6 +307,7 @@ test_that(
 test_that(
   "decompose_path handles the parent directory as '..'.",
   {
+    skip_on_cran()
     x <- ".."
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -322,6 +328,7 @@ test_that(
 test_that(
   "decompose_path handles files inside '.'.",
   {
+    skip_on_cran()
     x <- "./foo.tgz"
     pwd <- std_getwd()
     expected <- create_expected_decomposed_path(
@@ -415,6 +422,7 @@ expected_catz <- create_expected_decomposed_path(
 test_that(
   "decompose_path works with a character vector input.",
   {
+    skip_on_cran()
     x <- catz
     actual <- decompose_path(x)
     expect_s3_class(actual, "decomposed_path")
@@ -428,6 +436,7 @@ test_that(
 test_that(
   "decompose_path works with a factor input.",
   {
+    skip_on_cran()
     x <- factor(catz)
     expect_warning(
       actual <- decompose_path(x), 
