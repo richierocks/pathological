@@ -30,7 +30,7 @@ create_ntfs_junction <- function(source_dir = tempfile("source"), target_dir = t
   assertive.reflection::assert_is_windows()
   if(file.exists(source_dir))
   {
-    stop(sprintf("The source directory %s already exists."), source_dir)
+    stop(sprintf("The source directory %s already exists.", source_dir))
   }
   if(!file.exists(target_dir))
   {
