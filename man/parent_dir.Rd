@@ -4,7 +4,7 @@
 \alias{parent_dir}
 \title{Get the parent dir}
 \usage{
-parent_dir(x, sep = c("/", "\\\\"))
+parent_dir(x = ".", sep = c("/", "\\\\"))
 }
 \arguments{
 \item{x}{A character vector of file paths.}

@@ -22,7 +22,7 @@
 #' @importFrom stats setNames
 #' @importFrom stringi stri_replace_all_fixed
 #' @export
-parent_dir <- function(x, sep = c("/", "\\")) 
+parent_dir <- function(x = ".", sep = c("/", "\\")) 
 {
   sep <- match.arg(sep)
   original_x <- x <- coerce_to(x, "character")
