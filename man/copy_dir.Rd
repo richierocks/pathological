@@ -23,7 +23,7 @@ to \code{dir}.}
 \item{recursive}{Logical value.  Should subdirectories and their contents 
 be copied?}
 
-\item{...}{Passed from the deprecated \code{dir_copy} to \code{copy_dir}.}
+\item{...}{Passed from the defunct \code{dir_copy} to \code{copy_dir}.}
 }
 \value{
 A logical vector of whether or not each file was successfully  

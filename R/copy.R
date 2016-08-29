@@ -8,7 +8,7 @@
 #' @param overwrite Logical value.  Should existing files be overwritten?
 #' @param recursive Logical value.  Should subdirectories and their contents 
 #' be copied?
-#' @param ... Passed from the deprecated \code{dir_copy} to \code{copy_dir}.
+#' @param ... Passed from the defunct \code{dir_copy} to \code{copy_dir}.
 #' @note Target directories that don't exist are created, silently (assuming  
 #' write permission).
 #' @return A logical vector of whether or not each file was successfully  
@@ -79,6 +79,6 @@ copy_dir <- function(source_dir, target_dir, pattern = NULL, overwrite = FALSE,
 #' @export
 dir_copy <- function(...)
 {
-  .Deprecated("copy_dir")
+  .Defunct("copy_dir")
   copy_dir(...)
 }
