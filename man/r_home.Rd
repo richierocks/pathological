@@ -21,6 +21,11 @@ A character vector of paths inside the R installation dir.
 Return a path to a file in the R home directory.  A vectorized, standardized
 version of \code{R.home}.
 }
+\note{
+The \code{component} argument has special behaviour for the values
+"home", "bin", "doc", "etc", "include", "modules", and "share". See the
+help page for \code{\link[base]{R.home}}.
+}
 \examples{
 r_home()
 r_home("etc", "Rprofile.site")

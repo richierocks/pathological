@@ -78,4 +78,8 @@ strip_extension(x)
 strip_extension(x, FALSE)
 recompose_path(decomposed)
 }
+\seealso{
+\code{\link[tools]{file_ext}}, a primitive version of 
+\code{get_extension}
+}
 

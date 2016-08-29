@@ -81,6 +81,9 @@ r_environ_site <- function(sep = c("/", "\\"))
 #' @param ... Further subdirectories passed to \code{file.path}.
 #' @param sep String separator between directory levels in the output.
 #' @return A character vector of paths inside the R installation dir.
+#' @note The \code{component} argument has special behaviour for the values
+#' "home", "bin", "doc", "etc", "include", "modules", and "share". See the
+#' help page for \code{\link[base]{R.home}}.
 #' @seealso \code{\link[base]{R.home}}
 #' @examples
 #' r_home()
