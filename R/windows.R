@@ -51,7 +51,7 @@ cygwinify_path <- function(x = dir())
 #' @importFrom assertive.reflection is_windows
 #' @importFrom utils head
 #' @export
-get_drive <- function(x = getwd())
+get_windows_drive <- function(x = getwd())
 {
   if(is_windows())
   {
@@ -60,6 +60,13 @@ get_drive <- function(x = getwd())
   {
     rep.int("/", length(x))
   }
+}
+
+#' @export
+get_drive <- function(x = getwd())
+{
+  .Deprecated("get_windows_drive")
+  get_windows_drive(x)
 }
 
 #' Is the path a Windows drive?
