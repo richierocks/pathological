@@ -2,7 +2,7 @@ Package: pathological
 Type: Package
 Title: Path Manipulation Utilities
 Version: 0.1-0
-Date: 2016-08-13
+Date: 2016-08-29
 Author: Richard Cotton [aut, cre], Janko Thyson [ctb]
 Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
@@ -26,7 +26,10 @@ Imports:
     assertive.numbers,
     Rcpp
 Suggests:
-    testthat
+    knitr,
+    rmarkdown,
+    testthat,
+    withr
 License: Unlimited
 LazyLoad: yes
 Roxygen: list(wrap = FALSE)
@@ -35,3 +38,4 @@ Acknowledgments: Development of this package was partially funded by the
     <http://qatar-weill.cornell.edu>.  The Core is supported by 'Biomedical
     Research Program' funds, a program funded by Qatar Foundation.
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr

@@ -26,6 +26,12 @@
 #' One exception to this is when the directory of x is a symbolic link to 
 #' another directory.  In this case \code{decompose_path} will follow the
 #' link but \code{standardize_path} won't.
+#' @section Warning:
+#' A few of the tests for this function don't pass under the CRAN Windows 
+#' machine.  It is unclear exactly why this is happening, and the failing tests
+#' have not been reproduced elsewhere.  If you have unexpected behaviour with
+#' this function, please report it on the package issue tracker.
+#' \url{https://github.com/richierocks/pathological/issues}
 #' @seealso \code{\link[tools]{file_ext}}, a primitive version of 
 #' \code{get_extension}
 #' @examples
