@@ -65,5 +65,4 @@ list2mat <- function(l)
 # the assertive.numbers dependency of assertive.files isn't installed. Import
 # a function from it to force the issue.
 #' @importFrom assertive.numbers is_equal_to
-#' @importFrom Rcpp evalCpp
 NULL
