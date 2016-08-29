@@ -32,6 +32,14 @@ create_ntfs_junction <- function(source_dir = tempfile("source"), target_dir = t
   {
     stop(sprintf("The source directory %s already exists.", source_dir))
   }
+  if(missing(source_dir))
+  {
+    message("The source directory is ", source_dir)
+  }
+  if(missing(target_dir))
+  {
+    message("The target directory is ", target_dir)
+  }
   if(!file.exists(target_dir))
   {
     dir.create(target_dir, recursive = TRUE) 
