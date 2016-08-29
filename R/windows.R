@@ -47,7 +47,7 @@ cygwinify_path <- function(x = dir())
 #' @seealso \code{\link{is_windows_drive}}
 #' @examples
 #' \donttest{ # often takes > 5s to run
-#' get_drive(c(".", "~", r_home(), temp_dir(), "\\\\foo/bar"))
+#' get_windows_drive(c(".", "~", r_home(), temp_dir(), "\\\\foo/bar"))
 #' }
 #' @importFrom assertive.reflection is_windows
 #' @importFrom utils head
@@ -63,6 +63,7 @@ get_windows_drive <- function(x = getwd())
   }
 }
 
+#' @rdname get_windows_drive
 #' @export
 get_drive <- function(x = getwd())
 {
