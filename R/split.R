@@ -9,6 +9,7 @@
 #' @note Paths are split on forward and back slashes, except for double forward 
 #' or back slashes at the start of (UNC) paths.  These are included in the first 
 #' element of that split path.
+#' @seealso \code{\link{dir_data}}
 #' @examples
 #' (splits <- split_path(c(getwd(), "~", r_home())))
 #' # Reverse the operation

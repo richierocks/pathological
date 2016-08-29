@@ -26,7 +26,7 @@ dir_data <- function(x = ".", pattern = NULL, all.files = FALSE)
   {
     return(data.frame())
   }
-  splits <- strsplit(files, "/")
+  splits <- split_path(files)
   depth <- vapply(splits, length, integer(1))
   max_depth <- max(depth)
   vapply(splits, `length<-`, character(max_depth), max_depth) %>% 

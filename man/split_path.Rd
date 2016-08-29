@@ -27,4 +27,7 @@ element of that split path.
 # Reverse the operation
 sapply(splits, paste, collapse = "/")
 }
+\seealso{
+\code{\link{dir_data}}
+}
 
