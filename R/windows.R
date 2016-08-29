@@ -7,7 +7,8 @@
 #' @return A character vector of the cygwinified inputs.
 #' @seealso \code{standardize_path}
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Connecting to a non-existent network drive is slow
 #' cygwinify_path(c("c:/Program Files", "\\\\some/network/drive"))
 #' }
 #' @importFrom assertive.reflection is_windows
@@ -27,7 +28,7 @@ cygwinify_path <- function(x = dir())
   }
   cygwinified_x <- standardize_path(x)
   has_drive <- stri_detect_fixed(cygwinified_x, ":")
-  split_path <- stri_split_fixed(cygwinified_x[has_drive], ":", 2L)
+  split_path <- stri_split_fixed(cygwinified_x[has_drive], ":", 2L, simplify = TRUE)
   cygwinified_x[has_drive] <- paste0(
     "/cygdrive/",
     split_path[, 1L],

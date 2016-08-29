@@ -18,7 +18,8 @@ By default, cygwin complains about standard paths.  This function converts
 paths to a form that cygwin likes.
 }
 \examples{
-\dontrun{
+\donttest{
+# Connecting to a non-existent network drive is slow
 cygwinify_path(c("c:/Program Files", "\\\\\\\\some/network/drive"))
 }
 }
