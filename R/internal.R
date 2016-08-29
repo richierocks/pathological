@@ -48,6 +48,18 @@ create_ntfs_junction <- function(source_dir = tempfile("source"), target_dir = t
   invisible(attr(result, "status") %||% 0)
 }
 
+# Inspired by base::simplify2array, rather than listless:list_to_data.frame
+#' @importFrom magrittr %>%
+#' @noRd
+list2mat <- function(l)
+{
+  max_depth <- l %>% 
+    vapply(length, integer(1)) %>% 
+    max
+  l %>% 
+    vapply(`length<-`, character(max_depth), max_depth) %>% 
+    t
+}
 
 # AppVeyor doesn't seem to be correctly installing dependencies.  In this case
 # the assertive.numbers dependency of assertive.files isn't installed. Import
