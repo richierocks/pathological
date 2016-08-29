@@ -26,6 +26,8 @@
 #' One exception to this is when the directory of x is a symbolic link to 
 #' another directory.  In this case \code{decompose_path} will follow the
 #' link but \code{standardize_path} won't.
+#' @seealso \code{\link[tools]{file_ext}}, a primitive version of 
+#' \code{get_extension}
 #' @examples
 #' x <- c(
 #'   "somedir/foo.tgz",         # single extension
