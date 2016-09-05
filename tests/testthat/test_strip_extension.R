@@ -1,6 +1,7 @@
 test_that(
   "strip_extension works with paths with no directory and a single extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo.tgz"
     expected <- list(
       na    = "foo", 
@@ -33,6 +34,7 @@ test_that(
 test_that(
   "strip_extension works with paths with no directory and a double extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo.tar.gz"
     expected <- list(
       na    = "foo", 
@@ -65,6 +67,7 @@ test_that(
 test_that(
   "strip_extension works with paths with no directory and no extension in the filename.",
   {
+    skip_on_cran()
     x <- "foo"
     expected <- list(
       na    = "foo", 
@@ -97,6 +100,7 @@ test_that(
 test_that(
   "strip_extension handles filenames containing a '.' and an extension.",
   {
+    skip_on_cran()
     x <- "foo. bar.zip"
     expected <- list(
       na    = "foo. bar", 

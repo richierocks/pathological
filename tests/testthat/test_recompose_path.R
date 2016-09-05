@@ -2,6 +2,7 @@
 test_that(
   "recompose_path is the inverse of decompose_path, except standardized",
   {
+    skip_on_cran()
     x <- c(
       character(),
       NULL,
