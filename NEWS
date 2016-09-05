@@ -1,5 +1,8 @@
 0.1-1 Some problematic tests marked as skip_on_cran().
-0.1-0 Another bug fix release.
+0.1-0 Added split_dir (dir + split_path).
+      Added a vignette.
+      parent_dir gets a default argument.
+      Attempt to fix the problems with CRAN Windows build.
 0.0-9 Bug fix release: standardize_path rewritten to fix some cross-platform issues.  In particular it enforces backslashes at the start of UNC paths.
 0.0-8 Added create_files fns.
       create_dirs now only tries to create directories that don't already exist.

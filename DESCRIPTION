@@ -15,6 +15,7 @@ Depends:
 Imports:
     assertive.base (>= 0.0-3),
     assertive.files,
+    assertive.numbers,
     assertive.properties,
     assertive.reflection,
     assertive.strings,
@@ -22,9 +23,7 @@ Imports:
     magrittr,
     plyr,
     stringi,
-    utils,
-    assertive.numbers,
-    Rcpp
+    utils
 Suggests:
     knitr,
     rmarkdown,
