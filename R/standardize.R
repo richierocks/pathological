@@ -42,7 +42,13 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
 {
   if(is_empty(x))
   {
-    return(setNames(character(), character()))
+    if(include_names)
+    {
+      return(setNames(character(), character()))
+    } else
+    {
+      return(character())
+    }
   }
   sep <- match.arg(sep)
   x <- original_x <- coerce_to(x, "character")
