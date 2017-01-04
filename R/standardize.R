@@ -37,6 +37,7 @@
 #' @importFrom stringi stri_replace_first_regex
 #' @importFrom stringi stri_replace_all_fixed
 #' @importFrom stringi stri_detect_regex
+#' @importFrom stringi stri_replace_all_regex
 #' @export
 standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE)
 {
@@ -116,6 +117,12 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   # Make this consistently happen.
   # At this point, the path should always start with a letter or a slash
   x[ok] <- paste0(toupper(substring(x[ok], 1, 1)), substring(x[ok], 2))
+  
+  # Missing files preceded by "./" can still have this. Remove it now
+  x <- stri_replace_all_fixed(x, "/./", "/")
+  
+  # Similarly, "../" should be removed along with the previous dir
+  x <- stri_replace_all_regex(x, "/[^/]+/\\.\\./", "/")
   
   # Replace / with the chosen slash
   if(sep == "\\")
