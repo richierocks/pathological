@@ -97,7 +97,7 @@ standardize_path <- function(x = dir(), sep = c("/", "\\"), include_names = TRUE
   if(is_unix())
   {
     is_absolute <- stri_detect_regex(x[ok], "^([/\\\\]|[a-zA-Z]:)")
-    x[ok][!is_absolute] <- file.path(getwd(), x[ok], fsep = "/")
+    x[ok][!is_absolute] <- file.path(getwd(), x[ok][!is_absolute], fsep = "/")
   }
   
   # Strip trailing slashes, except if it's a root dir
