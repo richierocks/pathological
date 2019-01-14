@@ -24,7 +24,7 @@ version of \code{R.home}.
 \note{
 The \code{component} argument has special behaviour for the values
 "home", "bin", "doc", "etc", "include", "modules", and "share". See the
-help page for \code{\link[base]{R.home}}.
+help page for \code{\link[base]{Rhome}}.
 }
 \examples{
 r_home()
@@ -32,6 +32,5 @@ r_home("etc", "Rprofile.site")
 r_home(c("home", "bin", "share"), c("", "i386", "zoneinfo"))
 }
 \seealso{
-\code{\link[base]{R.home}}
+\code{\link[base]{Rhome}}
 }
-

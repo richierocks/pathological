@@ -26,4 +26,3 @@ sys_which(c("make", "gcc")) # tools for running Rcpp
 \seealso{
 \code{\link[base]{Sys.which}}
 }
-

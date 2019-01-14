@@ -1,8 +1,8 @@
 Package: pathological
 Type: Package
 Title: Path Manipulation Utilities
-Version: 0.1-1
-Date: 2016-09-05
+Version: 0.2-0
+Date: 2019-01-06
 Author: Richard Cotton [aut, cre], Janko Thyson [ctb]
 Maintainer: Richard Cotton <richierocks@gmail.com>
 Authors@R: c(person("Richard", "Cotton", role = c("aut", "cre"),
@@ -20,6 +20,7 @@ Imports:
     assertive.reflection,
     assertive.strings,
     assertive.types,
+    fs,
     magrittr,
     plyr,
     stringi,
@@ -36,5 +37,5 @@ Acknowledgments: Development of this package was partially funded by the
     Proteomics Core at Weill Cornell Medical College in Qatar
     <http://qatar-weill.cornell.edu>.  The Core is supported by 'Biomedical
     Research Program' funds, a program funded by Qatar Foundation.
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

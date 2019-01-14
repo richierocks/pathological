@@ -20,8 +20,8 @@ For \code{create_dirs}, it defaults to a directory inside \code{tempdir()}.}
 A logical vector of successes of failures.
 }
 \description{
-A vectorized version of \code{\link[base]{dir.create}}, and
-\code{\link[base]{file.create}} and \code{\link[base]{unlink}} with more 
+A vectorized version of \code{dir.create} (see \code{\link[base]{files}} and 
+\code{\link[base]{files2}}) and \code{\link[base]{unlink}} with more 
 convenient defaults.
 }
 \note{
@@ -46,6 +46,6 @@ remove_dirs(temp_dir(c("foo", "bar", "blah")))
 }
 }
 \seealso{
-\code{\link[base]{dir.create}}, \code{\link[base]{unlink}}
+\code{\link[base]{files}}, \code{\link[base]{files2}}, 
+\code{\link[base]{unlink}}, \code{\link[fs]{create}}
 }
-

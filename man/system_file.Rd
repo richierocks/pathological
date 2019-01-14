@@ -45,4 +45,3 @@ system_file("help", "AnIndex", package = "splines")
 \seealso{
 \code{\link[base]{system.file}}
 }
-

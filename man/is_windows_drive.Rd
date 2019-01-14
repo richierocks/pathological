@@ -32,4 +32,3 @@ suppressWarnings(is_windows_drive(x))
 \seealso{
 \code{\link{get_drive}}
 }
-

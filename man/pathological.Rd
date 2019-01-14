@@ -22,4 +22,3 @@ of the filename. \code{recompose_path} takes the result of
 Richie Cotton
 }
 \keyword{package}
-

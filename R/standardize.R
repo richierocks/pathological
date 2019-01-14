@@ -24,7 +24,7 @@
 #' \item{Windows drives are always capitalized.}
 #' }
 #' @seealso \code{\link[base]{normalizePath}}, \code{\link[base]{path.expand}},
-#' \code{\link[tools]{file_path_as_absolute}}, \code{\link[R.utils]{getAbsolutePath}}
+#' \code{\link[tools]{fileutils}}, \code{\link[R.utils]{getAbsolutePath}}
 #' @examples
 #' standardize_path(c(".", "..", "~", R.home(), NA))
 #' standardize_path(c(".", "..", "~", R.home(), NA), "\\")

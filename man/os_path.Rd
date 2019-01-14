@@ -27,4 +27,3 @@ os_path()
 \seealso{
 \code{\link[base]{Sys.getenv}}
 }
-

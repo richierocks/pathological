@@ -23,4 +23,3 @@ This only works when your IDE is RStudio. Otherwise an error is thrown.
 \examples{
 assertive.base::dont_stop(rstudio_project_dir())
 }
-

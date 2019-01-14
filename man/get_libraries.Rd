@@ -16,7 +16,7 @@ libraries to return.  By default, all libraries are returned.}
 A character vector of paths to libraries.
 }
 \description{
-Wrapper to \code{\link[base]{.libPaths}} that gets all the libraries that R 
+Wrapper to \code{\link[base]{libPaths}} that gets all the libraries that R 
 knows about on your machine.
 }
 \examples{
@@ -27,6 +27,5 @@ get_libraries(1)
 \url{http://cran.r-project.org/doc/FAQ/R-FAQ.html#What-is-the-difference-between-package-and-library_003f}
 }
 \seealso{
-\code{\link[base]{.libPaths}}
+\code{\link[base]{libPaths}}
 }
-

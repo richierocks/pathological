@@ -9,7 +9,7 @@ test_that(
     expect_warning(actual_std_is_false <- os_path(standardize = FALSE), warn)
     expect_warning(actual_std_is_true <- os_path(), warn)
     expect_equal(actual_std_is_false, expected)
-    expect_equal(actual_std_is_true, setNames(expected, character()))
+    expect_equal(actual_std_is_true, unname(expected))
   }
 )
 
@@ -24,7 +24,7 @@ test_that(
     expect_warning(actual_std_is_false <- os_path(standardize = FALSE), warn)
     expect_warning(actual_std_is_true <- os_path(), warn)
     expect_equal(actual_std_is_false, expected)
-    expect_equal(actual_std_is_true, setNames(expected, character()))
+    expect_equal(actual_std_is_true, unname(expected))
   }
 )
 

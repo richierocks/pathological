@@ -13,17 +13,17 @@
 #' @param simplify A logical value. If \code{TRUE}, the return value is 
 #' simplified from a list to a matrix.
 #' @param pattern A string containing a regular expression, to filter the files
-#' that are returned.  Passed to \code{\link[base]{dir}}.
+#' that are returned.  Passed to \code{\link[base]{list.files}}.
 #' @param all.files Logical. If \code{TRUE}, files whose name starts with a dot 
-#' are included.  Passed to \code{\link[base]{dir}}.
+#' are included.  Passed to \code{\link[base]{list.files}}.
 #' @param recursive Logical. If \code{TRUE}, files in subdirectories are 
-#' included.  Passed to \code{\link[base]{dir}}.
+#' included.  Passed to \code{\link[base]{list.files}}.
 #' @return Either a named list of character vectors containing the split paths,
 #' or a matrix.  See \code{simplify} argument in Usage section.
 #' @note Paths are split on forward and back slashes, except for double forward 
 #' or back slashes at the start of (UNC) paths.  These are included in the first 
 #' element of that split path.
-#' @seealso \code{\link[base]{file.path}}, \code{\link[base]{dir}}
+#' @seealso \code{\link[base]{file.path}}, \code{\link[base]{list.files}}
 #' @examples
 #' (splits <- split_path(c(getwd(), "~", r_home())))
 #' # Reverse the operation
@@ -60,8 +60,11 @@ split_path <- function(x = dir(), simplify = FALSE)
 #' @rdname split_path
 #' @export
 split_dir <- function(x = ".", pattern = NULL, all.files = TRUE, 
+                      
   recursive = TRUE, simplify = TRUE)
 {
+  # Don't use fs::dir_ls() since it has less permission for searching
+  # e.g, it throws an error searching some 
   files <- dir(
     x, 
     pattern    = pattern, 

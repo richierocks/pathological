@@ -52,4 +52,3 @@ unlink(file.path(tempdir(), "etc2"), recursive = TRUE)
 \seealso{
 \code{\link[base]{basename}}
 }
-

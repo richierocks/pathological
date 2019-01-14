@@ -26,4 +26,3 @@ cygwinify_path(c("c:/Program Files", "\\\\\\\\some/network/drive"))
 \seealso{
 \code{standardize_path}
 }
-
